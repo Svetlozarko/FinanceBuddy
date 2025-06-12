@@ -20,19 +20,29 @@ namespace FinanceCalc.Controllers
         }
 
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(DateTime? startDate, DateTime? endDate)
         {
             if (!User.Identity.IsAuthenticated)
             {
-                // Return empty list if user not logged in
-                return View(new List<Transaction>());
+                return View(new DashboardViewModel());
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var transactions = await _context.Transaction
-                .Where(t => t.UserId == userId)
-                .ToListAsync();
+            var query = _context.Transaction.Where(t => t.UserId == userId);
+
+            if (startDate.HasValue)
+            {
+                query = query.Where(t => t.Date >= startDate.Value);
+            }
+            if (endDate.HasValue)
+            {
+                // Include entire endDate day by adding 1 day and comparing less than
+                var nextDay = endDate.Value.AddDays(1);
+                query = query.Where(t => t.Date < nextDay);
+            }
+
+            var transactions = await query.ToListAsync();
 
             var expenseData = transactions
                 .Where(t => t.Type == TransactionType.Expense)
@@ -47,8 +57,31 @@ namespace FinanceCalc.Controllers
             ViewBag.Labels = expenseData.Select(d => d.Category).ToList();
             ViewBag.Data = expenseData.Select(d => d.Total).ToList();
 
-            return View(transactions);
+            ViewBag.MonthlyIncome = transactions
+                .Where(t => t.Type == TransactionType.Income)
+                .Sum(t => t.Amount);
+
+            ViewBag.Savings = transactions
+                .Where(t => t.Type == TransactionType.Saving)
+                .Sum(t => t.Amount);
+
+            // Pass the filter dates back to the ViewBag so UI can keep the values
+            ViewBag.StartDate = startDate?.ToString("yyyy-MM-dd");
+            ViewBag.EndDate = endDate?.ToString("yyyy-MM-dd");
+
+            var viewModel = new DashboardViewModel
+            {
+                Expenses = transactions.Where(t => t.Type == TransactionType.Expense).ToList(),
+                Income = transactions.Where(t => t.Type == TransactionType.Income).ToList(),
+                Savings = transactions.Where(t => t.Type == TransactionType.Saving).ToList(),
+                AllTransactions = transactions
+            };
+
+            return View(viewModel);
         }
+
+
+
 
 
 
