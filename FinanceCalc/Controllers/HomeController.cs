@@ -1,9 +1,9 @@
 using FinanceCalc.Data;
 using FinanceCalc.Enums;
 using FinanceCalc.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -19,7 +19,6 @@ namespace FinanceCalc.Controllers
             _context = context;
         }
 
-
         public async Task<IActionResult> Index(DateTime? startDate, DateTime? endDate)
         {
             if (!User.Identity.IsAuthenticated)
@@ -28,24 +27,30 @@ namespace FinanceCalc.Controllers
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             var query = _context.Transaction.Where(t => t.UserId == userId);
 
             if (startDate.HasValue)
-            {
                 query = query.Where(t => t.Date >= startDate.Value);
-            }
+
             if (endDate.HasValue)
-            {
-                // Include entire endDate day by adding 1 day and comparing less than
-                var nextDay = endDate.Value.AddDays(1);
-                query = query.Where(t => t.Date < nextDay);
-            }
+                query = query.Where(t => t.Date < endDate.Value.AddDays(1)); // Inclusive of entire day
 
             var transactions = await query.ToListAsync();
 
-            var expenseData = transactions
+            var expenses = transactions
                 .Where(t => t.Type == TransactionType.Expense)
+                .ToList();
+
+            var income = transactions
+                .Where(t => t.Type == TransactionType.Income)
+                .ToList();
+
+            var savings = transactions
+                .Where(t => t.Type == TransactionType.Saving)
+                .ToList();
+
+            // Expense chart (by category)
+            var expenseData = expenses
                 .GroupBy(t => t.ExpenseCategory)
                 .Select(g => new
                 {
@@ -54,36 +59,36 @@ namespace FinanceCalc.Controllers
                 })
                 .ToList();
 
-            ViewBag.Labels = expenseData.Select(d => d.Category).ToList();
-            ViewBag.Data = expenseData.Select(d => d.Total).ToList();
+            ViewBag.Labels = expenseData.Select(e => e.Category).ToList();
+            ViewBag.Data = expenseData.Select(e => e.Total).ToList();
 
-            ViewBag.MonthlyIncome = transactions
-                .Where(t => t.Type == TransactionType.Income)
-                .Sum(t => t.Amount);
+            // Monthly income
+            decimal totalIncome = income.Sum(t => t.Amount);
+            ViewBag.MonthlyIncome = totalIncome;
 
-            ViewBag.Savings = transactions
-                .Where(t => t.Type == TransactionType.Saving)
-                .Sum(t => t.Amount);
+            // Total expenses
+            decimal totalExpenses = expenses.Sum(t => t.Amount);
 
-            // Pass the filter dates back to the ViewBag so UI can keep the values
+            // Income vs Expenses donut chart
+            ViewBag.IncomeVsExpenseLabels = new[] { "Expenses", "Remaining Income" };
+            ViewBag.IncomeVsExpenseData = new[] { totalExpenses, Math.Max(0, totalIncome - totalExpenses) };
+
+            // Savings donut chart
+            ViewBag.Savings = savings.Sum(t => t.Amount);
+
+            // Preserve filters in ViewBag
             ViewBag.StartDate = startDate?.ToString("yyyy-MM-dd");
             ViewBag.EndDate = endDate?.ToString("yyyy-MM-dd");
 
             var viewModel = new DashboardViewModel
             {
-                Expenses = transactions.Where(t => t.Type == TransactionType.Expense).ToList(),
-                Income = transactions.Where(t => t.Type == TransactionType.Income).ToList(),
-                Savings = transactions.Where(t => t.Type == TransactionType.Saving).ToList(),
-                AllTransactions = transactions
+                Expenses = expenses ?? new List<Transaction>(),
+                Income = income ?? new List<Transaction>(),
+                Savings = savings ?? new List<Transaction>(),
+                AllTransactions = transactions ?? new List<Transaction>()
             };
 
             return View(viewModel);
         }
-
-
-
-
-
-
     }
 }

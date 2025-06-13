@@ -18,11 +18,18 @@
 
     <div style="display: flex; justify-content: space-around; gap: 2rem; flex-wrap: wrap;">
 
-        <!-- Expenses -->
-        <div style="flex: 1; min-width: 250px; max-width: 350px; text-align: center;">
+        <!-- Expenses Section -->
+        <div style="flex: 1; min-width: 250px; max-width: 350px;">
             <h5>Expenses by Category</h5>
-            <div id="chartContainer" style="height: 300px; opacity: 0; transform: translateY(20px); transition: all 0.8s ease;">
-                <canvas id="expenseChart"></canvas>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <!-- Buttons column -->
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <button class="btn btn-light" title="Add Expense" onclick="openAddTransaction('Expense')">💸</button>
+                </div>
+                <!-- Chart container -->
+                <div style="flex-grow: 1; height: 300px; position: relative;">
+                    <canvas id="expenseChart" style="max-height: 100%; max-width: 100%;"></canvas>
+                </div>
             </div>
 
             <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
@@ -56,48 +63,41 @@
             </table>
         </div>
 
-        <!-- Income -->
-        <div style="flex: 1; min-width: 250px; max-width: 350px; text-align: center;">
-            <h5>Monthly Income</h5>
-            <div id="incomeChartContainer" style="height: 300px; opacity: 0; transform: translateY(20px); transition: all 0.8s ease;">
-                <canvas id="incomeChart"></canvas>
-            </div>
-
-            <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
-                <button class="btn btn-sm btn-outline-primary" type="button" onclick="toggleFilter('incomeFilter')">Filter</button>
-            </div>
-            <div id="incomeFilter" style="display:none; margin-top:10px; text-align: left;">
-                <div class="d-flex gap-2 mb-2">
-                    <input type="date" id="incomeStartDate" class="form-control form-control-sm" />
-                    <input type="date" id="incomeEndDate" class="form-control form-control-sm" />
+        <!-- Income vs Expenses Section -->
+        <div style="flex: 1; min-width: 250px; max-width: 350px;">
+            <h5>Income vs Expenses</h5>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <!-- Buttons column -->
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <button class="btn btn-light" title="Add Income" onclick="openAddTransaction('Income')">💸</button>
                 </div>
-                <div>
-                    <button class="btn btn-sm btn-primary me-1" onclick="filterIncome()">Apply</button>
-                    <button class="btn btn-sm btn-secondary" onclick="resetIncomeFilter()">Reset</button>
+                <!-- Chart container -->
+                <div style="flex-grow: 1; height: 300px; position: relative;">
+                    <canvas id="incomeChart" style="max-height: 100%; max-width: 100%;"></canvas>
                 </div>
             </div>
 
-            <table class="table table-sm mt-3" id="incomeTable">
-                <thead>
-                    <tr><th>Date</th><th>Amount</th></tr>
-                </thead>
+            <table class="table table-sm mt-3">
                 <tbody>
-                    @foreach (var item in income)
-                    {
-                        <tr data-date="@item.Date.ToString("yyyy-MM-dd")">
-                            <td>@item.Date.ToShortDateString()</td>
-                            <td>@item.Amount.ToString("C")</td>
-                        </tr>
-                    }
+                    <tr><th>Total Income</th><td>@((ViewBag.MonthlyIncome as decimal?)?.ToString("C") ?? "$0")</td></tr>
+                    <tr><th>Total Expenses</th><td>@((ViewBag.IncomeVsExpenseData[0] as decimal?)?.ToString("C") ?? "$0")</td></tr>
+                    <tr><th>Remaining</th><td>@((ViewBag.IncomeVsExpenseData[1] as decimal?)?.ToString("C") ?? "$0")</td></tr>
                 </tbody>
             </table>
         </div>
 
-        <!-- Savings -->
-        <div style="flex: 1; min-width: 250px; max-width: 350px; text-align: center;">
+        <!-- Savings Section -->
+        <div style="flex: 1; min-width: 250px; max-width: 350px;">
             <h5>Savings</h5>
-            <div id="savingsChartContainer" style="height: 300px; opacity: 0; transform: translateY(20px); transition: all 0.8s ease;">
-                <canvas id="savingsChart"></canvas>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <!-- Buttons column -->
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <button class="btn btn-light" title="Add Savings" onclick="openAddTransaction('Saving')">💸</button>
+                </div>
+                <!-- Chart container -->
+                <div style="flex-grow: 1; height: 300px; position: relative;">
+                    <canvas id="savingsChart" style="max-height: 100%; max-width: 100%;"></canvas>
+                </div>
             </div>
 
             <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
@@ -129,9 +129,10 @@
                 </tbody>
             </table>
         </div>
+
     </div>
 
-    <!-- All Transactions unchanged here -->
+    <!-- All Transactions -->
     <h4 class="mt-5">All Transactions</h4>
     <table class="table mt-3">
         <thead>
@@ -171,6 +172,10 @@ else
     {
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
+            function openAddTransaction(type) {
+                window.location.href = '@Url.Action("Create", "Transactions")' + '?type=' + type;
+            }
+
             document.addEventListener("DOMContentLoaded", function () {
                 const fadeIn = (id) => {
                     const el = document.getElementById(id);
@@ -180,11 +185,11 @@ else
                     }
                 };
 
-                fadeIn("chartContainer");
-                fadeIn("incomeChartContainer");
-                fadeIn("savingsChartContainer");
+                fadeIn("expenseChart");
+                fadeIn("incomeChart");
+                fadeIn("savingsChart");
 
-                // Expenses Chart
+                // Expense Chart
                 const expenseCtx = document.getElementById('expenseChart').getContext('2d');
                 new Chart(expenseCtx, {
                     type: 'doughnut',
@@ -214,16 +219,15 @@ else
                     }
                 });
 
-                // Income Chart
-                const incomeAmount = @ViewBag.MonthlyIncome ?? 0;
+                // Income vs Expenses Chart
                 const incomeCtx = document.getElementById('incomeChart').getContext('2d');
                 new Chart(incomeCtx, {
                     type: 'doughnut',
                     data: {
-                        labels: ['Income'],
+                        labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.IncomeVsExpenseLabels)),
                         datasets: [{
-                            data: [incomeAmount],
-                            backgroundColor: ['#28a745'],
+                            data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.IncomeVsExpenseData)),
+                            backgroundColor: ['#e74c3c', '#2ecc71'],
                             hoverOffset: 10
                         }]
                     },
@@ -232,7 +236,18 @@ else
                         maintainAspectRatio: false,
                         cutout: '70%',
                         plugins: {
-                            legend: { display: false }
+                            legend: {
+                                position: 'bottom'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        const label = context.label || '';
+                                        const value = context.raw || 0;
+                                        return `${label}: $${value.toFixed(2)}`;
+                                    }
+                                }
+                            }
                         }
                     }
                 });
@@ -264,14 +279,8 @@ else
             // Toggle filter visibility
             function toggleFilter(filterId) {
                 const filterDiv = document.getElementById(filterId);
-                if (filterDiv.style.display === "none" || filterDiv.style.display === "") {
-                    filterDiv.style.display = "block";
-                } else {
-                    filterDiv.style.display = "none";
-                }
+                filterDiv.style.display = (filterDiv.style.display === "none" || filterDiv.style.display === "") ? "block" : "none";
             }
-
-            // Filter functions for each section
 
             function filterTableByDate(tableId, startDateId, endDateId) {
                 const startDateInput = document.getElementById(startDateId);
@@ -287,39 +296,25 @@ else
                         return;
                     }
                     const rowDate = new Date(rowDateStr);
-
-                    if ((startDate && rowDate < startDate) || (endDate && rowDate > endDate)) {
-                        row.style.display = "none";
-                    } else {
-                        row.style.display = "";
-                    }
+                    row.style.display = (!startDate || rowDate >= startDate) && (!endDate || rowDate <= endDate) ? "" : "none";
                 });
             }
 
-            function filterExpenses() {
-                filterTableByDate("expensesTable", "expenseStartDate", "expenseEndDate");
-            }
-
+            function filterExpenses() { filterTableByDate("expensesTable", "expenseStartDate", "expenseEndDate"); }
             function resetExpensesFilter() {
                 document.getElementById("expenseStartDate").value = "";
                 document.getElementById("expenseEndDate").value = "";
                 filterExpenses();
             }
 
-            function filterIncome() {
-                filterTableByDate("incomeTable", "incomeStartDate", "incomeEndDate");
-            }
-
+            function filterIncome() { filterTableByDate("incomeTable", "incomeStartDate", "incomeEndDate"); }
             function resetIncomeFilter() {
                 document.getElementById("incomeStartDate").value = "";
                 document.getElementById("incomeEndDate").value = "";
                 filterIncome();
             }
 
-            function filterSavings() {
-                filterTableByDate("savingsTable", "savingsStartDate", "savingsEndDate");
-            }
-
+            function filterSavings() { filterTableByDate("savingsTable", "savingsStartDate", "savingsEndDate"); }
             function resetSavingsFilter() {
                 document.getElementById("savingsStartDate").value = "";
                 document.getElementById("savingsEndDate").value = "";

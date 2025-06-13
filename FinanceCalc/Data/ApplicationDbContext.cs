@@ -11,5 +11,6 @@ namespace FinanceCalc.Data
         {
         }
         public DbSet<FinanceCalc.Models.Transaction> Transaction { get; set; } = default!;
+        public DbSet<SavingGoal> SavingGoals { get; set; }
     }
 }

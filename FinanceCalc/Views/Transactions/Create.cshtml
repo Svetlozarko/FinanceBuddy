@@ -2,6 +2,11 @@
 
 @{
     ViewData["Title"] = "Create";
+
+    var fixedType = Context.Request.Query["type"].ToString();
+    bool isFixedExpense = fixedType == "Expense";
+    bool isFixedIncome = fixedType == "Income";
+    bool isFixedSaving = fixedType == "Saving";
 }
 
 <h1>Create</h1>
@@ -27,11 +32,23 @@
 
             <div class="form-group">
                 <label asp-for="Type" class="control-label"></label>
-                <select asp-for="Type" class="form-control" asp-items="ViewBag.TransactionTypes" id="transactionType"></select>
+
+                @if (isFixedExpense || isFixedIncome || isFixedSaving)
+                {
+                    <!-- Hidden input to send the fixed type -->
+                    <input type="hidden" asp-for="Type" value="@fixedType" />
+                    <!-- Disabled input to show the fixed type -->
+                    <input class="form-control" value="@fixedType" disabled />
+                }
+                else
+                {
+                    <select asp-for="Type" class="form-control" asp-items="ViewBag.TransactionTypes" id="transactionType"></select>
+                }
+
                 <span asp-validation-for="Type" class="text-danger"></span>
             </div>
 
-            <div class="form-group" id="expenseCategoryGroup">
+            <div class="form-group" id="expenseCategoryGroup" style="@(isFixedExpense ? "display:block" : "display:none")">
                 <label asp-for="ExpenseCategory" class="control-label"></label>
                 <select asp-for="ExpenseCategory" class="form-control" asp-items="ViewBag.ExpenseCategories"></select>
                 <span asp-validation-for="ExpenseCategory" class="text-danger"></span>
@@ -58,6 +75,8 @@
             var typeSelect = document.getElementById("transactionType");
             var expenseCategoryGroup = document.getElementById("expenseCategoryGroup");
 
+            if (!typeSelect) return; // if dropdown missing (fixed type), do nothing
+
             if (typeSelect.value === "Expense") {
                 expenseCategoryGroup.style.display = "block";
             } else {
@@ -69,7 +88,11 @@
 
         document.addEventListener("DOMContentLoaded", function () {
             toggleExpenseCategory(); // Initial toggle on page load
-            document.getElementById("transactionType").addEventListener("change", toggleExpenseCategory);
+
+            var typeSelect = document.getElementById("transactionType");
+            if (typeSelect) {
+                typeSelect.addEventListener("change", toggleExpenseCategory);
+            }
         });
     </script>
 }
