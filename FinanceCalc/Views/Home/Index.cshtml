@@ -21,20 +21,15 @@
         <!-- Expenses Section -->
         <div style="flex: 1; min-width: 250px; max-width: 350px;">
             <h5>Expenses by Category</h5>
-            <div style="display: flex; align-items: center; gap: 1rem;">
-                <!-- Buttons column -->
-                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                    <button class="btn btn-light" title="Add Expense" onclick="openAddTransaction('Expense')">💸</button>
-                </div>
-                <!-- Chart container -->
-                <div style="flex-grow: 1; height: 300px; position: relative;">
-                    <canvas id="expenseChart" style="max-height: 100%; max-width: 100%;"></canvas>
-                </div>
+            <div style="flex-grow: 1; height: 300px; position: relative;">
+                <canvas id="expenseChart" style="max-height: 100%; max-width: 100%;"></canvas>
             </div>
 
-            <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+            <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
                 <button class="btn btn-sm btn-outline-primary" type="button" onclick="toggleFilter('expenseFilter')">Filter</button>
+                <button class="btn btn-sm btn-primary" type="button" onclick="openAddTransaction('Expense')">Add</button>
             </div>
+
             <div id="expenseFilter" style="display:none; margin-top:10px; text-align: left;">
                 <div class="d-flex gap-2 mb-2">
                     <input type="date" id="expenseStartDate" class="form-control form-control-sm" />
@@ -66,15 +61,17 @@
         <!-- Income vs Expenses Section -->
         <div style="flex: 1; min-width: 250px; max-width: 350px;">
             <h5>Income vs Expenses</h5>
-            <div style="display: flex; align-items: center; gap: 1rem;">
-                <!-- Buttons column -->
-                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                    <button class="btn btn-light" title="Add Income" onclick="openAddTransaction('Income')">💸</button>
-                </div>
-                <!-- Chart container -->
-                <div style="flex-grow: 1; height: 300px; position: relative;">
-                    <canvas id="incomeChart" style="max-height: 100%; max-width: 100%;"></canvas>
-                </div>
+            <div style="flex-grow: 1; height: 300px; position: relative;">
+                <canvas id="incomeChart" style="max-height: 100%; max-width: 100%;"></canvas>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
+                <button class="btn btn-sm btn-outline-primary" type="button" onclick="toggleFilter('incomeFilter')">Filter</button>
+                <button class="btn btn-sm btn-primary" type="button" onclick="openAddTransaction('Income')">Add</button>
+            </div>
+
+            <div id="incomeFilter" style="display:none; margin-top:10px; text-align: left;">
+                <!-- You can add income filters here if needed -->
             </div>
 
             <table class="table table-sm mt-3">
@@ -89,20 +86,15 @@
         <!-- Savings Section -->
         <div style="flex: 1; min-width: 250px; max-width: 350px;">
             <h5>Savings</h5>
-            <div style="display: flex; align-items: center; gap: 1rem;">
-                <!-- Buttons column -->
-                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                    <button class="btn btn-light" title="Add Savings" onclick="openAddTransaction('Saving')">💸</button>
-                </div>
-                <!-- Chart container -->
-                <div style="flex-grow: 1; height: 300px; position: relative;">
-                    <canvas id="savingsChart" style="max-height: 100%; max-width: 100%;"></canvas>
-                </div>
+            <div style="flex-grow: 1; height: 300px; position: relative;">
+                <canvas id="savingsChart" style="max-height: 100%; max-width: 100%;"></canvas>
             </div>
 
-            <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+            <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
                 <button class="btn btn-sm btn-outline-primary" type="button" onclick="toggleFilter('savingsFilter')">Filter</button>
+                <button class="btn btn-sm btn-primary" type="button" onclick="openAddTransaction('Saving')">Add</button>
             </div>
+
             <div id="savingsFilter" style="display:none; margin-top:10px; text-align: left;">
                 <div class="d-flex gap-2 mb-2">
                     <input type="date" id="savingsStartDate" class="form-control form-control-sm" />
@@ -285,39 +277,40 @@ else
             function filterTableByDate(tableId, startDateId, endDateId) {
                 const startDateInput = document.getElementById(startDateId);
                 const endDateInput = document.getElementById(endDateId);
-                const table = document.getElementById(tableId);
                 const startDate = startDateInput.value ? new Date(startDateInput.value) : null;
                 const endDate = endDateInput.value ? new Date(endDateInput.value) : null;
+                const table = document.getElementById(tableId);
+                if (!table) return;
 
-                Array.from(table.tBodies[0].rows).forEach(row => {
+                for (const row of table.tBodies[0].rows) {
                     const rowDateStr = row.getAttribute('data-date');
-                    if (!rowDateStr) {
-                        row.style.display = "";
-                        return;
-                    }
+                    if (!rowDateStr) continue;
+
                     const rowDate = new Date(rowDateStr);
-                    row.style.display = (!startDate || rowDate >= startDate) && (!endDate || rowDate <= endDate) ? "" : "none";
-                });
+                    let visible = true;
+
+                    if (startDate && rowDate < startDate) visible = false;
+                    if (endDate && rowDate > endDate) visible = false;
+
+                    row.style.display = visible ? '' : 'none';
+                }
             }
 
-            function filterExpenses() { filterTableByDate("expensesTable", "expenseStartDate", "expenseEndDate"); }
+            function filterExpenses() {
+                filterTableByDate('expensesTable', 'expenseStartDate', 'expenseEndDate');
+            }
             function resetExpensesFilter() {
-                document.getElementById("expenseStartDate").value = "";
-                document.getElementById("expenseEndDate").value = "";
+                document.getElementById('expenseStartDate').value = '';
+                document.getElementById('expenseEndDate').value = '';
                 filterExpenses();
             }
 
-            function filterIncome() { filterTableByDate("incomeTable", "incomeStartDate", "incomeEndDate"); }
-            function resetIncomeFilter() {
-                document.getElementById("incomeStartDate").value = "";
-                document.getElementById("incomeEndDate").value = "";
-                filterIncome();
+            function filterSavings() {
+                filterTableByDate('savingsTable', 'savingsStartDate', 'savingsEndDate');
             }
-
-            function filterSavings() { filterTableByDate("savingsTable", "savingsStartDate", "savingsEndDate"); }
             function resetSavingsFilter() {
-                document.getElementById("savingsStartDate").value = "";
-                document.getElementById("savingsEndDate").value = "";
+                document.getElementById('savingsStartDate').value = '';
+                document.getElementById('savingsEndDate').value = '';
                 filterSavings();
             }
         </script>
