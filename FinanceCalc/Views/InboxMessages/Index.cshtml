@@ -1,0 +1,59 @@
+﻿@model IEnumerable<FinanceCalc.Models.InboxMessage>
+
+@{
+    ViewData["Title"] = "Съобщения";
+}
+
+<h2 class="mb-4">Съобщения</h2>
+
+<div class="messages-container">
+    @foreach (var item in Model)
+    {
+        <div class="message-card">
+            @if (!string.IsNullOrEmpty(item.ImageUrl))
+            {
+                <img class="message-image" src="@item.ImageUrl" alt="Снимка" />
+            }
+            <div class="message-text">@Html.Raw(item.Message)</div>
+        </div>
+    }
+</div>
+
+<style>
+    .messages-container {
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .message-card {
+        display: flex;
+        align-items: center;
+        background-color: #f0f4f8;
+        border-radius: 12px;
+        padding: 30px 40px; /* по-голям padding */
+        margin-bottom: 25px;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15); /* по-силна сянка */
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #333;
+        max-width: 900px; /* увеличена максимална ширина */
+        width: 100%; /* заема цялото налично пространство */
+        box-sizing: border-box;
+    }
+
+
+    .message-image {
+        width: 120px; /* намален размер */
+        height: auto;
+        border-radius: 10px;
+        margin-right: 20px; /* разстояние между картинката и текста */
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        flex-shrink: 0; /* да не се свива */
+    }
+
+    .message-text {
+        font-size: 1.1em;
+        line-height: 1.4;
+        white-space: pre-line;
+        flex: 1; /* заема останалото пространство */
+    }
+</style>

@@ -1,4 +1,5 @@
-using FinanceCalc.Data;
+﻿using FinanceCalc.Data;
+using FinanceCalc.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -23,6 +24,8 @@ namespace FinanceCalc
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
+            builder.Services.AddScoped<InboxMessageService>(); // <-- добавено
 
             var app = builder.Build();
 

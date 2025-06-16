@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FinanceCalc.Data;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FinanceCalc.Models
@@ -6,16 +7,22 @@ namespace FinanceCalc.Models
     public class SavingGoal
     {
         public int Id { get; set; }
-
-        [Required]
         public string UserId { get; set; }
 
         [Required]
-        [Range(1, double.MaxValue)]
-        public decimal GoalAmount { get; set; }
+        public decimal TargetAmount { get; set; }
+
+        public decimal CurrentAmount { get; set; } // Optional, or use savings sum
 
         [Required]
-        [DataType(DataType.Date)]
+        public string Purpose { get; set; }
+
+        public bool IsCompleted { get; set; }
+
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        // Navigation
+        public ApplicationUser User { get; set; }
     }
+
 }

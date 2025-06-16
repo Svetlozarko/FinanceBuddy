@@ -7,17 +7,22 @@ using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using FinanceCalc.Services;
 
 namespace FinanceCalc.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly InboxMessageService _inboxService;
 
-        public HomeController(ApplicationDbContext context)
+        public HomeController(ApplicationDbContext context, InboxMessageService inboxService)
         {
             _context = context;
+            _inboxService = inboxService;
         }
+
+
 
         public async Task<IActionResult> Index(DateTime? startDate, DateTime? endDate)
         {
@@ -75,6 +80,9 @@ namespace FinanceCalc.Controllers
 
             // Savings donut chart
             ViewBag.Savings = savings.Sum(t => t.Amount);
+            var totalSaved = savings.Sum(t => t.Amount);
+            await _inboxService.AddCongratsMessageIfEligible(userId, totalSaved);
+
 
             // Preserve filters in ViewBag
             ViewBag.StartDate = startDate?.ToString("yyyy-MM-dd");

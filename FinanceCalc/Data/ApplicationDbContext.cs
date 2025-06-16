@@ -12,5 +12,6 @@ namespace FinanceCalc.Data
         }
         public DbSet<FinanceCalc.Models.Transaction> Transaction { get; set; } = default!;
         public DbSet<SavingGoal> SavingGoals { get; set; }
+        public DbSet<FinanceCalc.Models.InboxMessage> InboxMessage { get; set; } = default!;
     }
 }
