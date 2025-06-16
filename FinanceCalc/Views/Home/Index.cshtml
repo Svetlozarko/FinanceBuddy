@@ -15,9 +15,28 @@
     </p>
 
     <h3 class="mb-4">Overview</h3>
-    <a asp-controller="Transactions" asp-action="ExportToPdf" class="btn btn-primary">
-        Download PDF Report
-    </a>
+    <div class="mb-3 text-end dropdown">
+        <button class="btn btn-outline-dark dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-download"></i> Export
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="exportDropdown">
+            <li>
+                <a class="dropdown-item" asp-controller="Transactions" asp-action="ExportToPdf">
+                    <i class="fas fa-file-pdf text-danger"></i> Export to PDF
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" asp-controller="Transactions" asp-action="ExportToExcel">
+                    <i class="fas fa-file-excel text-success"></i> Export to Excel
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" asp-controller="Transactions" asp-action="ExportToCsv">
+                    <i class="fas fa-file-csv text-primary"></i> Export to CSV
+                </a>
+            </li>
+        </ul>
+    </div>
 
     <div style="display: flex; justify-content: space-around; gap: 2rem; flex-wrap: wrap;">
 

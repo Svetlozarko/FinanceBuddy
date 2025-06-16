@@ -8,10 +8,14 @@
     using Microsoft.EntityFrameworkCore;
     using FinanceCalc.Data;
     using FinanceCalc.Models;
-    using FinanceCalc.Enums;
-    using iTextSharp.text;
-    using iTextSharp.text.pdf;
+    using FinanceCalc.Enums;    
 using Microsoft.AspNetCore.Authorization;
+using System.Text;
+using NuGet.Packaging;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+
+
 
 
 
@@ -248,6 +252,7 @@ namespace FinanceCalc.Controllers
                 return _context.Transaction.Any(e => e.Id == id);
             }
 
+
         [Authorize]
         public IActionResult ExportToPdf()
         {
@@ -259,28 +264,28 @@ namespace FinanceCalc.Controllers
 
             using (var stream = new MemoryStream())
             {
-                // Setup PDF document
                 var doc = new Document(PageSize.A4, 50, 50, 50, 50);
-                PdfWriter.GetInstance(doc, stream).CloseStream = false;
+                var writer = PdfWriter.GetInstance(doc, stream);
+                writer.CloseStream = false;
                 doc.Open();
 
                 // Title
-                var titleFont = FontFactory.GetFont("Arial", 18, Font.BOLD);
+                var titleFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 18);
                 doc.Add(new Paragraph("Transaction History", titleFont));
                 doc.Add(new Paragraph("\n"));
 
-                // Table (exclude ID)
-                PdfPTable table = new PdfPTable(4); // 4 columns: Date, Amount, Type, Category
+                // Table
+                PdfPTable table = new PdfPTable(4);
                 table.WidthPercentage = 100;
                 table.SetWidths(new float[] { 2f, 2f, 2f, 2f });
 
-                // Add headers
+                // Headers
                 AddCell(table, "Date", true);
                 AddCell(table, "Amount", true);
                 AddCell(table, "Type", true);
                 AddCell(table, "Category", true);
 
-                // Add data rows
+                // Rows
                 foreach (var t in transactions)
                 {
                     AddCell(table, t.Date.ToString("yyyy-MM-dd"));
@@ -292,7 +297,6 @@ namespace FinanceCalc.Controllers
                 doc.Add(table);
                 doc.Close();
 
-                // Return PDF file
                 stream.Position = 0;
                 return File(stream.ToArray(), "application/pdf", "Transactions.pdf");
             }
@@ -300,7 +304,10 @@ namespace FinanceCalc.Controllers
 
         private void AddCell(PdfPTable table, string text, bool isHeader = false)
         {
-            var font = FontFactory.GetFont("Arial", 12, isHeader ? Font.BOLD : Font.NORMAL);
+            var font = isHeader
+                ? FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12)
+                : FontFactory.GetFont(FontFactory.HELVETICA, 12);
+
             var cell = new PdfPCell(new Phrase(text, font))
             {
                 HorizontalAlignment = Element.ALIGN_LEFT,
@@ -309,6 +316,71 @@ namespace FinanceCalc.Controllers
             };
             table.AddCell(cell);
         }
+
+
+
+
+        public IActionResult ExportToExcel()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var transactions = _context.Transaction
+            .Where(t => t.UserId == userId)
+            .OrderByDescending(t => t.Date)
+            .ToList();
+
+        // ✅ Set license context here
+        OfficeOpenXml.ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+
+        using var package = new OfficeOpenXml.ExcelPackage();
+        var worksheet = package.Workbook.Worksheets.Add("Transactions");
+
+        worksheet.Cells["A1"].Value = "Дата";
+        worksheet.Cells["B1"].Value = "Сума";
+        worksheet.Cells["C1"].Value = "Тип";
+        worksheet.Cells["D1"].Value = "Категория";
+
+        int row = 2;
+        foreach (var t in transactions)
+        {
+            worksheet.Cells[row, 1].Value = t.Date.ToString("dd.MM.yyyy");
+            worksheet.Cells[row, 2].Value = t.Amount;
+            worksheet.Cells[row, 3].Value = t.Type.ToString();
+            worksheet.Cells[row, 4].Value = t.ExpenseCategory ?? "-";
+            row++;
+        }
+
+        worksheet.Cells[1, 1, row - 1, 4].AutoFitColumns();
+
+        var stream = new MemoryStream();
+        package.SaveAs(stream);
+        stream.Position = 0;
+
+        return File(stream,
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "transactions.xlsx");
+    }
+
+
+
+    public IActionResult ExportToCsv()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var transactions = _context.Transaction
+                .Where(t => t.UserId == userId)
+                .ToList();
+
+            var builder = new StringBuilder();
+            builder.AppendLine("Date,Amount,Type,Category");
+
+            foreach (var t in transactions)
+            {
+                builder.AppendLine($"{t.Date:yyyy-MM-dd},{t.Amount},{t.Type},{t.ExpenseCategory ?? "N/A"}");
+            }
+
+            var bytes = Encoding.UTF8.GetBytes(builder.ToString());
+            return File(bytes, "text/csv", "transactions.csv");
+        }
+
 
     }
 }
