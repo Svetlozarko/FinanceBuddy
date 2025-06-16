@@ -1,24 +1,24 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
 
 .transaction-card {
@@ -89,4 +89,55 @@ body {
 .feature-card p {
     color: #6c757d;
     font-size: 0.95rem;
+}
+
+/* DARK MODE STYLES */
+body.dark-mode {
+    background-color: #121212 !important;
+    color: #e0e0e0 !important;
+}
+
+    body.dark-mode .navbar,
+    body.dark-mode .footer {
+        background-color: #1f1f1f !important;
+        border-color: #333 !important;
+        color: #e0e0e0 !important;
+    }
+
+        body.dark-mode .nav-link,
+        body.dark-mode .navbar-brand,
+        body.dark-mode .footer a {
+            color: #bbb !important;
+        }
+
+    body.dark-mode .transaction-card {
+        background-color: #222 !important;
+        box-shadow: 0 2px 6px rgba(255, 255, 255, 0.1) !important;
+        color: #eee !important;
+    }
+
+    body.dark-mode .feature-card {
+        background-color: #2a2a2a !important;
+        box-shadow: 0 8px 16px rgba(255, 255, 255, 0.05) !important;
+        color: #ddd !important;
+    }
+
+    /* Adjust button focus outlines for dark mode */
+    body.dark-mode .btn:focus,
+    body.dark-mode .btn:active:focus,
+    body.dark-mode .btn-link.nav-link:focus,
+    body.dark-mode .form-control:focus,
+    body.dark-mode .form-check-input:focus {
+        box-shadow: 0 0 0 0.1rem #bbb, 0 0 0 0.25rem #258cfb;
+    }
+
+    body.dark-mode h5,
+    body.dark-mode p {
+        color: white !important;
+    }
+
+.dark-mode table,
+.dark-mode table th,
+.dark-mode table td {
+    color: white !important;
 }
