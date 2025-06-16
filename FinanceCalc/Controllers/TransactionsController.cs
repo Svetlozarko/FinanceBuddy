@@ -9,8 +9,14 @@
     using FinanceCalc.Data;
     using FinanceCalc.Models;
     using FinanceCalc.Enums;
+    using iTextSharp.text;
+    using iTextSharp.text.pdf;
+using Microsoft.AspNetCore.Authorization;
 
-    namespace FinanceCalc.Controllers
+
+
+
+namespace FinanceCalc.Controllers
     {
         public class TransactionsController : Controller
         {
@@ -241,5 +247,68 @@
                 // Check transaction existence without user filter (optional)
                 return _context.Transaction.Any(e => e.Id == id);
             }
+
+        [Authorize]
+        public IActionResult ExportToPdf()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var transactions = _context.Transaction
+                .Where(t => t.UserId == userId)
+                .OrderByDescending(t => t.Date)
+                .ToList();
+
+            using (var stream = new MemoryStream())
+            {
+                // Setup PDF document
+                var doc = new Document(PageSize.A4, 50, 50, 50, 50);
+                PdfWriter.GetInstance(doc, stream).CloseStream = false;
+                doc.Open();
+
+                // Title
+                var titleFont = FontFactory.GetFont("Arial", 18, Font.BOLD);
+                doc.Add(new Paragraph("Transaction History", titleFont));
+                doc.Add(new Paragraph("\n"));
+
+                // Table (exclude ID)
+                PdfPTable table = new PdfPTable(4); // 4 columns: Date, Amount, Type, Category
+                table.WidthPercentage = 100;
+                table.SetWidths(new float[] { 2f, 2f, 2f, 2f });
+
+                // Add headers
+                AddCell(table, "Date", true);
+                AddCell(table, "Amount", true);
+                AddCell(table, "Type", true);
+                AddCell(table, "Category", true);
+
+                // Add data rows
+                foreach (var t in transactions)
+                {
+                    AddCell(table, t.Date.ToString("yyyy-MM-dd"));
+                    AddCell(table, t.Amount.ToString("C"));
+                    AddCell(table, t.Type.ToString());
+                    AddCell(table, t.ExpenseCategory ?? "N/A");
+                }
+
+                doc.Add(table);
+                doc.Close();
+
+                // Return PDF file
+                stream.Position = 0;
+                return File(stream.ToArray(), "application/pdf", "Transactions.pdf");
+            }
         }
+
+        private void AddCell(PdfPTable table, string text, bool isHeader = false)
+        {
+            var font = FontFactory.GetFont("Arial", 12, isHeader ? Font.BOLD : Font.NORMAL);
+            var cell = new PdfPCell(new Phrase(text, font))
+            {
+                HorizontalAlignment = Element.ALIGN_LEFT,
+                Padding = 5,
+                BackgroundColor = isHeader ? new BaseColor(220, 220, 220) : BaseColor.WHITE
+            };
+            table.AddCell(cell);
+        }
+
     }
+}

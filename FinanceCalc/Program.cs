@@ -58,3 +58,8 @@ namespace FinanceCalc
         }
     }
 }
+
+
+
+//https://www.creditkarma.com/lp/mint-to-credit-karma-net-worth-signup
+//https://fastbudget.app/

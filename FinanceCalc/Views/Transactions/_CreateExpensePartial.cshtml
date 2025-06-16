@@ -1,0 +1,29 @@
+﻿@model FinanceCalc.Models.Transaction
+
+<form asp-controller="Transactions" asp-action="CreateFromModal" method="post" id="create-expense-form">
+    <div class="form-group mb-2">
+        <label asp-for="Amount"></label>
+        <input asp-for="Amount" class="form-control" />
+        <span asp-validation-for="Amount" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-2">
+        <label asp-for="ExpenseCategory"></label>
+        <select asp-for="ExpenseCategory" class="form-control" asp-items="ViewBag.ExpenseCategories"></select>
+        <span asp-validation-for="ExpenseCategory" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-2">
+        <label asp-for="Type"></label>
+        <select asp-for="Type" class="form-control" asp-items="Html.GetEnumSelectList<FinanceCalc.Enums.TransactionType>()"></select>
+        <span asp-validation-for="Type" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Date"></label>
+        <input asp-for="Date" type="date" class="form-control" />
+        <span asp-validation-for="Date" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Save</button>
+</form>
