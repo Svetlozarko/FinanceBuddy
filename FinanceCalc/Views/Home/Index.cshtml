@@ -10,10 +10,6 @@
 
 @if (User.Identity.IsAuthenticated)
 {
-    <p>
-        <a asp-controller="Transactions" asp-action="Create">Create New</a>
-    </p>
-
     <h3 class="mb-4">Overview</h3>
     <div class="mb-3 text-end dropdown">
     <button class="btn btn-outline-dark dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -172,33 +168,86 @@
 }
 else
 {
-    <div class="feature-section">
-        <div class="feature-card">
-            <div class="feature-icon icon-green">
-                <i class="bi bi-compass-fill"></i>
+    <!-- Feature Section for unauthenticated users -->
+    <section class="feature-section d-flex flex-wrap gap-4 justify-content-center text-center mb-5">
+        <div class="feature-card p-4 shadow rounded-4 bg-white" style="max-width: 300px;">
+            <div class="feature-icon icon-green mb-3">
+                <i class="bi bi-compass-fill fs-1 text-success"></i>
             </div>
-            <h5>Have perfect control</h5>
-            <p>over all your cash expenses, bank accounts, E-Wallets and crypto wallets.</p>
+            <h5 class="fw-semibold">Have perfect control</h5>
+            <p class="text-muted">Over all your cash expenses, bank accounts, E-Wallets, and crypto wallets.</p>
         </div>
 
-        <div class="feature-card">
-            <div class="feature-icon icon-pink">
-                <i class="bi bi-pie-chart-fill"></i>
+        <div class="feature-card p-4 shadow rounded-4 bg-white" style="max-width: 300px;">
+            <div class="feature-icon icon-pink mb-3">
+                <i class="bi bi-pie-chart-fill fs-1 text-danger"></i>
             </div>
-            <h5>Get a quick overview</h5>
-            <p>about your total incomes and expenses at a glance and in one place.</p>
+            <h5 class="fw-semibold">Get a quick overview</h5>
+            <p class="text-muted">About your total incomes and expenses at a glance and in one place.</p>
         </div>
 
-        <div class="feature-card">
-            <div class="feature-icon icon-blue">
-                <i class="bi bi-cash-stack"></i>
+        <div class="feature-card p-4 shadow rounded-4 bg-white" style="max-width: 300px;">
+            <div class="feature-icon icon-blue mb-3">
+                <i class="bi bi-cash-stack fs-1 text-primary"></i>
             </div>
-            <h5>Use our smart budgets</h5>
-            <p>to save money for a new car, dreamy vacation or top university.</p>
+            <h5 class="fw-semibold">Use our smart budgets</h5>
+            <p class="text-muted">To save money for a new car, dreamy vacation, or top university.</p>
         </div>
-    </div>
+    </section>
 
+    <!-- Articles Section -->
+    <section class="articles-section text-center">
+        <h3 class="mb-4">Explore Our Latest Articles</h3>
+        <div class="d-flex flex-wrap justify-content-center gap-4">
+
+            <a href="/articles/saving-guide" class="text-decoration-none" style="max-width: 280px; flex: 1;">
+                <div class="card h-100 overflow-hidden"
+                     style="border: 2px solid #cbd5e1; border-radius: 1.5rem; transition: transform 0.2s ease-in-out; padding-top: 1.25rem; padding-bottom: 1.25rem;">
+                    <img src="/images/saving-home.png" alt="Saving Guide Preview"
+                         class="w-100"
+                         style="height: 200px; object-fit: cover; border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem;" />
+                    <div class="card-body px-4 pt-4 pb-4">
+                        <h5 class="fw-semibold mb-3" style="color: #111827;">5 Easy Ways to Start Saving Today</h5>
+                        <p class="small mb-3" style="color: #111827;">Simple strategies to help you save money fast — even on a tight budget.</p>
+                        <span class="btn btn-sm btn-outline-primary rounded-pill px-3">Read More</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="/articles/emergency-fund" class="text-decoration-none" style="max-width: 280px; flex: 1;">
+                <div class="card h-100 overflow-hidden"
+                     style="border: 2px solid #cbd5e1; border-radius: 1.5rem; transition: transform 0.2s ease-in-out; padding-top: 1.25rem; padding-bottom: 1.25rem;">
+                    <img src="/images/emergency-fund-home.png" alt="Emergency Fund Preview"
+                         class="w-100"
+                         style="height: 180px; object-fit: cover; border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem;" />
+                    <div class="card-body px-4 pt-4 pb-4">
+                        <h5 class="fw-semibold mb-3" style="color: #111827;">How to Build an Emergency Fund That Works</h5>
+                        <p class="small mb-3" style="color: #111827;">Learn how to protect yourself from financial surprises with a strong emergency fund.</p>
+                        <span class="btn btn-sm btn-outline-primary rounded-pill px-3">Read More</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="/articles/saving-guide" class="text-decoration-none" style="max-width: 280px; flex: 1;">
+                <div class="card h-100 overflow-hidden"
+                     style="border: 2px solid #cbd5e1; border-radius: 1.5rem; transition: transform 0.2s ease-in-out; padding-top: 1.25rem; padding-bottom: 1.25rem;">
+                    <img src="/images/saving-guide-home.png" alt="Saving Guide Preview"
+                         class="w-100"
+                         style="height: 180px; object-fit: cover; border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem;" />
+                    <div class="card-body px-4 pt-4 pb-4">
+                        <h5 class="fw-semibold mb-3" style="color: #111827;">Master Your Money</h5>
+                        <p class="small mb-3" style="color: #111827;">A beginner’s guide to budgeting, saving, and taking control of your finances.</p>
+                        <span class="btn btn-sm btn-outline-primary rounded-pill px-3">Read More</span>
+                    </div>
+                </div>
+            </a>
+
+           
+        </div>
+    </section>
 }
+
+
 
 @section Scripts {
     @if (User.Identity.IsAuthenticated)
