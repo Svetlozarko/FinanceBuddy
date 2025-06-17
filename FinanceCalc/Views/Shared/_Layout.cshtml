@@ -7,6 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - FinanceCalc</title>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/FinanceCalc.styles.css" asp-append-version="true" />
@@ -45,7 +46,6 @@
     </style>
 </head>
 <body>
-
     @{
         int unreadCount = 0;
         if (User.Identity.IsAuthenticated)
@@ -56,26 +56,28 @@
         ViewBag.UnreadMessagesCount = unreadCount;
     }
 
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <header class="sticky-top bg-white shadow-sm">
+        <nav class="navbar navbar-expand-sm navbar-light border-bottom">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">FinanceCalc</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">FinanceCalc</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                        aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between align-items-center">
-                    <ul class="navbar-nav flex-grow-1">
+
+                <div class="collapse navbar-collapse justify-content-between align-items-center" id="navbarCollapse">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active fw-semibold" : "")"
+                               asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Privacy" ? "active fw-semibold" : "")"
+                               asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
 
-                    <div class="d-flex align-items-center">
-                     
+                    <div class="d-flex align-items-center gap-2">
                         <partial name="_LoginPartial" />
                     </div>
                 </div>
@@ -83,17 +85,12 @@
         </nav>
     </header>
 
-    <div class="container">
+    <div class="container py-4">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - FinanceCalc - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -104,22 +101,18 @@
             const toggleBtn = document.getElementById('darkModeToggle');
             const body = document.body;
 
-            // Load saved preference from localStorage
             if (localStorage.getItem('darkMode') === 'enabled') {
                 body.classList.add('dark-mode');
                 toggleBtn.innerHTML = '<i class="bi bi-sun-fill"></i> Light Mode';
             }
 
-            toggleBtn.addEventListener('click', () => {
+            toggleBtn?.addEventListener('click', () => {
                 body.classList.toggle('dark-mode');
-
-                if (body.classList.contains('dark-mode')) {
-                    localStorage.setItem('darkMode', 'enabled');
-                    toggleBtn.innerHTML = '<i class="bi bi-sun-fill"></i> Light Mode';
-                } else {
-                    localStorage.setItem('darkMode', 'disabled');
-                    toggleBtn.innerHTML = '<i class="bi bi-moon-fill"></i> Dark Mode';
-                }
+                const isDark = body.classList.contains('dark-mode');
+                localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+                toggleBtn.innerHTML = isDark
+                    ? '<i class="bi bi-sun-fill"></i> Light Mode'
+                    : '<i class="bi bi-moon-fill"></i> Dark Mode';
             });
         });
     </script>

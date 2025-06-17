@@ -37,18 +37,19 @@
     <div style="display: flex; justify-content: space-around; gap: 2rem; flex-wrap: wrap;">
 
         <!-- Expenses Section -->
-        <div style="flex: 1; min-width: 250px; max-width: 350px;">
-            <h5>Expenses by Category</h5>
-            <div style="flex-grow: 1; height: 300px; position: relative;">
-                <canvas id="expenseChart" style="max-height: 100%; max-width: 100%;"></canvas>
+        <div class="card shadow rounded-4 p-3 mb-4" style="min-width: 280px; flex: 1; max-width: 360px;">
+            <h5 class="text-center fw-semibold mb-3">Expenses by Category</h5>
+
+            <div style="height: 240px; position: relative;">
+                <canvas id="expenseChart" class="w-100 h-100"></canvas>
             </div>
 
-            <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
-                <button class="btn btn-sm btn-outline-primary" type="button" onclick="toggleFilter('expenseFilter')">Filter</button>
-                <button class="btn btn-sm btn-primary" type="button" onclick="openAddTransaction('Expense')">Add</button>
+            <div class="d-flex justify-content-end gap-2 mt-3">
+                <button class="btn btn-sm btn-outline-primary" onclick="toggleFilter('expenseFilter')">Filter</button>
+                <button class="btn btn-sm btn-primary" onclick="openAddTransaction('Expense')">Add</button>
             </div>
 
-            <div id="expenseFilter" style="display:none; margin-top:10px; text-align: left;">
+            <div id="expenseFilter" class="mt-2" style="display:none;">
                 <div class="d-flex gap-2 mb-2">
                     <input type="date" id="expenseStartDate" class="form-control form-control-sm" />
                     <input type="date" id="expenseEndDate" class="form-control form-control-sm" />
@@ -59,12 +60,12 @@
                 </div>
             </div>
 
-            <table class="table table-sm mt-3" id="expensesTable">
-                <thead>
+            <table class="table table-sm table-hover mt-3" id="expensesTable">
+                <thead class="table-light">
                     <tr><th>Date</th><th>Amount</th><th>Category</th></tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in expenses)
+                    @foreach (var item in Model.Expenses)
                     {
                         <tr data-date="@item.Date.ToString("yyyy-MM-dd")">
                             <td>@item.Date.ToShortDateString()</td>
@@ -76,23 +77,25 @@
             </table>
         </div>
 
+
         <!-- Income vs Expenses Section -->
-        <div style="flex: 1; min-width: 250px; max-width: 350px;">
-            <h5>Income vs Expenses</h5>
-            <div style="flex-grow: 1; height: 300px; position: relative;">
-                <canvas id="incomeChart" style="max-height: 100%; max-width: 100%;"></canvas>
+        <div class="card shadow rounded-4 p-3 mb-4" style="min-width: 280px; flex: 1; max-width: 360px;">
+            <h5 class="text-center fw-semibold mb-3">Income vs Expenses</h5>
+
+            <div style="height: 240px; position: relative;">
+                <canvas id="incomeChart" class="w-100 h-100"></canvas>
             </div>
 
-            <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
+            <div class="d-flex justify-content-end gap-2 mt-3">
                 <button class="btn btn-sm btn-outline-primary" type="button" onclick="toggleFilter('incomeFilter')">Filter</button>
                 <button class="btn btn-sm btn-primary" type="button" onclick="openAddTransaction('Income')">Add</button>
             </div>
 
-            <div id="incomeFilter" style="display:none; margin-top:10px; text-align: left;">
-                <!-- You can add income filters here if needed -->
+            <div id="incomeFilter" class="mt-2" style="display:none; text-align: left;">
+                <!-- Income filters go here if needed -->
             </div>
 
-            <table class="table table-sm mt-3">
+            <table class="table table-sm table-hover mt-3">
                 <tbody>
                     <tr><th>Total Income</th><td>@((ViewBag.MonthlyIncome as decimal?)?.ToString("C") ?? "$0")</td></tr>
                     <tr><th>Total Expenses</th><td>@((ViewBag.IncomeVsExpenseData[0] as decimal?)?.ToString("C") ?? "$0")</td></tr>
@@ -102,18 +105,19 @@
         </div>
 
         <!-- Savings Section -->
-        <div style="flex: 1; min-width: 250px; max-width: 350px;">
-            <h5>Savings</h5>
-            <div style="flex-grow: 1; height: 300px; position: relative;">
-                <canvas id="savingsChart" style="max-height: 100%; max-width: 100%;"></canvas>
+        <div class="card shadow rounded-4 p-3 mb-4" style="min-width: 280px; flex: 1; max-width: 360px;">
+            <h5 class="text-center fw-semibold mb-3">Savings</h5>
+
+            <div style="height: 240px; position: relative;">
+                <canvas id="savingsChart" class="w-100 h-100"></canvas>
             </div>
 
-            <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
+            <div class="d-flex justify-content-end gap-2 mt-3">
                 <button class="btn btn-sm btn-outline-primary" type="button" onclick="toggleFilter('savingsFilter')">Filter</button>
                 <button class="btn btn-sm btn-primary" type="button" onclick="openAddTransaction('Saving')">Add</button>
             </div>
 
-            <div id="savingsFilter" style="display:none; margin-top:10px; text-align: left;">
+            <div id="savingsFilter" class="mt-2" style="display:none; text-align: left;">
                 <div class="d-flex gap-2 mb-2">
                     <input type="date" id="savingsStartDate" class="form-control form-control-sm" />
                     <input type="date" id="savingsEndDate" class="form-control form-control-sm" />
@@ -124,8 +128,8 @@
                 </div>
             </div>
 
-            <table class="table table-sm mt-3" id="savingsTable">
-                <thead>
+            <table class="table table-sm table-hover mt-3" id="savingsTable">
+                <thead class="table-light">
                     <tr><th>Date</th><th>Amount</th></tr>
                 </thead>
                 <tbody>
@@ -168,84 +172,194 @@
 }
 else
 {
-    <!-- Feature Section for unauthenticated users -->
-    <section class="feature-section d-flex flex-wrap gap-4 justify-content-center text-center mb-5">
-        <div class="feature-card p-4 shadow rounded-4 bg-white" style="max-width: 300px;">
-            <div class="feature-icon icon-green mb-3">
-                <i class="bi bi-compass-fill fs-1 text-success"></i>
-            </div>
-            <h5 class="fw-semibold">Have perfect control</h5>
-            <p class="text-muted">Over all your cash expenses, bank accounts, E-Wallets, and crypto wallets.</p>
-        </div>
+    <section class="container py-5" style="background-color: #FFFFFF;">
 
-        <div class="feature-card p-4 shadow rounded-4 bg-white" style="max-width: 300px;">
-            <div class="feature-icon icon-pink mb-3">
-                <i class="bi bi-pie-chart-fill fs-1 text-danger"></i>
-            </div>
-            <h5 class="fw-semibold">Get a quick overview</h5>
-            <p class="text-muted">About your total incomes and expenses at a glance and in one place.</p>
-        </div>
+        <!-- Hero Section - White Background -->
+        <section id="hero" class="hero-section d-flex align-items-center py-5 mb-5" style="min-height: 400px; background-color: #FFFFFF;">
+            <div class="container d-flex flex-column flex-lg-row align-items-center gap-4">
+                <!-- Text Content -->
+                <div class="hero-text flex-lg-1 text-center text-lg-start" style="opacity: 0; transform: translateY(20px); transition: opacity 1s ease, transform 1s ease;">
+                    <h1 class="display-4 fw-bold mb-3" style="color: #212529;">
+                        Manage Your Money <br /> Effortlessly & Confidently
+                    </h1>
+                    <p class="lead" style="color: #6C757D; max-width: 480px; margin: 0 auto 1.5rem;">
+                        Track your income, expenses, and savings all in one secure place. Start building your financial future today!
+                    </p>
+                    <div class="mt-4 d-flex justify-content-center">
+                        <a href="/signup" class="btn btn-primary btn-lg px-5 py-3 shadow rounded-pill">
+                            Get Started Free
+                        </a>
+                    </div>
+                </div>
 
-        <div class="feature-card p-4 shadow rounded-4 bg-white" style="max-width: 300px;">
-            <div class="feature-icon icon-blue mb-3">
-                <i class="bi bi-cash-stack fs-1 text-primary"></i>
+                <!-- Illustration -->
+                <div class="hero-image flex-lg-1" style="opacity: 0; transform: translateY(20px); transition: opacity 1s ease 0.3s, transform 1s ease 0.3s;">
+                    <img src="/images/8432.jpg" alt="Finance illustration" style="max-width: 100%; height: auto; max-height: 350px;" />
+                </div>
             </div>
-            <h5 class="fw-semibold">Use our smart budgets</h5>
-            <p class="text-muted">To save money for a new car, dreamy vacation, or top university.</p>
-        </div>
+        </section>
+
+        <!-- Intro for Features + Feature Cards + CTA Button - Baby Purple Background -->
+        <section style="background-color: #F3E8FF; padding: 3rem 1rem; border-radius: 12px; margin-bottom: 3rem; text-align: center;">
+            <h2 class="fw-bold mb-2" style="color: #212529;">Take Control of Your Finances</h2>
+            <p class="fs-5 mx-auto" style="color: #3C1361; max-width: 600px; margin-bottom: 2rem;">
+                Join thousands who manage their money effortlessly — track expenses, budgets, and savings all in one place.
+            </p>
+
+            <!-- Feature Section inside same purple block -->
+            <div class="feature-section d-flex flex-wrap gap-4 justify-content-center text-center mb-4">
+                <div class="feature-card p-4 shadow rounded-4 bg-white" style="max-width: 320px; flex: 1 1 300px;">
+                    <div class="feature-icon icon-green mb-3">
+                        <i class="bi bi-compass-fill fs-1 text-white"></i>
+                    </div>
+                    <h5 class="fw-semibold" style="color: #212529;">Have Perfect Control</h5>
+                    <p style="color: #6C757D;">Over all your cash expenses, bank accounts, E-Wallets, and crypto wallets.</p>
+                </div>
+
+                <div class="feature-card p-4 shadow rounded-4 bg-white" style="max-width: 320px; flex: 1 1 300px;">
+                    <div class="feature-icon icon-pink mb-3">
+                        <i class="bi bi-pie-chart-fill fs-1 text-white"></i>
+                    </div>
+                    <h5 class="fw-semibold" style="color: #212529;">Get a Quick Overview</h5>
+                    <p style="color: #6C757D;">About your total incomes and expenses at a glance and in one place.</p>
+                </div>
+
+                <div class="feature-card p-4 shadow rounded-4 bg-white" style="max-width: 320px; flex: 1 1 300px;">
+                    <div class="feature-icon icon-blue mb-3">
+                        <i class="bi bi-cash-stack fs-1 text-white"></i>
+                    </div>
+                    <h5 class="fw-semibold" style="color: #212529;">Use Our Smart Budgets</h5>
+                    <p style="color: #6C757D;">To save money for a new car, dreamy vacation, or top university.</p>
+                </div>
+            </div>
+
+            <!-- Get Started Free Button inside purple block -->
+            <a href="/signup" class="btn btn-lg btn-primary px-5 shadow-lg" style="border-radius: 2rem;">
+                Get Started Free
+            </a>
+        </section>
+
+        <!-- Articles Section - Baby Purple Background -->
+        <section class="articles-section text-center" style="background-color: #F3E8FF; padding: 3rem 1rem; border-radius: 12px;">
+            <h3 class="mb-3 fw-semibold" style="color: #212529;">Explore Our Latest Articles</h3>
+            <p style="color: #6C757D; max-width: 600px; margin: 0 auto 1.5rem;">
+                Learn smart money habits and tips to make your finances work for you.
+            </p>
+
+            <div class="d-flex flex-wrap justify-content-center gap-4">
+
+                <a href="/articles/article1" class="text-decoration-none" style="max-width: 280px; flex: 1;">
+                    <div class="card h-100 overflow-hidden shadow-sm"
+                         style="border: 2px solid #cbd5e1; border-radius: 1.5rem; transition: transform 0.3s ease-in-out; padding: 1.25rem 0;">
+                        <img src="/images/saving-home.png" alt="Saving Guide Preview"
+                             class="w-100"
+                             style="height: 220px; object-fit: cover; border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem;" />
+                        <div class="card-body px-4 pt-4 pb-4">
+                            <h5 class="fw-semibold mb-3" style="color: #212529;">5 Easy Ways to Start Saving Today</h5>
+                            <p class="small mb-3" style="color: #212529;">Simple strategies to help you save money fast — even on a tight budget.</p>
+                            <span class="btn btn-sm btn-outline-primary rounded-pill px-3">Read More</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="/articles/article2" class="text-decoration-none" style="max-width: 280px; flex: 1;">
+                    <div class="card h-100 overflow-hidden shadow-sm"
+                         style="border: 2px solid #cbd5e1; border-radius: 1.5rem; transition: transform 0.3s ease-in-out; padding: 1.25rem 0;">
+                        <img src="/images/emergency-fund-home.png" alt="Emergency Fund Preview"
+                             class="w-100"
+                             style="height: 200px; object-fit: cover; border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem;" />
+                        <div class="card-body px-4 pt-4 pb-4">
+                            <h5 class="fw-semibold mb-3" style="color: #212529;">How to Build an Emergency Fund That Works</h5>
+                            <p class="small mb-3" style="color: #212529;">Learn how to protect yourself from financial surprises with a strong emergency fund.</p>
+                            <span class="btn btn-sm btn-outline-primary rounded-pill px-3">Read More</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="/articles/article3" class="text-decoration-none" style="max-width: 280px; flex: 1;">
+                    <div class="card h-100 overflow-hidden shadow-sm"
+                         style="border: 2px solid #cbd5e1; border-radius: 1.5rem; transition: transform 0.3s ease-in-out; padding: 1.25rem 0;">
+                        <img src="/images/saving-guide-home.png" alt="Saving Guide Preview"
+                             class="w-100"
+                             style="height: 180px; object-fit: cover; border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem;" />
+                        <div class="card-body px-4 pt-4 pb-4">
+                            <h5 class="fw-semibold mb-3" style="color: #212529;">Master Your Money</h5>
+                            <p class="small mb-3" style="color: #212529;">A beginner’s guide to budgeting, saving, and taking control of your finances.</p>
+                            <span class="btn btn-sm btn-outline-primary rounded-pill px-3">Read More</span>
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+        </section>
+
     </section>
-
-    <!-- Articles Section -->
-    <section class="articles-section text-center">
-        <h3 class="mb-4">Explore Our Latest Articles</h3>
+    <section style="background-color: #FFFFFF; padding: 3rem 1rem; border-radius: 12px; max-width: 900px; margin: 0 auto 3rem; text-align: center;">
+        <h2 class="fw-bold mb-4" style="color: #212529;">What Our Users Say</h2>
         <div class="d-flex flex-wrap justify-content-center gap-4">
-
-            <a href="/articles/saving-guide" class="text-decoration-none" style="max-width: 280px; flex: 1;">
-                <div class="card h-100 overflow-hidden"
-                     style="border: 2px solid #cbd5e1; border-radius: 1.5rem; transition: transform 0.2s ease-in-out; padding-top: 1.25rem; padding-bottom: 1.25rem;">
-                    <img src="/images/saving-home.png" alt="Saving Guide Preview"
-                         class="w-100"
-                         style="height: 200px; object-fit: cover; border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem;" />
-                    <div class="card-body px-4 pt-4 pb-4">
-                        <h5 class="fw-semibold mb-3" style="color: #111827;">5 Easy Ways to Start Saving Today</h5>
-                        <p class="small mb-3" style="color: #111827;">Simple strategies to help you save money fast — even on a tight budget.</p>
-                        <span class="btn btn-sm btn-outline-primary rounded-pill px-3">Read More</span>
-                    </div>
+            <div class="p-4 shadow rounded-4" style="max-width: 280px; flex: 1; border-radius:  1.5rem; background: #F9F9F9; border: 2px solid #6C63FF;">
+                <div class="mb-2" style="color: #FFC107;">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
                 </div>
-            </a>
-
-            <a href="/articles/emergency-fund" class="text-decoration-none" style="max-width: 280px; flex: 1;">
-                <div class="card h-100 overflow-hidden"
-                     style="border: 2px solid #cbd5e1; border-radius: 1.5rem; transition: transform 0.2s ease-in-out; padding-top: 1.25rem; padding-bottom: 1.25rem;">
-                    <img src="/images/emergency-fund-home.png" alt="Emergency Fund Preview"
-                         class="w-100"
-                         style="height: 180px; object-fit: cover; border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem;" />
-                    <div class="card-body px-4 pt-4 pb-4">
-                        <h5 class="fw-semibold mb-3" style="color: #111827;">How to Build an Emergency Fund That Works</h5>
-                        <p class="small mb-3" style="color: #111827;">Learn how to protect yourself from financial surprises with a strong emergency fund.</p>
-                        <span class="btn btn-sm btn-outline-primary rounded-pill px-3">Read More</span>
-                    </div>
+                <p style="color: #3C1361; font-style: italic;">"Managing my finances has never been easier. The budgeting tools helped me save for my dream vacation!"</p>
+                <strong style="color: #3C1361;">– Sarah M.</strong>
+            </div>
+            <div class="p-4 shadow rounded-4" style="max-width: 280px; flex: 1; border-radius:  1.5rem; background: #F9F9F9; border: 2px solid #6C63FF;">
+                <div class="mb-2" style="color: #FFC107;">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i>
                 </div>
-            </a>
-
-            <a href="/articles/saving-guide" class="text-decoration-none" style="max-width: 280px; flex: 1;">
-                <div class="card h-100 overflow-hidden"
-                     style="border: 2px solid #cbd5e1; border-radius: 1.5rem; transition: transform 0.2s ease-in-out; padding-top: 1.25rem; padding-bottom: 1.25rem;">
-                    <img src="/images/saving-guide-home.png" alt="Saving Guide Preview"
-                         class="w-100"
-                         style="height: 180px; object-fit: cover; border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem;" />
-                    <div class="card-body px-4 pt-4 pb-4">
-                        <h5 class="fw-semibold mb-3" style="color: #111827;">Master Your Money</h5>
-                        <p class="small mb-3" style="color: #111827;">A beginner’s guide to budgeting, saving, and taking control of your finances.</p>
-                        <span class="btn btn-sm btn-outline-primary rounded-pill px-3">Read More</span>
-                    </div>
+                <p style="color: #3C1361; font-style: italic;">"The all-in-one dashboard makes tracking crypto and bank accounts so simple."</p>
+                <strong style="color: #3C1361;">– James T.</strong>
+            </div>
+            <div class="p-4 shadow rounded-4" style="max-width: 280px; flex: 1; border-radius:  1.5rem; background: #F9F9F9; border: 2px solid #6C63FF;">
+                <div class="mb-2" style="color: #FFC107;">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
                 </div>
-            </a>
-
-           
+                <p style="color: #3C1361; font-style: italic;">"Smart budgets helped me save money for university fees with zero stress."</p>
+                <strong style="color: #3C1361;">– Priya K.</strong>
+            </div>
         </div>
     </section>
+
+    <style>
+        .card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0.75rem 1.5rem rgba(44, 123, 229, 0.25);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+    </style>
+
+    <script>
+        // Simple fade-in animation for hero text and image
+        window.addEventListener('DOMContentLoaded', () => {
+            const heroText = document.querySelector('.hero-text');
+            const heroImage = document.querySelector('.hero-image');
+
+            if (heroText && heroImage) {
+                heroText.style.opacity = '1';
+                heroText.style.transform = 'translateY(0)';
+                heroImage.style.opacity = '1';
+                heroImage.style.transform = 'translateY(0)';
+            }
+        });
+    </script>
 }
+
+
+
+
 
 
 
@@ -403,6 +517,8 @@ else
                 document.getElementById('savingsEndDate').value = '';
                 filterSavings();
             }
+
+
         </script>
     }
 }
