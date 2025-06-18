@@ -1,101 +1,347 @@
 ﻿@page
 @model RegisterModel
+
 @{
     ViewData["Title"] = "Register";
 }
 
-<h1>@ViewData["Title"]</h1>
+<div class="register-wrapper">
+    <div class="card shadow-lg p-5 rounded-4 register-card">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold">Create a new account</h2>
+            <p class="text-muted">Sign up to get started</p>
+        </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Create a new account.</h2>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" novalidate>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.FirstName" class="form-control" aria-required="true" placeholder="First Name" />
-                <label asp-for="Input.FirstName">First Name</label>
-                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+            <!-- Progress Indicator -->
+            <div class="progress-indicator mb-4" aria-label="Registration steps" role="list">
+                <span role="listitem" class="step active" aria-current="step">1</span>
+                <span role="listitem" class="step">2</span>
+                <span role="listitem" class="step">3</span>
+                <span role="listitem" class="step">4</span>
             </div>
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.LastName" class="form-control" aria-required="true" placeholder="Last Name" />
-                <label asp-for="Input.LastName">Last Name</label>
-                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+            <!-- Step groups -->
+            <div class="input-group active" data-step="1" aria-live="polite">
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.FirstName" class="form-control" aria-required="true" placeholder="First Name" />
+                    <label asp-for="Input.FirstName">First Name</label>
+                    <span asp-validation-for="Input.FirstName" class="text-danger small"></span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.LastName" class="form-control" aria-required="true" placeholder="Last Name" />
+                    <label asp-for="Input.LastName">Last Name</label>
+                    <span asp-validation-for="Input.LastName" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex justify-content-between mt-3">
+                    <button type="button" class="btn btn-primary next-btn">Next &raquo;</button>
+                </div>
             </div>
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.NickName" class="form-control" aria-required="true" placeholder="Nickname" />
-                <label asp-for="Input.NickName">Nickname</label>
-                <span asp-validation-for="Input.NickName" class="text-danger"></span>
+            <div class="input-group" data-step="2" aria-live="polite">
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.NickName" class="form-control" aria-required="true" placeholder="Nickname" />
+                    <label asp-for="Input.NickName">Nickname</label>
+                    <span asp-validation-for="Input.NickName" class="text-danger small"></span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Age" type="number" class="form-control" aria-required="true" placeholder="Age" />
+                    <label asp-for="Input.Age">Age</label>
+                    <span asp-validation-for="Input.Age" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex justify-content-between mt-3">
+                    <button type="button" class="btn btn-secondary prev-btn">&laquo; Previous</button>
+                    <button type="button" class="btn btn-primary next-btn">Next &raquo;</button>
+                </div>
             </div>
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Age" type="number" class="form-control" aria-required="true" placeholder="Age" />
-                <label asp-for="Input.Age">Age</label>
-                <span asp-validation-for="Input.Age" class="text-danger"></span>
+            <div class="input-group" data-step="3" aria-live="polite">
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Country" class="form-control" aria-required="true" placeholder="Country" />
+                    <label asp-for="Input.Country">Country</label>
+                    <span asp-validation-for="Input.Country" class="text-danger small"></span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                    <label asp-for="Input.Email">Email</label>
+                    <span asp-validation-for="Input.Email" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex justify-content-between mt-3">
+                    <button type="button" class="btn btn-secondary prev-btn">&laquo; Previous</button>
+                    <button type="button" class="btn btn-primary next-btn">Next &raquo;</button>
+                </div>
             </div>
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Country" class="form-control" aria-required="true" placeholder="Country" />
-                <label asp-for="Input.Country">Country</label>
-                <span asp-validation-for="Input.Country" class="text-danger"></span>
-            </div>
+            <div class="input-group" data-step="4" aria-live="polite">
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Password" />
+                    <label asp-for="Input.Password">Password</label>
+                    <span asp-validation-for="Input.Password" class="text-danger small"></span>
+                </div>
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.Email">Email</label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Confirm Password" />
+                    <label asp-for="Input.ConfirmPassword">Confirm Password</label>
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger small"></span>
+                </div>
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Password" />
-                <label asp-for="Input.Password">Password</label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
+                <div class="d-flex justify-content-between mt-3">
+                    <button type="button" class="btn btn-secondary prev-btn">&laquo; Previous</button>
+                    <button id="registerSubmit" type="submit" class="btn btn-success">Register</button>
+                </div>
             </div>
-
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Confirm Password" />
-                <label asp-for="Input.ConfirmPassword">Confirm Password</label>
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
         </form>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
-                        </p>
+
+        @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+        {
+            <div class="text-center mt-3">
+                <p class="text-muted mb-2">Or register with</p>
+                <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                    <div class="d-flex justify-content-center flex-wrap gap-2">
+                        @foreach (var provider in Model.ExternalLogins!)
+                        {
+                            <button type="submit" class="btn btn-outline-secondary" name="provider" value="@provider.Name">
+                                @provider.DisplayName
+                            </button>
+                        }
                     </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
-                        </div>
-                    </form>
-                }
-            }
-        </section>
+                </form>
+            </div>
+        }
+
+        <div class="text-center mt-4">
+            <span class="text-muted">Already have an account?</span><br />
+            <a asp-page="/Account/Login" asp-route-returnUrl="@Model.ReturnUrl" class="btn btn-outline-primary mt-2">Log in</a>
+        </div>
     </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('registerForm');
+            const groups = form.querySelectorAll('.input-group');
+            const steps = document.querySelectorAll('.progress-indicator .step');
+            let currentStep = 0;
+
+            function showStep(step) {
+                groups.forEach((group, i) => {
+                    if (i === step) {
+                        group.classList.add('active');
+                        group.style.opacity = 0;
+                        group.style.display = 'block';
+                        setTimeout(() => {
+                            group.style.opacity = 1;
+                            group.style.transition = 'opacity 0.4s ease-in-out';
+                        }, 10);
+                    } else {
+                        group.style.opacity = 0;
+                        group.style.transition = 'opacity 0.3s ease-in-out';
+                        setTimeout(() => {
+                            group.classList.remove('active');
+                            group.style.display = 'none';
+                        }, 300);
+                    }
+                });
+
+                steps.forEach((stepEl, i) => {
+                    if (i === step) {
+                        stepEl.classList.add('active');
+                        stepEl.setAttribute('aria-current', 'step');
+                    } else {
+                        stepEl.classList.remove('active');
+                        stepEl.removeAttribute('aria-current');
+                    }
+                });
+            }
+
+            showStep(currentStep);
+
+            form.querySelectorAll('.next-btn').forEach((btn, index) => {
+                btn.addEventListener('click', () => {
+                    const inputs = groups[index].querySelectorAll('input');
+                    let valid = true;
+
+                    inputs.forEach(input => {
+                        if (!input.checkValidity()) {
+                            input.reportValidity();
+                            valid = false;
+                        }
+                    });
+
+                    if (valid) {
+                        currentStep++;
+                        showStep(currentStep);
+                        // Focus first input of next step for better UX
+                        setTimeout(() => {
+                            const nextInputs = groups[currentStep].querySelectorAll('input');
+                            if (nextInputs.length > 0) {
+                                nextInputs[0].focus();
+                            }
+                        }, 400);
+                    }
+                });
+            });
+
+            form.querySelectorAll('.prev-btn').forEach((btn, index) => {
+                btn.addEventListener('click', () => {
+                    if (currentStep > 0) {
+                        currentStep--;
+                        showStep(currentStep);
+                        // Focus first input of previous step for better UX
+                        setTimeout(() => {
+                            const prevInputs = groups[currentStep].querySelectorAll('input');
+                            if (prevInputs.length > 0) {
+                                prevInputs[0].focus();
+                            }
+                        }, 400);
+                    }
+                });
+            });
+        });
+    </script>
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e0f7fa, #f1f8ff);
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .register-wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            max-width: 480px;
+            padding: 20px;
+        }
+
+        .register-card {
+            /* No animation on container, we animate inside */
+        }
+
+        /* Step groups */
+        .input-group {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .input-group.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Progress indicator */
+        .progress-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .progress-indicator .step {
+            width: 32px;
+            height: 32px;
+            background-color: #cfd8dc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #455a64;
+            user-select: none;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .progress-indicator .step.active {
+            background-color: #007bff;
+            color: white;
+        }
+
+        /* Button style */
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            font-weight: 600;
+            padding: 0.5rem 1.25rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus {
+            background-color: #0056b3;
+            border-color: #004085;
+            outline: none;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            font-weight: 600;
+            padding: 0.5rem 1.25rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-secondary:hover,
+        .btn-secondary:focus {
+            background-color: #5a6268;
+            border-color: #4e555b;
+            outline: none;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+            font-weight: 600;
+            padding: 0.5rem 1.25rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-success:hover,
+        .btn-success:focus {
+            background-color: #1e7e34;
+            border-color: #1c7430;
+            outline: none;
+        }
+
+        /* Input floating label fix for background */
+        .form-floating > label {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
+
+        /* Responsive tweaks */
+     
+        
+            .d-flex.justify-content-between {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .d-flex.justify-content-between button {
+                width: 100%;
+            }
+        }
+    </style>
 }
