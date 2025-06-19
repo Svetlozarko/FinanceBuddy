@@ -19,6 +19,25 @@ html {
     }
 }
 
+.btn-primary {
+    border-radius: 12px;
+    border-color: mediumpurple;
+    border-width: 3px;
+    background-color: mediumpurple;
+    color: white;
+}
+
+.btn-outline-primary {
+    border-radius: 12px;
+    border-color: mediumpurple;
+    color: mediumpurple;
+    border-width: 2px;
+}
+
+h5{
+   font-weight: bold;
+}
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
     box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
@@ -29,10 +48,31 @@ html {
 }
 
 body {
-    margin-bottom: 60px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f9fafb;
+    color: #212529;
 }
 
-.transaction-card {
+/* Table of charts: expenses, income, savings*/
+.card {
+    background-color: white;
+    border-radius: 13px;
+    border-width: 3px;
+    border-color: mediumpurple;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease;
+}
+
+    .card:hover {
+        transform: translateY(-2px);
+    }
+
+.table {
+    font-size: 0.875rem;
+}
+
+h3, h4, h5 {
+    font .transaction-card {
     border-radius: 12px;
     background-color: #fff;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);

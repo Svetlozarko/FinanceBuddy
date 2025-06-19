@@ -51,7 +51,7 @@ namespace FinanceCalc.Controllers
                 // Group only Expense type transactions
                 var expenseData = transactions
                     .Where(t => t.Type == TransactionType.Expense)
-                    .GroupBy(t => t.ExpenseCategory)
+                    .GroupBy(t => t.Category)
                     .Select(g => new
                     {
                         Category = g.Key,
@@ -134,8 +134,49 @@ namespace FinanceCalc.Controllers
                 return View(transaction);
             }
 
-            // GET: Transactions/Edit/5
-            public async Task<IActionResult> Edit(Guid? id)
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> AddExpense([FromBody] Transaction transaction)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+                return Unauthorized();
+
+            // Create a new Transaction entity and assign properties explicitly
+            var newTransaction = new Transaction
+            {
+                Id = Guid.NewGuid(),
+                UserId = userId,
+                Type = TransactionType.Expense,
+                Amount = transaction.Amount,
+                Category = transaction.Category,
+                Date = transaction.Date,
+                Description = transaction.Description  // if you have this property
+            };
+
+            _context.Transaction.Add(newTransaction);
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                success = true,
+                Id = newTransaction.Id,
+                Amount = newTransaction.Amount, // raw decimal number
+                Category = newTransaction.Category ?? "Uncategorized",
+                Date = newTransaction.Date.ToString("yyyy-MM-dd"),
+                Description = newTransaction.Description ?? ""
+            });
+        }
+
+
+
+        // GET: Transactions/Edit/5
+        public async Task<IActionResult> Edit(Guid? id)
             {
                 if (id == null)
                 {
@@ -291,7 +332,7 @@ namespace FinanceCalc.Controllers
                     AddCell(table, t.Date.ToString("yyyy-MM-dd"));
                     AddCell(table, t.Amount.ToString("C"));
                     AddCell(table, t.Type.ToString());
-                    AddCell(table, t.ExpenseCategory ?? "N/A");
+                    AddCell(table, t.Category ?? "N/A");
                 }
 
                 doc.Add(table);
@@ -345,7 +386,7 @@ namespace FinanceCalc.Controllers
             worksheet.Cells[row, 1].Value = t.Date.ToString("dd.MM.yyyy");
             worksheet.Cells[row, 2].Value = t.Amount;
             worksheet.Cells[row, 3].Value = t.Type.ToString();
-            worksheet.Cells[row, 4].Value = t.ExpenseCategory ?? "-";
+            worksheet.Cells[row, 4].Value = t.Category ?? "-";
             row++;
         }
 
@@ -374,7 +415,7 @@ namespace FinanceCalc.Controllers
 
             foreach (var t in transactions)
             {
-                builder.AppendLine($"{t.Date:yyyy-MM-dd},{t.Amount},{t.Type},{t.ExpenseCategory ?? "N/A"}");
+                builder.AppendLine($"{t.Date:yyyy-MM-dd},{t.Amount},{t.Type},{t.Category ?? "N/A"}");
             }
 
             var bytes = Encoding.UTF8.GetBytes(builder.ToString());

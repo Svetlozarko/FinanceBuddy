@@ -46,7 +46,7 @@
 
             <div class="d-flex justify-content-end gap-2 mt-3">
                 <button class="btn btn-sm btn-outline-primary" onclick="toggleFilter('expenseFilter')">Filter</button>
-                <button class="btn btn-sm btn-primary" onclick="openAddTransaction('Expense')">Add</button>
+                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addExpenseModal">Add</button>
             </div>
 
             <div id="expenseFilter" class="mt-2" style="display:none;">
@@ -60,23 +60,85 @@
                 </div>
             </div>
 
-            <table class="table table-sm table-hover mt-3" id="expensesTable">
-                <thead class="table-light">
-                    <tr><th>Date</th><th>Amount</th><th>Category</th></tr>
-                </thead>
+            <table class="table table-sm table-hover" id="expensesTable">
+                
                 <tbody>
                     @foreach (var item in Model.Expenses)
                     {
                         <tr data-date="@item.Date.ToString("yyyy-MM-dd")">
-                            <td>@item.Date.ToShortDateString()</td>
-                            <td>@item.Amount.ToString("C")</td>
-                            <td>@item.ExpenseCategory</td>
+                            <td><strong>@item.Amount.ToString("C")</strong></td>
+                             <td>@item.Category</td>
                         </tr>
                     }
                 </tbody>
             </table>
         </div>
-
+        <!-- Add Expense Modal -->
+        <div class="modal fade" id="addExpenseModal" tabindex="-1" aria-labelledby="addExpenseModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form id="addExpenseForm" onsubmit="submitExpense(event)">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addExpenseModalLabel">Add Expense</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="expenseAmount" class="form-label">Amount</label>
+                                <input type="number" step="0.01" class="form-control" id="expenseAmount" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="expenseCategory" class="form-label">Category</label>
+                                <select class="form-select" id="expenseCategory" required>
+                                    <option value="" disabled selected>Select category</option>
+                                    <!-- Add your expense categories here or dynamically -->
+                                    <option>Food</option>
+                                    <option>Transportation</option>
+                                    <option>Utilities</option>
+                                    <option>Entertainment</option>
+                                    <option>Health & Medical</option>
+                                    <option>Housing</option>
+                                    <option>Education</option>
+                                    <option>Personal Care</option>
+                                    <option>Clothing</option>
+                                    <option>Travel</option>
+                                    <option>Gifts & Donations</option>
+                                    <option>Insurance</option>
+                                    <option>Subscriptions</option>
+                                    <option>Phone & Internet</option>
+                                    <option>Home Maintenance</option>
+                                    <option>Childcare</option>
+                                    <option>Pet Care</option>
+                                    <option>Taxes</option>
+                                    <option>Bank Fees</option>
+                                    <option>Loan Payments</option>
+                                    <option>Fuel</option>
+                                    <option>Parking & Tolls</option>
+                                    <option>Office Supplies</option>
+                                    <option>Dining Out</option>
+                                    <option>Gym & Fitness</option>
+                                    <option>Beauty & Grooming</option>
+                                    <option>Hobbies</option>
+                                    <option>Miscellaneous</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="expenseDate" class="form-label">Date</label>
+                                <input type="date" class="form-control" id="expenseDate" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="expenseNote" class="form-label">Note (optional)</label>
+                                <textarea class="form-control" id="expenseNote" rows="2"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Add Expense</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
         <!-- Income vs Expenses Section -->
         <div class="card shadow rounded-4 p-3 mb-4" style="min-width: 280px; flex: 1; max-width: 360px;">
@@ -97,9 +159,24 @@
 
             <table class="table table-sm table-hover mt-3">
                 <tbody>
-                    <tr><th>Total Income</th><td>@((ViewBag.MonthlyIncome as decimal?)?.ToString("C") ?? "$0")</td></tr>
-                    <tr><th>Total Expenses</th><td>@((ViewBag.IncomeVsExpenseData[0] as decimal?)?.ToString("C") ?? "$0")</td></tr>
-                    <tr><th>Remaining</th><td>@((ViewBag.IncomeVsExpenseData[1] as decimal?)?.ToString("C") ?? "$0")</td></tr>
+                    <tr>
+                        <th>Total Income</th>
+                        <td class="text-success fw-bold">
+                            @((ViewBag.MonthlyIncome as decimal?)?.ToString("C") ?? "$0")
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Total Expenses</th>
+                        <td class="text-danger fw-bold">
+                            @((ViewBag.IncomeVsExpenseData[0] as decimal?)?.ToString("C") ?? "$0")
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Remaining</th>
+                        <td class="text-success  fw-bold">
+                            @((ViewBag.IncomeVsExpenseData[1] as decimal?)?.ToString("C") ?? "$0")
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -129,9 +206,7 @@
             </div>
 
             <table class="table table-sm table-hover mt-3" id="savingsTable">
-                <thead class="table-light">
-                    <tr><th>Date</th><th>Amount</th></tr>
-                </thead>
+              
                 <tbody>
                     @foreach (var item in savings)
                     {
@@ -158,7 +233,7 @@
                         <i class="bi bi-cash-stack fs-4 text-dark"></i>
                     </div>
                     <div>
-                        <strong>@(item.ExpenseCategory ?? item.Type.ToString())</strong><br />
+                        <strong>@(item.Category ?? item.Type.ToString())</strong><br />
                         <small class="text-muted">@item.Type</small>
                     </div>
                 </div>
@@ -368,11 +443,12 @@ else
     {
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
-            function openAddTransaction(type) {
-                window.location.href = '@Url.Action("Create", "Transactions")' + '?type=' + type;
-            }
 
+            let expenseChart;
+            // Run when DOM is fully loaded
             document.addEventListener("DOMContentLoaded", function () {
+
+                // Fade in charts by changing opacity and translateY
                 const fadeIn = (id) => {
                     const el = document.getElementById(id);
                     if (el) {
@@ -380,14 +456,16 @@ else
                         el.style.transform = 'translateY(0)';
                     }
                 };
-
                 fadeIn("expenseChart");
                 fadeIn("incomeChart");
                 fadeIn("savingsChart");
 
-                // Expense Chart
+                // ---------------------------
+                // Expense Chart Initialization
+                // ---------------------------
                 const expenseCtx = document.getElementById('expenseChart').getContext('2d');
-                new Chart(expenseCtx, {
+                expenseChart = new Chart(expenseCtx, {
+
                     type: 'doughnut',
                     data: {
                         labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.Labels)),
@@ -408,14 +486,131 @@ else
                             easing: 'easeOutBounce'
                         },
                         plugins: {
-                            legend: {
-                                position: 'bottom'
-                            }
+                            legend: { position: 'bottom' }
                         }
                     }
                 });
 
-                // Income vs Expenses Chart
+                // ---------------------------
+                // Handle Submit of Add Expense form via AJAX
+                // ---------------------------
+                async function submitExpense(event) {
+                    event.preventDefault();
+
+                    // Read form input values
+                    const amount = parseFloat(document.getElementById('expenseAmount').value);
+                    const category = document.getElementById('expenseCategory').value;
+                    const date = document.getElementById('expenseDate').value;
+                    const description = document.getElementById('expenseNote').value;
+
+                    // Basic validation
+                    if (!amount || !category || !date) {
+                        alert('Please fill all required fields.');
+                        return;
+                    }
+
+                    // Prepare data object matching the Transaction model (server expects PascalCase)
+                    const data = {
+                        Amount: amount,
+                        Category: category,
+                        Date: date,
+                        Description: description
+                    };
+
+                    try {
+                        // Send POST request to your controller action
+                        const response = await fetch('/Transactions/AddExpense', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(data)
+                        });
+
+                        if (!response.ok) {
+                            alert('Failed to save expense.');
+                            return;
+                        }
+
+                        const result = await response.json();
+                        console.log(result);
+
+
+                        if (result.success) {
+                            // Close the modal after successful save
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('addExpenseModal'));
+                            modal.hide();
+
+                            // Reset the form inputs
+                            document.getElementById('addExpenseForm').reset();
+
+                            // Add the new expense row dynamically to the table
+                            addExpenseRow(result);
+                            updateExpenseChart(result);
+
+                        } else {
+                            alert('Failed to save expense.');
+                        }
+                    } catch (error) {
+                        alert('Unexpected error: ' + error.message);
+                    }
+                }
+
+                function updateExpenseChart(expense) {
+                    const category = expense.Category;
+                    const amount = parseFloat(expense.Amount);
+                    const chartLabels = expenseChart.data.labels;
+                    const chartData = expenseChart.data.datasets[0].data;
+
+                    const existingIndex = chartLabels.indexOf(category);
+
+                    if (existingIndex !== -1) {
+                        chartData[existingIndex] += amount;
+                    } else {
+                        chartLabels.push(category);
+                        chartData.push(amount);
+                        expenseChart.data.datasets[0].backgroundColor.push(getRandomColor());
+                    }
+
+                    expenseChart.update();
+                }
+
+                function getRandomColor() {
+                    const hue = Math.floor(Math.random() * 360);
+                    return `hsl(${hue}, 70%, 70%)`;
+                }
+
+
+                // Attach submitExpense as the handler for form submission
+                const addExpenseForm = document.getElementById('addExpenseForm');
+                if (addExpenseForm) {
+                    addExpenseForm.addEventListener('submit', submitExpense);
+                }
+
+                // ---------------------------
+                // Dynamically add a new expense row to the expenses table
+                // ---------------------------
+                function addExpenseRow(expense) {
+                    const tbody = document.querySelector('#expensesTable tbody');
+                    if (!tbody) return;
+
+                    const tr = document.createElement('tr');
+                    tr.setAttribute('data-date', expense.Date);
+
+                    const tdAmount = document.createElement('td');
+                    tdAmount.innerHTML = `<strong>${expense.Amount}</strong>`;
+
+                    const tdCategory = document.createElement('td');
+                    tdCategory.textContent = expense.Category;
+
+                    tr.appendChild(tdAmount);
+                    tr.appendChild(tdCategory);
+
+                    tbody.appendChild(tr);
+                    
+                }
+
+                // ---------------------------
+                // Income vs Expenses Chart Initialization
+                // ---------------------------
                 const incomeCtx = document.getElementById('incomeChart').getContext('2d');
                 new Chart(incomeCtx, {
                     type: 'doughnut',
@@ -432,9 +627,7 @@ else
                         maintainAspectRatio: false,
                         cutout: '70%',
                         plugins: {
-                            legend: {
-                                position: 'bottom'
-                            },
+                            legend: { position: 'bottom' },
                             tooltip: {
                                 callbacks: {
                                     label: function (context) {
@@ -448,7 +641,9 @@ else
                     }
                 });
 
-                // Savings Chart
+                // ---------------------------
+                // Savings Chart Initialization
+                // ---------------------------
                 const savingsAmount = @ViewBag.Savings ?? 0;
                 const savingsCtx = document.getElementById('savingsChart').getContext('2d');
                 new Chart(savingsCtx, {
@@ -465,19 +660,22 @@ else
                         responsive: true,
                         maintainAspectRatio: false,
                         cutout: '70%',
-                        plugins: {
-                            legend: { display: false }
-                        }
+                        plugins: { legend: { display: false } }
                     }
                 });
             });
 
-            // Toggle filter visibility
+            // ---------------------------
+            // Toggle visibility of filters by ID
+            // ---------------------------
             function toggleFilter(filterId) {
                 const filterDiv = document.getElementById(filterId);
                 filterDiv.style.display = (filterDiv.style.display === "none" || filterDiv.style.display === "") ? "block" : "none";
             }
 
+            // ---------------------------
+            // Filter table rows by date range based on input IDs
+            // ---------------------------
             function filterTableByDate(tableId, startDateId, endDateId) {
                 const startDateInput = document.getElementById(startDateId);
                 const endDateInput = document.getElementById(endDateId);
@@ -500,6 +698,9 @@ else
                 }
             }
 
+            // ---------------------------
+            // Filter functions for expenses
+            // ---------------------------
             function filterExpenses() {
                 filterTableByDate('expensesTable', 'expenseStartDate', 'expenseEndDate');
             }
@@ -509,6 +710,9 @@ else
                 filterExpenses();
             }
 
+            // ---------------------------
+            // Filter functions for savings
+            // ---------------------------
             function filterSavings() {
                 filterTableByDate('savingsTable', 'savingsStartDate', 'savingsEndDate');
             }
@@ -517,8 +721,7 @@ else
                 document.getElementById('savingsEndDate').value = '';
                 filterSavings();
             }
-
-
         </script>
     }
 }
+

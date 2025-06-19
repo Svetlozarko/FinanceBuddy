@@ -56,7 +56,7 @@ namespace FinanceCalc.Controllers
 
             // Expense chart (by category)
             var expenseData = expenses
-                .GroupBy(t => t.ExpenseCategory)
+                .GroupBy(t => t.Category)
                 .Select(g => new
                 {
                     Category = g.Key,
