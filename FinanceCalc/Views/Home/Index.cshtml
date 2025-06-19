@@ -193,22 +193,10 @@
                             <div class="mb-3">
                                 <label for="incomeAmount" class="form-label">Amount</label>
                                 <input type="number" step="0.01" class="form-control" id="incomeAmount" required>
+                                <div id="incomeAmountError" class="text-danger mt-1" style="display:none;"></div>
+                                <div id="incomeAmountError" class="text-danger mt-1" style="display:none;"></div>
                             </div>
-                            <div class="mb-3">
-                                <label for="incomeCategory" class="form-label">Category</label>
-                                <select id="incomeCategory" class="form-select" required>
-                                    <option value="" disabled selected>Select category</option>
-                                    <option>Salary</option>
-                                    <option>Business</option>
-                                    <option>Investment</option>
-                                    <option>Gifts</option>
-                                    <option>Other</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="incomeNote" class="form-label">Note (optional)</label>
-                                <textarea class="form-control" id="incomeNote" rows="2"></textarea>
-                            </div>
+
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary">Add Income</button>
@@ -465,6 +453,81 @@ else
     {
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
+            async function submitIncome(event) {
+                event.preventDefault();
+
+                const amountInput = document.getElementById('incomeAmount');
+                const errorDiv = document.getElementById('incomeAmountError');  // <== Add this line
+
+                if (!amountInput) {
+                    alert('Amount input not found');
+                    return;
+                }
+                if (!errorDiv) {
+                    alert('Error display element not found');
+                    return;
+                }
+
+                const amountValue = amountInput.value.trim();
+
+                // Clear previous error
+                errorDiv.style.display = 'none';
+                errorDiv.textContent = '';
+
+                if (!amountValue) {
+                    errorDiv.textContent = 'Amount is required.';
+                    errorDiv.style.display = 'block';
+                    amountInput.focus();
+                    return;
+                }
+
+                const amount = parseFloat(amountValue);
+                if (isNaN(amount) || amount <= 0) {
+                    errorDiv.textContent = 'Please enter a valid positive amount.';
+                    errorDiv.style.display = 'block';
+                    amountInput.focus();
+                    return;
+                }
+
+                const data = { Amount: amount };
+
+                try {
+                    const response = await fetch('/Incomes/AddIncome', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data),
+                    });
+
+                    if (!response.ok) {
+                        let errorMsg = 'Unknown error';
+                        try {
+                            const errorData = await response.json();
+                            errorMsg = errorData.details || errorData.error || errorMsg;
+                        } catch {
+                            // fallback if JSON parsing fails
+                        }
+                        alert('Error saving income:\n\n' + errorMsg);
+                        return;
+                    }
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        const modalElement = document.getElementById('addIncomeModal');
+                        const modal = bootstrap.Modal.getInstance(modalElement);
+                        modal.hide();
+                        document.getElementById('addIncomeForm').reset();
+                        console.log('Income saved:', result);
+                    } else {
+                        alert('Failed to save income.');
+                    }
+                } catch (error) {
+                    alert('Unexpected error: ' + error.message);
+                }
+            }
+
+
+
 
             let expenseChart;
             // Run when DOM is fully loaded
@@ -639,56 +702,9 @@ else
 
 
 
-                async function submitIncome(event) {
-                    event.preventDefault();
+               
 
-                    const amount = parseFloat(document.getElementById('incomeAmount').value);
-                    const category = document.getElementById('incomeCategory').value;
-                    const description = document.getElementById('incomeNote').value;
 
-                    if (!amount || !category || !date) {
-                        alert('Please fill all required fields.');
-                        return;
-                    }
-
-                    const data = {
-                        Amount: amount,
-                        Category: category,
-                        Description: description
-                    };
-
-                    try {
-                        const response = await fetch('/Income/AddIncome', {  // make sure your route matches your controller name!
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(data)
-                        });
-
-                        if (!response.ok) {
-                            const error = await response.json();
-                            alert('Error saving income:\n\n' + (error.details || error.error || 'Unknown error'));
-                            return;
-                        }
-
-                        const result = await response.json();
-
-                        if (result.success) {
-                            // Close modal
-                            const modal = bootstrap.Modal.getInstance(document.getElementById('addIncomeModal'));
-                            modal.hide();
-
-                            // Reset form
-                            document.getElementById('addIncomeForm').reset();
-
-                            // Optionally update UI (table/chart) here, e.g. addIncomeRow(result), updateIncomeChart(result)
-                            console.log('Income saved:', result);
-                        } else {
-                            alert('Failed to save income.');
-                        }
-                    } catch (error) {
-                        alert('Unexpected error: ' + error.message);
-                    }
-                }
 
                 // Attach listener on DOMContentLoaded or similar
                 document.getElementById('addIncomeForm')?.addEventListener('submit', submitIncome);
@@ -806,6 +822,8 @@ else
                 document.getElementById('savingsEndDate').value = '';
                 filterSavings();
             }
+
+             
         </script>
     }
 }

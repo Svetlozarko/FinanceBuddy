@@ -7,17 +7,18 @@ using System.Threading.Tasks;
 
 namespace FinanceCalc.Controllers
 {
-    public class IncomeController : Controller
+    public class IncomesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public IncomeController(ApplicationDbContext context)
+        public IncomesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> AddIncome([FromBody] Income income)
         {
             if (!ModelState.IsValid)
@@ -27,8 +28,8 @@ namespace FinanceCalc.Controllers
             if (userId == null)
                 return Unauthorized();
 
-            // Assign UserId from the logged-in user
             income.UserId = userId;
+            income.Amount = income.Amount;
 
             _context.Add(income);
             await _context.SaveChangesAsync();
@@ -40,5 +41,6 @@ namespace FinanceCalc.Controllers
                 income.Amount,
             });
         }
+
     }
 }
