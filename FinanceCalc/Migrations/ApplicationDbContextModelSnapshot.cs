@@ -106,6 +106,35 @@ namespace FinanceCalc.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("FinanceCalc.Models.Expenses", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Category")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Expenses");
+                });
+
             modelBuilder.Entity("FinanceCalc.Models.InboxMessage", b =>
                 {
                     b.Property<int>("Id")
@@ -138,7 +167,7 @@ namespace FinanceCalc.Migrations
                     b.ToTable("InboxMessage");
                 });
 
-            modelBuilder.Entity("FinanceCalc.Models.SavingGoal", b =>
+            modelBuilder.Entity("FinanceCalc.Models.Income", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -146,20 +175,7 @@ namespace FinanceCalc.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("CurrentAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Purpose")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("TargetAmount")
+                    b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("UserId")
@@ -170,40 +186,32 @@ namespace FinanceCalc.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("SavingGoals");
+                    b.ToTable("Income");
                 });
 
-            modelBuilder.Entity("FinanceCalc.Models.Transaction", b =>
+            modelBuilder.Entity("FinanceCalc.Models.Savings", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<decimal>("Amount")
+                    b.Property<decimal>("CurrentAmount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Category")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("CategoryId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("Type")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
+                    b.Property<decimal>("TargetAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("UserId1")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.HasKey("UserId");
 
-                    b.ToTable("Transaction");
+                    b.HasIndex("UserId1");
+
+                    b.ToTable("Savings");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -343,6 +351,17 @@ namespace FinanceCalc.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("FinanceCalc.Models.Expenses", b =>
+                {
+                    b.HasOne("FinanceCalc.Data.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("FinanceCalc.Models.InboxMessage", b =>
                 {
                     b.HasOne("FinanceCalc.Data.ApplicationUser", "User")
@@ -354,11 +373,22 @@ namespace FinanceCalc.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("FinanceCalc.Models.SavingGoal", b =>
+            modelBuilder.Entity("FinanceCalc.Models.Income", b =>
                 {
                     b.HasOne("FinanceCalc.Data.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("FinanceCalc.Models.Savings", b =>
+                {
+                    b.HasOne("FinanceCalc.Data.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

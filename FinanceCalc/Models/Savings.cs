@@ -4,24 +4,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FinanceCalc.Models
 {
-    public class SavingGoal
+    public class Savings
     {
         public int Id { get; set; }
+
+        [Key]
         public string UserId { get; set; }
 
-        [Required]
         public decimal TargetAmount { get; set; }
 
-        public decimal CurrentAmount { get; set; } // Optional, or use savings sum
+        public decimal CurrentAmount { get; set; } 
 
-        [Required]
-        public string Purpose { get; set; }
-
-        public bool IsCompleted { get; set; }
-
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-
-        // Navigation
         public ApplicationUser User { get; set; }
     }
 

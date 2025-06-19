@@ -32,71 +32,64 @@ namespace FinanceCalc.Controllers
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var query = _context.Transaction.Where(t => t.UserId == userId);
 
+            // Base queries
+            var expensesQuery = _context.Expenses.Where(e => e.UserId == userId);
+            var incomeQuery = _context.Income.Where(i => i.UserId == userId);
+            var savingsQuery = _context.Savings.Where(s => s.UserId == userId);
+
+            // Optional filters
             if (startDate.HasValue)
-                query = query.Where(t => t.Date >= startDate.Value);
+            {
+                expensesQuery = expensesQuery.Where(e => e.Date >= startDate.Value);
+            }
 
             if (endDate.HasValue)
-                query = query.Where(t => t.Date < endDate.Value.AddDays(1)); // Inclusive of entire day
+            {
+                var inclusiveEnd = endDate.Value.AddDays(1);
+                expensesQuery = expensesQuery.Where(e => e.Date < inclusiveEnd);
+            }
 
-            var transactions = await query.ToListAsync();
+            // Execute queries
+            var expenses = await expensesQuery.ToListAsync();
+            var income = await incomeQuery.ToListAsync();
+            var savings = await savingsQuery.ToListAsync();
 
-            var expenses = transactions
-                .Where(t => t.Type == TransactionType.Expense)
-                .ToList();
-
-            var income = transactions
-                .Where(t => t.Type == TransactionType.Income)
-                .ToList();
-
-            var savings = transactions
-                .Where(t => t.Type == TransactionType.Saving)
-                .ToList();
-
-            // Expense chart (by category)
+            // Expense chart
             var expenseData = expenses
-                .GroupBy(t => t.Category)
+                .GroupBy(e => e.Category)
                 .Select(g => new
                 {
                     Category = g.Key,
-                    Total = g.Sum(t => t.Amount)
-                })
-                .ToList();
+                    Total = g.Sum(e => e.Amount)
+                }).ToList();
 
             ViewBag.Labels = expenseData.Select(e => e.Category).ToList();
             ViewBag.Data = expenseData.Select(e => e.Total).ToList();
 
-            // Monthly income
-            decimal totalIncome = income.Sum(t => t.Amount);
+            decimal totalIncome = income.Sum(i => i.Amount);
+            decimal totalExpenses = expenses.Sum(e => e.Amount);
+
             ViewBag.MonthlyIncome = totalIncome;
-
-            // Total expenses
-            decimal totalExpenses = expenses.Sum(t => t.Amount);
-
-            // Income vs Expenses donut chart
             ViewBag.IncomeVsExpenseLabels = new[] { "Expenses", "Remaining Income" };
             ViewBag.IncomeVsExpenseData = new[] { totalExpenses, Math.Max(0, totalIncome - totalExpenses) };
 
-            // Savings donut chart
-            ViewBag.Savings = savings.Sum(t => t.Amount);
-            var totalSaved = savings.Sum(t => t.Amount);
-            await _inboxService.AddCongratsMessageIfEligible(userId, totalSaved);
+            ViewBag.Savings = savings.Sum(s => s.CurrentAmount);
+            await _inboxService.AddCongratsMessageIfEligible(userId, ViewBag.Savings);
 
-
-            // Preserve filters in ViewBag
             ViewBag.StartDate = startDate?.ToString("yyyy-MM-dd");
             ViewBag.EndDate = endDate?.ToString("yyyy-MM-dd");
 
             var viewModel = new DashboardViewModel
             {
-                Expenses = expenses ?? new List<Transaction>(),
-                Income = income ?? new List<Transaction>(),
-                Savings = savings ?? new List<Transaction>(),
-                AllTransactions = transactions ?? new List<Transaction>()
+                Expenses = expenses,
+                Income = income,
+                Savings = savings,
+     //           AllTransactions = expenses.Concat<Expenses>(income).Concat(savings).ToList() // if needed
             };
 
             return View(viewModel);
         }
+
     }
 }

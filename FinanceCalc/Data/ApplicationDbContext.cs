@@ -10,8 +10,9 @@ namespace FinanceCalc.Data
             : base(options)
         {
         }
-        public DbSet<FinanceCalc.Models.Transaction> Transaction { get; set; } = default!;
-        public DbSet<SavingGoal> SavingGoals { get; set; }
-        public DbSet<FinanceCalc.Models.InboxMessage> InboxMessage { get; set; } = default!;
+        public DbSet<FinanceCalc.Models.Expenses> Expenses { get; set; } = default!;
+        public DbSet<FinanceCalc.Models.Savings> Savings { get; set; }
+        public DbSet<InboxMessage> InboxMessage { get; set; } = default!;
+        public DbSet<FinanceCalc.Models.Income> Income { get; set; } = default!;
     }
 }
