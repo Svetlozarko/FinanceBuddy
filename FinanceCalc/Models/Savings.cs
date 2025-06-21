@@ -8,14 +8,12 @@ namespace FinanceCalc.Models
     {
         public int Id { get; set; }
 
-        [Key]
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
 
         public decimal TargetAmount { get; set; }
 
         public decimal CurrentAmount { get; set; } 
 
-        public ApplicationUser User { get; set; }
     }
 
 }

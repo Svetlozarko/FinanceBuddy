@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinanceCalc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250619154053_Changes")]
-    partial class Changes
+    [Migration("20250620154441_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -129,11 +129,9 @@ namespace FinanceCalc.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Expenses");
                 });
@@ -182,37 +180,31 @@ namespace FinanceCalc.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Income");
                 });
 
             modelBuilder.Entity("FinanceCalc.Models.Savings", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("CurrentAmount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("TargetAmount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("UserId1")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserId");
-
-                    b.HasIndex("UserId1");
+                    b.HasKey("Id");
 
                     b.ToTable("Savings");
                 });
@@ -354,44 +346,11 @@ namespace FinanceCalc.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("FinanceCalc.Models.Expenses", b =>
-                {
-                    b.HasOne("FinanceCalc.Data.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("FinanceCalc.Models.InboxMessage", b =>
                 {
                     b.HasOne("FinanceCalc.Data.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("FinanceCalc.Models.Income", b =>
-                {
-                    b.HasOne("FinanceCalc.Data.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("FinanceCalc.Models.Savings", b =>
-                {
-                    b.HasOne("FinanceCalc.Data.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

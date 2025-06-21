@@ -207,7 +207,6 @@
             </div>
         </div>
 
-
         <!-- Savings Section -->
         <div class="card shadow rounded-4 p-3 mb-4" style="min-width: 280px; flex: 1; max-width: 360px;">
             <h5 class="text-center fw-semibold mb-3">Savings</h5>
@@ -218,7 +217,7 @@
 
             <div class="d-flex justify-content-end gap-2 mt-3">
                 <button class="btn btn-sm btn-outline-primary" type="button" onclick="toggleFilter('savingsFilter')">Filter</button>
-                <button class="btn btn-sm btn-primary" type="button" onclick="openAddTransaction('Saving')">Add Savings</button>
+                <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addSavingsModal">Add Savings</button>
             </div>
 
             <div id="savingsFilter" class="mt-2" style="display:none; text-align: left;">
@@ -229,6 +228,68 @@
                 <div>
                     <button class="btn btn-sm btn-primary me-1" onclick="filterSavings()">Apply</button>
                     <button class="btn btn-sm btn-secondary" onclick="resetSavingsFilter()">Reset</button>
+                </div>
+            </div>
+
+            <!-- Savings Summary Table -->
+            <table class="table table-sm table-hover mt-3">
+                <tbody>
+                    <tr>
+                        <th>Savings Goal</th>
+                        <td id="savingsGoalDisplay" class="text-primary fw-bold">
+                            @((ViewBag.SavingsGoal as decimal?)?.ToString("C") ?? "$0")
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Current Savings</th>
+                        <td id="currentSavingsDisplay" class="text-success fw-bold">
+                            @((ViewBag.CurrentSavings as decimal?)?.ToString("C") ?? "$0")
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Add Savings Modal -->
+        <div class="modal fade" id="addSavingsModal" tabindex="-1" aria-labelledby="addSavingsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form id="addSavingsForm" onsubmit="submitSavings(event)">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addSavingsModalLabel">Add Savings</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+
+                            <!-- Target Amount (Required) -->
+                            <div class="mb-3">
+                                <label for="targetAmount" class="form-label">Target Amount <span class="text-danger">*</span></label>
+                                <input type="number"
+                                       step="0.01"
+                                       class="form-control"
+                                       id="targetAmount"
+                                       required
+                                       placeholder="Enter target savings amount">
+                                <div id="targetAmountError" class="text-danger mt-1" style="display:none;"></div>
+                            </div>
+
+                            <!-- Current Amount (Optional) -->
+                            <div class="mb-3">
+                                <label for="currentAmount" class="form-label">Current Amount</label>
+                                <input type="number"
+                                       step="0.01"
+                                       class="form-control"
+                                       id="currentAmount"
+                                       placeholder="Enter current savings amount (optional)">
+                                <div id="currentAmountError" class="text-danger mt-1" style="display:none;"></div>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Save Savings</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -528,6 +589,117 @@ else
 
 
 
+            async function submitSavings(event) {
+                event.preventDefault();
+
+                const targetInput = document.getElementById('targetAmount');
+                const currentInput = document.getElementById('currentAmount');
+
+                const targetErrorDiv = document.getElementById('targetAmountError');
+                const currentErrorDiv = document.getElementById('currentAmountError');
+
+                // Clear previous errors
+                targetErrorDiv.style.display = 'none';
+                targetErrorDiv.textContent = '';
+                currentErrorDiv.style.display = 'none';
+                currentErrorDiv.textContent = '';
+
+                if (!targetInput) {
+                    alert('Target Amount input not found');
+                    return;
+                }
+                if (!targetErrorDiv || !currentErrorDiv) {
+                    alert('Error display element(s) not found');
+                    return;
+                }
+
+                const targetValue = targetInput.value.trim();
+                const currentValue = currentInput.value.trim();
+
+                if (!targetValue) {
+                    targetErrorDiv.textContent = 'Target amount is required.';
+                    targetErrorDiv.style.display = 'block';
+                    targetInput.focus();
+                    return;
+                }
+
+                const targetAmount = parseFloat(targetValue);
+                if (isNaN(targetAmount) || targetAmount <= 0) {
+                    targetErrorDiv.textContent = 'Please enter a valid positive target amount.';
+                    targetErrorDiv.style.display = 'block';
+                    targetInput.focus();
+                    return;
+                }
+
+                let currentAmount = 0;
+                if (currentValue) {
+                    currentAmount = parseFloat(currentValue);
+                    if (isNaN(currentAmount) || currentAmount < 0) {
+                        currentErrorDiv.textContent = 'Please enter a valid current amount or leave empty.';
+                        currentErrorDiv.style.display = 'block';
+                        currentInput.focus();
+                        return;
+                    }
+                }
+
+                const data = {
+                    TargetAmount: targetAmount,
+                    CurrentAmount: currentAmount
+                };
+
+                try {
+                    const response = await fetch('/Savings/SaveOrUpdateSavings', {  // <-- Updated URL here
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data),
+                    });
+
+                    if (!response.ok) {
+                        let errorMsg = 'Unknown error';
+                        try {
+                            const errorData = await response.json();
+                            errorMsg = errorData.details || errorData.error || errorMsg;
+                        } catch {
+                            // fallback if JSON parsing fails
+                        }
+                        alert('Error saving savings:\n\n' + errorMsg);
+                        return;
+                    }
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Hide modal and reset form
+                        const modalElement = document.getElementById('addSavingsModal');
+                        const modal = bootstrap.Modal.getInstance(modalElement);
+                        modal.hide();
+                        document.getElementById('addSavingsForm').reset();
+
+                        // Optionally update the savings info on the page without reload
+                        if (result.savings) {
+                            // Update displayed savings values
+                            document.getElementById('currentSavingsDisplay').textContent = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(result.savings.CurrentAmount);
+                            document.getElementById('savingsGoalDisplay').textContent = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(result.savings.TargetAmount);
+
+                            // TODO: update savings chart here if you have a function to refresh it
+                            if (typeof updateSavingsChart === 'function') {
+                                updateSavingsChart(result.savings.CurrentAmount, result.savings.TargetAmount);
+                            }
+                        }
+
+                        console.log('Savings saved:', result);
+                    } else {
+                        alert('Failed to save savings.');
+                    }
+                } catch (error) {
+                    alert('Unexpected error: ' + error.message);
+                }
+            }
+
+
+
+
+
 
             let expenseChart;
             // Run when DOM is fully loaded
@@ -745,15 +917,19 @@ else
                 // ---------------------------
                 // Savings Chart Initialization
                 // ---------------------------
-                const savingsAmount = @ViewBag.Savings ?? 0;
+
+                const currentAmount = @(ViewBag.CurrentSavings ?? 0M);
+                const targetAmount = @(ViewBag.SavingsGoal ?? 0M);
+                const remainingAmount = Math.max(targetAmount - currentAmount, 0);
+
                 const savingsCtx = document.getElementById('savingsChart').getContext('2d');
                 new Chart(savingsCtx, {
                     type: 'doughnut',
                     data: {
-                        labels: ['Savings'],
+                        labels: ['Current Savings', 'Remaining to Goal'],
                         datasets: [{
-                            data: [savingsAmount],
-                            backgroundColor: ['#17a2b8'],
+                            data: [currentAmount, remainingAmount],
+                            backgroundColor: ['#17a2b8', '#dee2e6'], // teal and gray
                             hoverOffset: 10
                         }]
                     },
@@ -761,7 +937,20 @@ else
                         responsive: true,
                         maintainAspectRatio: false,
                         cutout: '70%',
-                        plugins: { legend: { display: false } }
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        const label = context.label || '';
+                                        const value = context.parsed;
+                                        return `${label}: $${value.toLocaleString()}`;
+                                    }
+                                }
+                            }
+                        }
                     }
                 });
             });

@@ -126,35 +126,7 @@ namespace FinanceCalc.Controllers
         }
 
 
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> AddIncome([FromBody] Income income)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null)
-                return Unauthorized();
-
-            var newIncome = new Income
-            {
-                UserId = userId,
-                Amount = income.Amount,
-            };
-
-            _context.Income.Add(newIncome);
-            await _context.SaveChangesAsync();
-
-            return Ok(new
-            {
-                success = true,
-                newIncome.Id,
-                newIncome.Amount,
-            });
-        }
+       
 
         // GET: Transactions/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
