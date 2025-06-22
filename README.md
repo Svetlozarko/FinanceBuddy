@@ -9,12 +9,15 @@ Features
 
 - Analytics and Insights
 - Visual reports and breakdowns of your financial activity
--Weekly, monthly, and yearly analytics
--Savings progress and comparison charts
--Debit Card Integration
--Automatically categorize and manage card transactions
--Financial Articles
-- Import/Export all user's data
+- Weekly, monthly, and yearly analytics
+- Savings progress and comparison charts
+- Debit Card Integration
+- Automatically categorize and manage card transactions
+- Financial Articles
+- Import user data from CSV, Excel (.xlsx), and PDF files
+- Export data to CSV, Excel, and PDF formats with customizable templates
+- Supports bulk data processing with error handling and validation
+- Clean, user-friendly interface (UI details or API usage can be added here)
 
 
 Technology Stack
