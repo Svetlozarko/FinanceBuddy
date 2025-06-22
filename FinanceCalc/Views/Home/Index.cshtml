@@ -10,6 +10,7 @@
 
 @if (User.Identity.IsAuthenticated)
 {
+
     <h3 class="mb-4">Overview</h3>
     <div class="mb-3 text-end dropdown">
     <button class="btn btn-outline-dark dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -308,27 +309,105 @@
     </div>
 
     <!-- All Expenses -->
-    <h4 class="mt-5">All Expenses</h4>
+    
 
-    <div class="transaction-list d-flex flex-column gap-3">
-        @foreach (var item in Model.Expenses)
-        {
-            <div class="transaction-card d-flex justify-content-between align-items-center shadow-sm p-3 rounded" style="background-color: white;">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="icon bg-light rounded-circle p-2">
-                        <i class="bi bi-cash-stack fs-4 text-dark"></i>
+    <!-- Outer container with full rounded border and background -->
+    <div class="p-4 rounded-4 shadow-sm" style="background-color: #f9fafb; border-radius: 1.25rem; border: 1px solid #e5e7eb;">
+        <h4 class="mb-3" style="margin-top: 0.3rem;">Recent Expenses</h4>
+        <div class="d-flex flex-column gap-3">
+            @foreach (var item in Model.Expenses)
+            {
+                var bgColor = item.Category switch
+                {
+                    "Food" => "#fff4e0",
+                    "Transportation" => "#e8f0ff",
+                    "Utilities" => "#fff1e6",
+                    "Entertainment" => "#f4e8ff",
+                    "Health & Medical" => "#e0f7f1",
+                    "Housing" => "#ffe4e1",
+                    "Education" => "#e6f7ff",
+                    "Personal Care" => "#fdf0ff",
+                    "Clothing" => "#fffbe6",
+                    "Travel" => "#e8faff",
+                    "Gifts & Donations" => "#f5e6ff",
+                    "Insurance" => "#e6f0ff",
+                    "Subscriptions" => "#f4f4f4",
+                    "Phone & Internet" => "#edf7ff",
+                    "Home Maintenance" => "#fff8e1",
+                    "Childcare" => "#ffe6f0",
+                    "Pet Care" => "#e6fce9",
+                    "Taxes" => "#fef1e6",
+                    "Bank Fees" => "#f8e6ff",
+                    "Loan Payments" => "#e6f5ff",
+                    "Fuel" => "#fff0e6",
+                    "Parking & Tolls" => "#e6f4ff",
+                    "Office Supplies" => "#f0f4ff",
+                    "Dining Out" => "#ffe6d9",
+                    "Gym & Fitness" => "#e0fff4",
+                    "Beauty & Grooming" => "#ffe6fa",
+                    "Hobbies" => "#f0eaff",
+                    "Miscellaneous" => "#f5f5f5",
+                    _ => "#f0f0f0"
+                };
+
+                var emoji = item.Category switch
+                {
+                    "Food" => "🍔",
+                    "Transportation" => "🚗",
+                    "Utilities" => "💡",
+                    "Entertainment" => "🎮",
+                    "Health & Medical" => "🩺",
+                    "Housing" => "🏠",
+                    "Education" => "🎓",
+                    "Personal Care" => "🧴",
+                    "Clothing" => "👕",
+                    "Travel" => "✈️",
+                    "Gifts & Donations" => "🎁",
+                    "Insurance" => "🛡️",
+                    "Subscriptions" => "📺",
+                    "Phone & Internet" => "📱",
+                    "Home Maintenance" => "🔧",
+                    "Childcare" => "🧒",
+                    "Pet Care" => "🐾",
+                    "Taxes" => "💰",
+                    "Bank Fees" => "🏦",
+                    "Loan Payments" => "💳",
+                    "Fuel" => "⛽",
+                    "Parking & Tolls" => "🅿️",
+                    "Office Supplies" => "📎",
+                    "Dining Out" => "🍽️",
+                    "Gym & Fitness" => "🏋️",
+                    "Beauty & Grooming" => "💄",
+                    "Hobbies" => "🎨",
+                    "Miscellaneous" => "🧩",
+                    _ => "💸"
+                };
+
+                <!-- Each individual expense -->
+                <div class="transaction-card d-flex justify-content-between align-items-center p-3 shadow-sm"
+                     style="background-color: white; border-radius: 1rem; border: 1px solid #e5e7eb;">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle d-flex justify-content-center align-items-center"
+                             style="width: 48px; height: 48px; background-color: @bgColor;">
+                            <span style="font-size: 1.5rem;">@emoji</span>
+                        </div>
+                        <div>
+                            <div class="fw-semibold">@item.Category</div>
+                            <small class="text-muted">@item.Date.ToString("MMM d, yyyy")</small>
+                        </div>
                     </div>
-                    <div>
-                        <strong>@item.Category</strong><br />
-                        <small class="text-muted">@item.Date.ToString("MMM d, yyyy")</small>
+                    <div class="text-end">
+                        <div class="fw-semibold @(item.Amount >= 0 ? "text-success" : "text-danger")">
+                            @item.Amount.ToString("C")
+                        </div>
                     </div>
                 </div>
-                <div class="text-end">
-                    <strong>@item.Amount.ToString("C")</strong>
-                </div>
-            </div>
-        }
+            }
+        </div>
     </div>
+
+
+
 
 }
 else
@@ -970,13 +1049,7 @@ else
                 });
             });
 
-            // ---------------------------
-            // Toggle visibility of filters by ID
-            // ---------------------------
-            function toggleFilter(filterId) {
-                const filterDiv = document.getElementById(filterId);
-                filterDiv.style.display = (filterDiv.style.display === "none" || filterDiv.style.display === "") ? "block" : "none";
-            }
+           
 
             // ---------------------------
             // Filter table rows by date range based on input IDs
@@ -1027,7 +1100,13 @@ else
                 filterSavings();
             }
 
-             
+            // ---------------------------
+            // Toggle visibility of filters by ID
+            // ---------------------------
+            function toggleFilter(filterId) {
+                const filterDiv = document.getElementById(filterId);
+                filterDiv.style.display = (filterDiv.style.display === "none" || filterDiv.style.display === "") ? "block" : "none";
+            }
         </script>
     }
 }
