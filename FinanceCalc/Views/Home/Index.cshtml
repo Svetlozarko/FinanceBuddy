@@ -296,8 +296,8 @@
 
     </div>
 
-    <!-- All Transactions -->
-    <h4 class="mt-5">All Transactions</h4>
+    <!-- All Expenses -->
+    <h4 class="mt-5">All Expenses</h4>
 
     <div class="transaction-list d-flex flex-column gap-3">
         @foreach (var item in Model.Expenses)
@@ -307,14 +307,18 @@
                     <div class="icon bg-light rounded-circle p-2">
                         <i class="bi bi-cash-stack fs-4 text-dark"></i>
                     </div>
+                    <div>
+                        <strong>@item.Category</strong><br />
+                        <small class="text-muted">@item.Date.ToString("MMM d, yyyy")</small>
+                    </div>
                 </div>
                 <div class="text-end">
-                    <strong>@item.Amount.ToString("C")</strong><br />
-                    <small class="text-muted">@item.Date.ToString("MMM d, yyyy")</small>
+                    <strong>@item.Amount.ToString("C")</strong>
                 </div>
             </div>
         }
     </div>
+
 }
 else
 {
