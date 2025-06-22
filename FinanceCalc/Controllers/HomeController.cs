@@ -75,6 +75,9 @@ namespace FinanceCalc.Controllers
             ViewBag.IncomeVsExpenseData = new[] { totalExpenses, Math.Max(0, totalIncome - totalExpenses) };
 
             ViewBag.Savings = savings.Sum(s => s.CurrentAmount);
+            var userSavings = savings.FirstOrDefault(); // assuming 1 savings record per user
+            ViewBag.CurrentSavings = userSavings?.CurrentAmount ?? 0;
+            ViewBag.SavingsGoal = userSavings?.TargetAmount ?? 0;
             await _inboxService.AddCongratsMessageIfEligible(userId, ViewBag.Savings);
 
             ViewBag.StartDate = startDate?.ToString("yyyy-MM-dd");

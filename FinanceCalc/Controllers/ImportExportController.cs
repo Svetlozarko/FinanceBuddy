@@ -86,7 +86,7 @@ namespace FinanceCalc.Controllers
         public IActionResult ExportToExcel()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var transactions = _context.Expenses
+            var expenses = _context.Expenses
                 .Where(t => t.UserId == userId)
                 .OrderByDescending(t => t.Date)
                 .ToList();
@@ -95,7 +95,7 @@ namespace FinanceCalc.Controllers
             OfficeOpenXml.ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
 
             using var package = new OfficeOpenXml.ExcelPackage();
-            var worksheet = package.Workbook.Worksheets.Add("Transactions");
+            var worksheet = package.Workbook.Worksheets.Add("Expenses");
 
             worksheet.Cells["A1"].Value = "Дата";
             worksheet.Cells["B1"].Value = "Сума";
@@ -103,7 +103,7 @@ namespace FinanceCalc.Controllers
             worksheet.Cells["D1"].Value = "Категория";
 
             int row = 2;
-            foreach (var t in transactions)
+            foreach (var t in expenses)
             {
                 worksheet.Cells[row, 1].Value = t.Date.ToString("dd.MM.yyyy");
                 worksheet.Cells[row, 2].Value = t.Amount;
