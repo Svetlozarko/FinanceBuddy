@@ -14,6 +14,7 @@ Features
 -Debit Card Integration
 -Automatically categorize and manage card transactions
 -Financial Articles
+- Import/Export all user's data
 
 
 Technology Stack
