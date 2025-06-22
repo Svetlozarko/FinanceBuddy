@@ -15,9 +15,10 @@ Features
 -Automatically categorize and manage card transactions
 -Financial Articles
 
+
 Technology Stack
-Backend: C#, ASP.NET, MVC architecture
-Frontend: HTML, CSS, JavaScript, Bootstrap
-Database: SQL Server
-ORM: Entity Framework Core
-Authentication: ASP.NET Identity with role-based access
+- Backend: C#, ASP.NET, MVC architecture
+- Frontend: HTML, CSS, JavaScript, Bootstrap
+- Database: SQL Server
+- ORM: Entity Framework Core
+- Authentication: ASP.NET Identity with role-based access
