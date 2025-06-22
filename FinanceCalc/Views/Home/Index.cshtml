@@ -17,17 +17,17 @@
     </button>
     <ul class="dropdown-menu" aria-labelledby="exportDropdown">
         <li>
-            <a class="dropdown-item" asp-controller="Transactions" asp-action="ExportToPdf">
+                <a class="dropdown-item" asp-controller="ImportExport" asp-action="ExportToPdf">
                 <i class="fas fa-file-pdf text-danger"></i> Export to PDF
             </a>
         </li>
         <li>
-            <a class="dropdown-item" asp-controller="Transactions" asp-action="ExportToExcel">
+                <a class="dropdown-item" asp-controller="ImportExport" asp-action="ExportToExcel">
                 <i class="fas fa-file-excel text-success"></i> Export to Excel
             </a>
         </li>
         <li>
-            <a class="dropdown-item" asp-controller="Transactions" asp-action="ExportToCsv">
+            <a class="dropdown-item" asp-controller="ImportExport" asp-action="ExportToCsv">
                 <i class="fas fa-file-csv text-primary"></i> Export to CSV
             </a>
         </li>
