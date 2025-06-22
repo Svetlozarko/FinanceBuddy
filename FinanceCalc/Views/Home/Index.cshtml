@@ -171,12 +171,23 @@
                             @((ViewBag.IncomeVsExpenseData[0] as decimal?)?.ToString("C") ?? "$0")
                         </td>
                     </tr>
+                    @{
+                        decimal totalIncome = income.Sum(i => i.Amount);
+                        decimal totalExpenses = expenses.Sum(e => e.Amount);
+                        decimal remaining = totalIncome - totalExpenses;
+                    }
                     <tr>
                         <th>Remaining</th>
-                        <td class="text-success  fw-bold">
-                            @((ViewBag.IncomeVsExpenseData[1] as decimal?)?.ToString("C") ?? "$0")
+                        <td class="fw-bold @(remaining < 0 ? "text-danger" : "text-success")">
+                            @(
+                                remaining < 0
+                                ? "-" + Math.Abs(remaining).ToString("C")
+                                : remaining.ToString("C")
+                                )
                         </td>
                     </tr>
+
+
                 </tbody>
             </table>
         </div>
@@ -184,7 +195,7 @@
         <div class="modal fade" id="addIncomeModal" tabindex="-1" aria-labelledby="addIncomeModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <form id="addIncomeForm" onsubmit="submitIncome(event)">
+                    <form id="addIncomeForm">
                         <div class="modal-header">
                             <h5 class="modal-title" id="addIncomeModalLabel">Add Income</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
