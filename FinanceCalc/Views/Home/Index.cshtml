@@ -12,7 +12,7 @@
 {
     <style>
         body {
-            background-color: #f8fafc;
+            background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 50%, #fce7f3 100%);
         }
 
         .dashboard-container {
@@ -47,7 +47,7 @@
         }
 
         .btn-modern {
-            border-radius: 8px;
+            border-radius: 12px;
             font-weight: 500;
             font-size: 14px;
             padding: 8px 16px;
@@ -92,9 +92,9 @@
 
         .metric-card {
             background: white;
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 24px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             border: 1px solid #e5e7eb;
             position: relative;
         }
@@ -190,9 +190,9 @@
 
         .chart-card {
             background: white;
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 24px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             border: 1px solid #e5e7eb;
         }
 
@@ -218,9 +218,9 @@
         /* Recent Transactions */
         .transactions-section {
             background: white;
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 24px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             border: 1px solid #e5e7eb;
         }
 
@@ -651,7 +651,7 @@ else
 {
     <style>
         body {
-            background-color: #ffffff;
+            background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 50%, #fce7f3 100%);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
@@ -923,6 +923,12 @@ else
             background: linear-gradient(135deg, #3b82f6, #8b5cf6);
             color: white;
             padding: 16px 32px;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            padding: 16px 32px;
             border-radius: 12px;
             font-weight: 600;
             text-decoration: none;
@@ -953,6 +959,13 @@ else
 
         .stat-item {
             margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-left {
+            flex: 1;
         }
 
         .stat-value {
@@ -982,10 +995,35 @@ else
             color: #6b7280;
         }
 
-        .stat-icon {
-            float: right;
-            font-size: 24px;
+        .stat-icon-badge {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
         }
+
+            .stat-icon-badge.green {
+                background: #dcfce7;
+                color: #16a34a;
+            }
+
+            .stat-icon-badge.yellow {
+                background: #fef3c7;
+                color: #d97706;
+            }
+
+            .stat-icon-badge.red {
+                background: #fee2e2;
+                color: #dc2626;
+            }
+
+            .stat-icon-badge.orange {
+                background: #fed7aa;
+                color: #ea580c;
+            }
 
         /* Testimonials */
         .testimonials-section {
@@ -1150,7 +1188,10 @@ else
         }
 
             .hero-content h1 .highlight {
-                color: #3b82f6;
+                background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
             }
 
         .hero-content p {
@@ -1576,27 +1617,43 @@ else
                 <h3 class="stats-title">Real Results from Real Users</h3>
 
                 <div class="stat-item">
-                    <div class="stat-value green">87%</div>
-                    <div class="stat-label">Reduced financial stress</div>
-                    <div class="stat-icon">📊</div>
+                    <div class="stat-left">
+                        <div class="stat-value green">87%</div>
+                        <div class="stat-label">Reduced financial stress</div>
+                    </div>
+                    <div class="stat-icon-badge green">
+                        <i class="bi bi-bar-chart"></i>
+                    </div>
                 </div>
 
                 <div class="stat-item">
-                    <div class="stat-value blue">$1,247</div>
-                    <div class="stat-label">Average monthly savings increase</div>
-                    <div class="stat-icon">💰</div>
+                    <div class="stat-left">
+                        <div class="stat-value blue">$1,247</div>
+                        <div class="stat-label">Average monthly savings increase</div>
+                    </div>
+                    <div class="stat-icon-badge yellow">
+                        💰
+                    </div>
                 </div>
 
                 <div class="stat-item">
-                    <div class="stat-value purple">3.2x</div>
-                    <div class="stat-label">Faster goal achievement</div>
-                    <div class="stat-icon">🎯</div>
+                    <div class="stat-left">
+                        <div class="stat-value purple">3.2x</div>
+                        <div class="stat-label">Faster goal achievement</div>
+                    </div>
+                    <div class="stat-icon-badge red">
+                        <i class="bi bi-bullseye"></i>
+                    </div>
                 </div>
 
                 <div class="stat-item">
-                    <div class="stat-value orange">92%</div>
-                    <div class="stat-label">Would recommend to friends</div>
-                    <div class="stat-icon">⭐</div>
+                    <div class="stat-left">
+                        <div class="stat-value orange">92%</div>
+                        <div class="stat-label">Would recommend to friends</div>
+                    </div>
+                    <div class="stat-icon-badge orange">
+                        <i class="bi bi-star-fill"></i>
+                    </div>
                 </div>
             </div>
         </section>
