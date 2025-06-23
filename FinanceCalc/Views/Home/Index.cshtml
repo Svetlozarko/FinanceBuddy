@@ -10,309 +10,431 @@
 
 @if (User.Identity.IsAuthenticated)
 {
+    <style>
+        body {
+            background-color: #f8fafc;
+        }
 
-    <h3 class="mb-4">Overview</h3>
-    <div class="mb-3 text-end dropdown">
-    <button class="btn btn-outline-dark dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="fas fa-download"></i> Export
-    </button>
-    <ul class="dropdown-menu" aria-labelledby="exportDropdown">
-        <li>
-                <a class="dropdown-item" asp-controller="ImportExport" asp-action="ExportToPdf">
-                <i class="fas fa-file-pdf text-danger"></i> Export to PDF
-            </a>
-        </li>
-        <li>
-                <a class="dropdown-item" asp-controller="ImportExport" asp-action="ExportToExcel">
-                <i class="fas fa-file-excel text-success"></i> Export to Excel
-            </a>
-        </li>
-        <li>
-            <a class="dropdown-item" asp-controller="ImportExport" asp-action="ExportToCsv">
-                <i class="fas fa-file-csv text-primary"></i> Export to CSV
-            </a>
-        </li>
-    </ul>
-</div>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
 
-    <div style="display: flex; justify-content: space-around; gap: 2rem; flex-wrap: wrap;">
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 32px;
+        }
 
-        <!-- Expenses Section -->
-        <div class="card shadow rounded-4 p-3 mb-4" style="min-width: 280px; flex: 1; max-width: 360px;">
-            <h5 class="text-center fw-semibold mb-3">Expenses by Category</h5>
+        .dashboard-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0;
+        }
 
-            <div style="height: 240px; position: relative;">
-                <canvas id="expenseChart" class="w-100 h-100"></canvas>
+        .dashboard-subtitle {
+            font-size: 16px;
+            color: #6b7280;
+            margin: 4px 0 0 0;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-modern {
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            padding: 8px 16px;
+            border: 1px solid #d1d5db;
+            transition: all 0.2s ease;
+        }
+
+        .btn-filter {
+            background: white;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            .btn-filter:hover {
+                background: #f9fafb;
+                border-color: #9ca3af;
+            }
+
+        .btn-export {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            .btn-export:hover {
+                background: #2563eb;
+                border-color: #2563eb;
+            }
+
+        /* Metric Cards */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+            position: relative;
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .metric-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+
+            .metric-icon.income {
+                background: #10b981;
+            }
+
+            .metric-icon.expense {
+                background: #ef4444;
+            }
+
+            .metric-icon.savings {
+                background: #3b82f6;
+            }
+
+        .add-btn {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            padding: 4px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+            .add-btn:hover {
+                color: #6b7280;
+                background: #f3f4f6;
+            }
+
+        .metric-content {
+            margin-top: 12px;
+        }
+
+        .metric-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #6b7280;
+            margin: 0 0 4px 0;
+        }
+
+        .metric-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 4px 0;
+        }
+
+        .metric-change {
+            font-size: 14px;
+            font-weight: 500;
+            margin: 0;
+        }
+
+            .metric-change.positive {
+                color: #10b981;
+            }
+
+            .metric-change.negative {
+                color: #ef4444;
+            }
+
+            .metric-change.neutral {
+                color: #3b82f6;
+            }
+
+        /* Charts Grid */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #111827;
+            margin: 0 0 20px 0;
+        }
+
+        .chart-container {
+            height: 280px;
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .chart-footer {
+            text-align: center;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        /* Recent Transactions */
+        .transactions-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+        }
+
+        .transactions-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 20px 0;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: #f9fafb;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .transaction-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .transaction-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .transaction-info h6 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+            margin: 0;
+        }
+
+        .transaction-info p {
+            font-size: 14px;
+            color: #6b7280;
+            margin: 2px 0 0 0;
+        }
+
+        .transaction-right {
+            text-align: right;
+        }
+
+        .transaction-amount {
+            font-size: 16px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .transaction-date {
+            font-size: 12px;
+            color: #9ca3af;
+            margin: 2px 0 0 0;
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .dashboard-container {
+                padding: 16px;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                gap: 16px;
+                align-items: stretch;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">Financial Overview</h1>
+                <p class="dashboard-subtitle">Track your income, expenses, and savings</p>
             </div>
-
-            <div class="d-flex justify-content-end gap-2 mt-3">
-                <button class="btn btn-sm btn-outline-primary" onclick="toggleFilter('expenseFilter')">Filter</button>
-                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addExpenseModal">Add Expense</button>
-            </div>
-
-            <div id="expenseFilter" class="mt-2" style="display:none;">
-                <div class="d-flex gap-2 mb-2">
-                    <input type="date" id="expenseStartDate" class="form-control form-control-sm" />
-                    <input type="date" id="expenseEndDate" class="form-control form-control-sm" />
+            <div class="header-buttons">
+                <button class="btn btn-modern btn-filter">
+                    <i class="bi bi-funnel"></i>
+                    Filter
+                </button>
+                <div class="dropdown">
+                    <button class="btn btn-modern btn-export dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-download"></i>
+                        Export
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="exportDropdown">
+                        <li>
+                            <a class="dropdown-item" asp-controller="ImportExport" asp-action="ExportToPdf">
+                                <i class="fas fa-file-pdf text-danger"></i> Export to PDF
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" asp-controller="ImportExport" asp-action="ExportToExcel">
+                                <i class="fas fa-file-excel text-success"></i> Export to Excel
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" asp-controller="ImportExport" asp-action="ExportToCsv">
+                                <i class="fas fa-file-csv text-primary"></i> Export to CSV
+                            </a>
+                        </li>
+                    </ul>
                 </div>
-                <div>
-                    <button class="btn btn-sm btn-primary me-1" onclick="filterExpenses()">Apply</button>
-                    <button class="btn btn-sm btn-secondary" onclick="resetExpensesFilter()">Reset</button>
-                </div>
             </div>
-
-            <table class="table table-sm table-hover" id="expensesTable">
-                
-                <tbody>
-                    @foreach (var item in Model.Expenses)
-                    {
-                        <tr data-date="@item.Date.ToString("yyyy-MM-dd")">
-                            <td><strong>@item.Amount.ToString("C")</strong></td>
-                             <td>@item.Category</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
         </div>
-        <!-- Add Expense Modal -->
-        <div class="modal fade" id="addExpenseModal" tabindex="-1" aria-labelledby="addExpenseModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <form id="addExpenseForm" onsubmit="submitExpense(event)">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addExpenseModalLabel">Add Expense</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="expenseAmount" class="form-label">Amount</label>
-                                <input type="number" step="0.01" class="form-control" id="expenseAmount" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="expenseCategory" class="form-label">Category</label>
-                                <select class="form-select" id="expenseCategory" required>
-                                    <option value="" disabled selected>Select category</option>
-                                    <!-- Add your expense categories here or dynamically -->
-                                    <option>Food</option>
-                                    <option>Transportation</option>
-                                    <option>Utilities</option>
-                                    <option>Entertainment</option>
-                                    <option>Health & Medical</option>
-                                    <option>Housing</option>
-                                    <option>Education</option>
-                                    <option>Personal Care</option>
-                                    <option>Clothing</option>
-                                    <option>Travel</option>
-                                    <option>Gifts & Donations</option>
-                                    <option>Insurance</option>
-                                    <option>Subscriptions</option>
-                                    <option>Phone & Internet</option>
-                                    <option>Home Maintenance</option>
-                                    <option>Childcare</option>
-                                    <option>Pet Care</option>
-                                    <option>Taxes</option>
-                                    <option>Bank Fees</option>
-                                    <option>Loan Payments</option>
-                                    <option>Fuel</option>
-                                    <option>Parking & Tolls</option>
-                                    <option>Office Supplies</option>
-                                    <option>Dining Out</option>
-                                    <option>Gym & Fitness</option>
-                                    <option>Beauty & Grooming</option>
-                                    <option>Hobbies</option>
-                                    <option>Miscellaneous</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="expenseDate" class="form-label">Date</label>
-                                <input type="date" class="form-control" id="expenseDate" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="expenseNote" class="form-label">Note (optional)</label>
-                                <textarea class="form-control" id="expenseNote" rows="2"></textarea>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Add Expense</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        </div>
-                    </form>
+
+        <!-- Metric Cards -->
+        <div class="metrics-grid">
+            <!-- Total Income Card -->
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-icon income">
+                        <i class="bi bi-trending-up"></i>
+                    </div>
+                    <button class="add-btn" data-bs-toggle="modal" data-bs-target="#addIncomeModal">
+                        <i class="bi bi-plus" style="font-size: 20px;"></i>
+                    </button>
+                </div>
+                <div class="metric-content">
+                    <p class="metric-label">Total Income</p>
+                    <p class="metric-value">@((ViewBag.MonthlyIncome as decimal?)?.ToString("C") ?? "$0")</p>
+                    <p class="metric-change positive">+12.5% vs last month</p>
+                </div>
+            </div>
+
+            <!-- Total Expenses Card -->
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-icon expense">
+                        <i class="bi bi-trending-down"></i>
+                    </div>
+                    <button class="add-btn" data-bs-toggle="modal" data-bs-target="#addExpenseModal">
+                        <i class="bi bi-plus" style="font-size: 20px;"></i>
+                    </button>
+                </div>
+                <div class="metric-content">
+                    <p class="metric-label">Total Expenses</p>
+                    <p class="metric-value">@((ViewBag.IncomeVsExpenseData != null && ViewBag.IncomeVsExpenseData.Length > 0 ? (ViewBag.IncomeVsExpenseData[0] as decimal?)?.ToString("C") : "$0"))</p>
+                    <p class="metric-change negative">+8.2% vs last month</p>
+                </div>
+            </div>
+
+            <!-- Savings Goal Card -->
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-icon savings">
+                        <i class="bi bi-bullseye"></i>
+                    </div>
+                    <button class="add-btn" data-bs-toggle="modal" data-bs-target="#addSavingsModal">
+                        <i class="bi bi-plus" style="font-size: 20px;"></i>
+                    </button>
+                </div>
+                <div class="metric-content">
+                    <p class="metric-label">Savings Goal</p>
+                    <p class="metric-value">@((ViewBag.CurrentSavings as decimal?)?.ToString("C") ?? "$0")</p>
+                    <p class="metric-change neutral">68% of goal vs last month</p>
                 </div>
             </div>
         </div>
 
-        <!-- Income vs Expenses Section -->
-        <div class="card shadow rounded-4 p-3 mb-4" style="min-width: 280px; flex: 1; max-width: 360px;">
-            <h5 class="text-center fw-semibold mb-3">Income vs Expenses</h5>
-
-            <div style="height: 240px; position: relative;">
-                <canvas id="incomeChart" class="w-100 h-100"></canvas>
+        <!-- Charts -->
+        <div class="charts-grid">
+            <!-- Expenses by Category -->
+            <div class="chart-card">
+                <h3 class="chart-title">Expenses by Category</h3>
+                <div class="chart-container">
+                    <canvas id="expenseChart"></canvas>
+                </div>
             </div>
 
-            <div class="d-flex justify-content-end gap-2 mt-3">
-                <button class="btn btn-sm btn-outline-primary" type="button" onclick="toggleFilter('incomeFilter')">Filter</button>
-                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addIncomeModal">Add Income</button>
+            <!-- Income vs Expenses -->
+            <div class="chart-card">
+                <h3 class="chart-title">Income vs Expenses</h3>
+                <div class="chart-container">
+                    <canvas id="incomeChart"></canvas>
+                </div>
             </div>
 
-            <div id="incomeFilter" class="mt-2" style="display:none; text-align: left;">
-                <!-- Income filters go here if needed -->
-            </div>
-
-            <table class="table table-sm table-hover mt-3">
-                <tbody>
-                    <tr>
-                        <th>Total Income</th>
-                        <td class="text-success fw-bold">
-                            @((ViewBag.MonthlyIncome as decimal?)?.ToString("C") ?? "$0")
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Total Expenses</th>
-                        <td class="text-danger fw-bold">
-                            @((ViewBag.IncomeVsExpenseData[0] as decimal?)?.ToString("C") ?? "$0")
-                        </td>
-                    </tr>
-                    @{
-                        decimal totalIncome = income.Sum(i => i.Amount);
-                        decimal totalExpenses = expenses.Sum(e => e.Amount);
-                        decimal remaining = totalIncome - totalExpenses;
-                    }
-                    <tr>
-                        <th>Remaining</th>
-                        <td class="fw-bold @(remaining < 0 ? "text-danger" : "text-success")">
-                            @(
-                                remaining < 0
-                                ? "-" + Math.Abs(remaining).ToString("C")
-                                : remaining.ToString("C")
-                                )
-                        </td>
-                    </tr>
-
-
-                </tbody>
-            </table>
-        </div>
-        <!-- Add Income Modal -->
-        <div class="modal fade" id="addIncomeModal" tabindex="-1" aria-labelledby="addIncomeModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <form id="addIncomeForm">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addIncomeModalLabel">Add Income</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="incomeAmount" class="form-label">Amount</label>
-                                <input type="number" step="0.01" class="form-control" id="incomeAmount" required>
-                                <div id="incomeAmountError" class="text-danger mt-1" style="display:none;"></div>
-                                <div id="incomeAmountError" class="text-danger mt-1" style="display:none;"></div>
-                            </div>
-
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Add Income</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        </div>
-                    </form>
+            <!-- Savings Progress -->
+            <div class="chart-card">
+                <h3 class="chart-title">Savings Progress</h3>
+                <div class="chart-container">
+                    <canvas id="savingsChart"></canvas>
+                </div>
+                <div class="chart-footer">
+                    @((ViewBag.CurrentSavings as decimal?)?.ToString("C") ?? "$0") of @((ViewBag.SavingsGoal as decimal?)?.ToString("C") ?? "$0")
                 </div>
             </div>
         </div>
 
-        <!-- Savings Section -->
-        <div class="card shadow rounded-4 p-3 mb-4" style="min-width: 280px; flex: 1; max-width: 360px;">
-            <h5 class="text-center fw-semibold mb-3">Savings</h5>
-
-            <div style="height: 240px; position: relative;">
-                <canvas id="savingsChart" class="w-100 h-100"></canvas>
-            </div>
-
-            <div class="d-flex justify-content-end gap-2 mt-3">
-                <button class="btn btn-sm btn-outline-primary" type="button" onclick="toggleFilter('savingsFilter')">Filter</button>
-                <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addSavingsModal">Add Savings</button>
-            </div>
-
-            <div id="savingsFilter" class="mt-2" style="display:none; text-align: left;">
-                <div class="d-flex gap-2 mb-2">
-                    <input type="date" id="savingsStartDate" class="form-control form-control-sm" />
-                    <input type="date" id="savingsEndDate" class="form-control form-control-sm" />
-                </div>
-                <div>
-                    <button class="btn btn-sm btn-primary me-1" onclick="filterSavings()">Apply</button>
-                    <button class="btn btn-sm btn-secondary" onclick="resetSavingsFilter()">Reset</button>
-                </div>
-            </div>
-
-            <!-- Savings Summary Table -->
-            <table class="table table-sm table-hover mt-3">
-                <tbody>
-                    <tr>
-                        <th>Savings Goal</th>
-                        <td id="savingsGoalDisplay" class="text-primary fw-bold">
-                            @((ViewBag.SavingsGoal as decimal?)?.ToString("C") ?? "$0")
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Current Savings</th>
-                        <td id="currentSavingsDisplay" class="text-success fw-bold">
-                            @((ViewBag.CurrentSavings as decimal?)?.ToString("C") ?? "$0")
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Add Savings Modal -->
-        <div class="modal fade" id="addSavingsModal" tabindex="-1" aria-labelledby="addSavingsModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <form id="addSavingsForm" onsubmit="submitSavings(event)">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addSavingsModalLabel">Add Savings</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-
-                            <!-- Target Amount (Required) -->
-                            <div class="mb-3">
-                                <label for="targetAmount" class="form-label">Target Amount <span class="text-danger">*</span></label>
-                                <input type="number"
-                                       step="0.01"
-                                       class="form-control"
-                                       id="targetAmount"
-                                       required
-                                       placeholder="Enter target savings amount">
-                                <div id="targetAmountError" class="text-danger mt-1" style="display:none;"></div>
-                            </div>
-
-                            <!-- Current Amount (Optional) -->
-                            <div class="mb-3">
-                                <label for="currentAmount" class="form-label">Current Amount</label>
-                                <input type="number"
-                                       step="0.01"
-                                       class="form-control"
-                                       id="currentAmount"
-                                       placeholder="Enter current savings amount (optional)">
-                                <div id="currentAmountError" class="text-danger mt-1" style="display:none;"></div>
-                            </div>
-
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Save Savings</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Recent Transactions Section -->
-    <div class="p-4 shadow-sm" style="background-color: #f9fafb; border-radius: 1.25rem; border: 1px solid #e5e7eb;">
-        <h4 class="mb-4" style="font-weight: 700;">Recent Transactions</h4>
-        <div class="d-flex flex-column gap-3">
-            @foreach (var item in Model.Expenses)
+        <!-- Recent Transactions -->
+        <div class="transactions-section">
+            <h3 class="transactions-title">Recent Transactions</h3>
+            @foreach (var item in Model.Expenses.Take(5))
             {
                 var bgColor = item.Category switch
                 {
@@ -385,248 +507,1193 @@
                 bool isIncome = item.Amount > 0;
                 string amountColorClass = isIncome ? "text-success" : "text-danger";
 
-                string arrowIcon = isIncome
-                ? "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='green' viewBox='0 0 16 16'><path d='M8 12V4m0 0l-4 4m4-4l4 4' stroke='green' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>"
-                : "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='red' viewBox='0 0 16 16'><path d='M8 4v8m0 0l4-4m-4 4L4 8' stroke='red' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>";
-                <div class="transaction-card d-flex justify-content-between align-items-center p-3 shadow-sm"
-                     style="background-color: white; border-radius: 1rem; border: 1px solid #e5e7eb;">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="d-flex justify-content-center align-items-center"
-                             style="width: 48px; height: 48px; background-color: @bgColor; border-radius: 0.75rem;">
-                            <span style="font-size: 1.5rem;">@emoji</span>
+                <div class="transaction-item">
+                    <div class="transaction-left">
+                        <div class="transaction-icon" style="background-color: @bgColor;">
+                            <span>@emoji</span>
                         </div>
-                        <div>
-                            <div class="text-muted" style="font-size: 1.1rem;">@item.Category</div>
+                        <div class="transaction-info">
+                            <h6>@item.Category</h6>
+                            <p>@item.Date.ToString("MMM dd, yyyy")</p>
                         </div>
                     </div>
-                    <div class="text-end">
-                        <div class="fw-bold @amountColorClass" style="font-size: 1.1rem;">
-                            @item.Amount.ToString("C") <span class="ms-1">@Html.Raw(arrowIcon)</span>
-                        </div>
-                        <div class="text-muted" style="font-size: 0.85rem;">@item.Date.ToString("yyyy-MM-dd")</div>
+                    <div class="transaction-right">
+                        <p class="transaction-amount @amountColorClass">@item.Amount.ToString("C")</p>
                     </div>
                 </div>
             }
         </div>
     </div>
 
+    <!-- All your existing modals -->
+    <!-- Add Expense Modal -->
+    <div class="modal fade" id="addExpenseModal" tabindex="-1" aria-labelledby="addExpenseModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="addExpenseForm" onsubmit="submitExpense(event)">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addExpenseModalLabel">Add Expense</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="expenseAmount" class="form-label">Amount</label>
+                            <input type="number" step="0.01" class="form-control" id="expenseAmount" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="expenseCategory" class="form-label">Category</label>
+                            <select class="form-select" id="expenseCategory" required>
+                                <option value="" disabled selected>Select category</option>
+                                <option>Food</option>
+                                <option>Transportation</option>
+                                <option>Utilities</option>
+                                <option>Entertainment</option>
+                                <option>Health & Medical</option>
+                                <option>Housing</option>
+                                <option>Education</option>
+                                <option>Personal Care</option>
+                                <option>Clothing</option>
+                                <option>Travel</option>
+                                <option>Gifts & Donations</option>
+                                <option>Insurance</option>
+                                <option>Subscriptions</option>
+                                <option>Phone & Internet</option>
+                                <option>Home Maintenance</option>
+                                <option>Childcare</option>
+                                <option>Pet Care</option>
+                                <option>Taxes</option>
+                                <option>Bank Fees</option>
+                                <option>Loan Payments</option>
+                                <option>Fuel</option>
+                                <option>Parking & Tolls</option>
+                                <option>Office Supplies</option>
+                                <option>Dining Out</option>
+                                <option>Gym & Fitness</option>
+                                <option>Beauty & Grooming</option>
+                                <option>Hobbies</option>
+                                <option>Miscellaneous</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="expenseDate" class="form-label">Date</label>
+                            <input type="date" class="form-control" id="expenseDate" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="expenseNote" class="form-label">Note (optional)</label>
+                            <textarea class="form-control" id="expenseNote" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Add Expense</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
+    <!-- Add Income Modal -->
+    <div class="modal fade" id="addIncomeModal" tabindex="-1" aria-labelledby="addIncomeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="addIncomeForm" onsubmit="submitIncome(event)">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addIncomeModalLabel">Add Income</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="incomeAmount" class="form-label">Amount</label>
+                            <input type="number" step="0.01" class="form-control" id="incomeAmount" required>
+                            <div id="incomeAmountError" class="text-danger mt-1" style="display:none;"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Add Income</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-
-
-
-
+    <!-- Add Savings Modal -->
+    <div class="modal fade" id="addSavingsModal" tabindex="-1" aria-labelledby="addSavingsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="addSavingsForm" onsubmit="submitSavings(event)">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addSavingsModalLabel">Add Savings</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="targetAmount" class="form-label">Target Amount <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" class="form-control" id="targetAmount" required placeholder="Enter target savings amount">
+                            <div id="targetAmountError" class="text-danger mt-1" style="display:none;"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="currentAmount" class="form-label">Current Amount</label>
+                            <input type="number" step="0.01" class="form-control" id="currentAmount" placeholder="Enter current savings amount (optional)">
+                            <div id="currentAmountError" class="text-danger mt-1" style="display:none;"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save Savings</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 }
 else
 {
-    <section class="container py-5" style="background-color: #FFFFFF;">
-
-        <!-- Hero Section - White Background -->
-        <section id="hero" class="hero-section d-flex align-items-center py-5 mb-5" style="min-height: 400px; background-color: #FFFFFF;">
-            <div class="container d-flex flex-column flex-lg-row align-items-center gap-4">
-                <!-- Text Content -->
-                <div class="hero-text flex-lg-1 text-center text-lg-start" style="opacity: 0; transform: translateY(20px); transition: opacity 1s ease, transform 1s ease;">
-                    <h1 class="display-4 fw-bold mb-3" style="color: #212529;">
-                        Manage Your Money <br /> Effortlessly & Confidently
-                    </h1>
-                    <p class="lead" style="color: #6C757D; max-width: 480px; margin: 0 auto 1.5rem;">
-                        Track your income, expenses, and savings all in one secure place. Start building your financial future today!
-                    </p>
-                    <div class="mt-4 d-flex justify-content-center">
-                        <a href="/signup" class="btn btn-primary btn-lg px-5 py-3 shadow rounded-pill">
-                            Get Started Free
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Illustration -->
-                <div class="hero-image flex-lg-1" style="opacity: 0; transform: translateY(20px); transition: opacity 1s ease 0.3s, transform 1s ease 0.3s;">
-                    <img src="/images/8432.jpg" alt="Finance illustration" style="max-width: 100%; height: auto; max-height: 350px;" />
-                </div>
-            </div>
-        </section>
-
-        <!-- Intro for Features + Feature Cards + CTA Button - Baby Purple Background -->
-        <section style="background-color: #F3E8FF; padding: 3rem 1rem; border-radius: 12px; margin-bottom: 3rem; text-align: center;">
-            <h2 class="fw-bold mb-2" style="color: #212529;">Take Control of Your Finances</h2>
-            <p class="fs-5 mx-auto" style="color: #3C1361; max-width: 600px; margin-bottom: 2rem;">
-                Join thousands who manage their money effortlessly — track expenses, budgets, and savings all in one place.
-            </p>
-
-            <!-- Feature Section inside same purple block -->
-            <div class="feature-section d-flex flex-wrap gap-4 justify-content-center text-center mb-4">
-                <div class="feature-card p-4 shadow rounded-4 bg-white" style="max-width: 320px; flex: 1 1 300px;">
-                    <div class="feature-icon icon-green mb-3">
-                        <i class="bi bi-compass-fill fs-1 text-white"></i>
-                    </div>
-                    <h5 class="fw-semibold" style="color: #212529;">Have Perfect Control</h5>
-                    <p style="color: #6C757D;">Over all your cash expenses, bank accounts, E-Wallets, and crypto wallets.</p>
-                </div>
-
-                <div class="feature-card p-4 shadow rounded-4 bg-white" style="max-width: 320px; flex: 1 1 300px;">
-                    <div class="feature-icon icon-pink mb-3">
-                        <i class="bi bi-pie-chart-fill fs-1 text-white"></i>
-                    </div>
-                    <h5 class="fw-semibold" style="color: #212529;">Get a Quick Overview</h5>
-                    <p style="color: #6C757D;">About your total incomes and expenses at a glance and in one place.</p>
-                </div>
-
-                <div class="feature-card p-4 shadow rounded-4 bg-white" style="max-width: 320px; flex: 1 1 300px;">
-                    <div class="feature-icon icon-blue mb-3">
-                        <i class="bi bi-cash-stack fs-1 text-white"></i>
-                    </div>
-                    <h5 class="fw-semibold" style="color: #212529;">Use Our Smart Budgets</h5>
-                    <p style="color: #6C757D;">To save money for a new car, dreamy vacation, or top university.</p>
-                </div>
-            </div>
-
-            <!-- Get Started Free Button inside purple block -->
-            <a href="/signup" class="btn btn-lg btn-primary px-5 shadow-lg" style="border-radius: 2rem;">
-                Get Started Free
-            </a>
-        </section>
-
-        <!-- Articles Section - Baby Purple Background -->
-        <section class="articles-section text-center" style="background-color: #F3E8FF; padding: 3rem 1rem; border-radius: 12px;">
-            <h3 class="mb-3 fw-semibold" style="color: #212529;">Explore Our Latest Articles</h3>
-            <p style="color: #6C757D; max-width: 600px; margin: 0 auto 1.5rem;">
-                Learn smart money habits and tips to make your finances work for you.
-            </p>
-
-            <div class="d-flex flex-wrap justify-content-center gap-4">
-
-                <a href="/articles/article1" class="text-decoration-none" style="max-width: 280px; flex: 1;">
-                    <div class="card h-100 overflow-hidden shadow-sm"
-                         style="border: 2px solid #cbd5e1; border-radius: 1.5rem; transition: transform 0.3s ease-in-out; padding: 1.25rem 0;">
-                        <img src="/images/saving-home.png" alt="Saving Guide Preview"
-                             class="w-100"
-                             style="height: 220px; object-fit: cover; border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem;" />
-                        <div class="card-body px-4 pt-4 pb-4">
-                            <h5 class="fw-semibold mb-3" style="color: #212529;">5 Easy Ways to Start Saving Today</h5>
-                            <p class="small mb-3" style="color: #212529;">Simple strategies to help you save money fast — even on a tight budget.</p>
-                            <span class="btn btn-sm btn-outline-primary rounded-pill px-3">Read More</span>
-                        </div>
-                    </div>
-                </a>
-
-                <a href="/articles/article2" class="text-decoration-none" style="max-width: 280px; flex: 1;">
-                    <div class="card h-100 overflow-hidden shadow-sm"
-                         style="border: 2px solid #cbd5e1; border-radius: 1.5rem; transition: transform 0.3s ease-in-out; padding: 1.25rem 0;">
-                        <img src="/images/emergency-fund-home.png" alt="Emergency Fund Preview"
-                             class="w-100"
-                             style="height: 200px; object-fit: cover; border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem;" />
-                        <div class="card-body px-4 pt-4 pb-4">
-                            <h5 class="fw-semibold mb-3" style="color: #212529;">How to Build an Emergency Fund That Works</h5>
-                            <p class="small mb-3" style="color: #212529;">Learn how to protect yourself from financial surprises with a strong emergency fund.</p>
-                            <span class="btn btn-sm btn-outline-primary rounded-pill px-3">Read More</span>
-                        </div>
-                    </div>
-                </a>
-
-                <a href="/articles/article3" class="text-decoration-none" style="max-width: 280px; flex: 1;">
-                    <div class="card h-100 overflow-hidden shadow-sm"
-                         style="border: 2px solid #cbd5e1; border-radius: 1.5rem; transition: transform 0.3s ease-in-out; padding: 1.25rem 0;">
-                        <img src="/images/saving-guide-home.png" alt="Saving Guide Preview"
-                             class="w-100"
-                             style="height: 180px; object-fit: cover; border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem;" />
-                        <div class="card-body px-4 pt-4 pb-4">
-                            <h5 class="fw-semibold mb-3" style="color: #212529;">Master Your Money</h5>
-                            <p class="small mb-3" style="color: #212529;">A beginner’s guide to budgeting, saving, and taking control of your finances.</p>
-                            <span class="btn btn-sm btn-outline-primary rounded-pill px-3">Read More</span>
-                        </div>
-                    </div>
-                </a>
-
-            </div>
-        </section>
-
-    </section>
-    <section style="background-color: #FFFFFF; padding: 3rem 1rem; border-radius: 12px; max-width: 900px; margin: 0 auto 3rem; text-align: center;">
-        <h2 class="fw-bold mb-4" style="color: #212529;">What Our Users Say</h2>
-        <div class="d-flex flex-wrap justify-content-center gap-4">
-            <div class="p-4 shadow rounded-4" style="max-width: 280px; flex: 1; border-radius:  1.5rem; background: #F9F9F9; border: 2px solid #6C63FF;">
-                <div class="mb-2" style="color: #FFC107;">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                </div>
-                <p style="color: #3C1361; font-style: italic;">"Managing my finances has never been easier. The budgeting tools helped me save for my dream vacation!"</p>
-                <strong style="color: #3C1361;">– Sarah M.</strong>
-            </div>
-            <div class="p-4 shadow rounded-4" style="max-width: 280px; flex: 1; border-radius:  1.5rem; background: #F9F9F9; border: 2px solid #6C63FF;">
-                <div class="mb-2" style="color: #FFC107;">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star-half-alt"></i>
-                </div>
-                <p style="color: #3C1361; font-style: italic;">"The all-in-one dashboard makes tracking crypto and bank accounts so simple."</p>
-                <strong style="color: #3C1361;">– James T.</strong>
-            </div>
-            <div class="p-4 shadow rounded-4" style="max-width: 280px; flex: 1; border-radius:  1.5rem; background: #F9F9F9; border: 2px solid #6C63FF;">
-                <div class="mb-2" style="color: #FFC107;">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                </div>
-                <p style="color: #3C1361; font-style: italic;">"Smart budgets helped me save money for university fees with zero stress."</p>
-                <strong style="color: #3C1361;">– Priya K.</strong>
-            </div>
-        </div>
-    </section>
-
     <style>
-        .card:hover {
-            transform: scale(1.03);
-            box-shadow: 0 0.75rem 1.5rem rgba(44, 123, 229, 0.25);
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        body {
+            background-color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .landing-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #eff6ff;
+            color: #2563eb;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 24px;
+        }
+
+        .hero-title {
+            font-size: 48px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 16px;
+            line-height: 1.1;
+        }
+
+            .hero-title .highlight {
+                color: #6366f1;
+            }
+
+        .hero-subtitle {
+            font-size: 20px;
+            color: #6b7280;
+            margin-bottom: 48px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Feature Cards */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin: 80px 0;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 32px 24px;
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 32px;
+            color: white;
+        }
+
+            .feature-icon.blue {
+                background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            }
+
+            .feature-icon.purple {
+                background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            }
+
+            .feature-icon.green {
+                background: linear-gradient(135deg, #10b981, #047857);
+            }
+
+            .feature-icon.orange {
+                background: linear-gradient(135deg, #f97316, #ea580c);
+            }
+
+            .feature-icon.teal {
+                background: linear-gradient(135deg, #14b8a6, #0f766e);
+            }
+
+        .feature-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 12px;
+        }
+
+        .feature-description {
+            font-size: 16px;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        /* Articles Section */
+        .articles-section {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 16px;
+        }
+
+            .section-title .highlight {
+                color: #8b5cf6;
+            }
+
+        .section-subtitle {
+            font-size: 18px;
+            color: #6b7280;
+            margin-bottom: 48px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin-bottom: 48px;
+        }
+
+        .article-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+            .article-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            }
+
+        .article-image {
+            width: 100%;
+            height: 200px;
+            background: #f3f4f6;
+            position: relative;
+        }
+
+        .article-tag {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: #8b5cf6;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .article-content {
+            padding: 24px;
+            text-align: left;
+        }
+
+        .article-meta {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+        .article-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .article-excerpt {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .read-more {
+            color: #8b5cf6;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+            .read-more:hover {
+                color: #7c3aed;
+            }
+
+        /* Transform Section */
+        .transform-section {
+            padding: 80px 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .transform-content h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 24px;
+        }
+
+            .transform-content h2 .highlight {
+                color: #3b82f6;
+            }
+
+        .transform-description {
+            font-size: 18px;
+            color: #6b7280;
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+
+        .benefits-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 32px;
+        }
+
+            .benefits-list li {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 16px;
+                font-size: 16px;
+                color: #374151;
+            }
+
+        .check-icon {
+            width: 20px;
+            height: 20px;
+            background: #10b981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s ease;
+        }
+
+            .cta-button:hover {
+                transform: translateY(-2px);
+                color: white;
+            }
+
+        /* Stats Panel */
+        .stats-panel {
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 40px;
+        }
+
+        .stats-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 32px;
+        }
+
+        .stat-item {
+            margin-bottom: 32px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+            .stat-value.green {
+                color: #10b981;
+            }
+
+            .stat-value.blue {
+                color: #3b82f6;
+            }
+
+            .stat-value.purple {
+                color: #8b5cf6;
+            }
+
+            .stat-value.orange {
+                color: #f97316;
+            }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .stat-icon {
+            float: right;
+            font-size: 24px;
+        }
+
+        /* Testimonials */
+        .testimonials-section {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin-bottom: 48px;
+        }
+
+        .testimonial-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+        }
+
+        .stars {
+            color: #fbbf24;
+            margin-bottom: 16px;
+            font-size: 18px;
+        }
+
+        .testimonial-text {
+            font-size: 16px;
+            color: #374151;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .author-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .author-info h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+            margin: 0;
+        }
+
+        .author-info p {
+            font-size: 14px;
+            color: #6b7280;
+            margin: 0;
+        }
+
+        /* Final CTA */
+        .final-cta {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        .rating-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin-bottom: 32px;
+        }
+
+        .final-cta h2 {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .final-cta p {
+            font-size: 18px;
+            margin-bottom: 32px;
+            opacity: 0.9;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary-cta {
+            background: white;
+            color: #3b82f6;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.2s ease;
+        }
+
+        .btn-secondary-cta {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.2s ease;
+        }
+
+            .btn-primary-cta:hover,
+            .btn-secondary-cta:hover {
+                transform: translateY(-2px);
+            }
+
+        .trust-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .trust-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0.8;
+        }
+
+        /* Hero with Dashboard */
+        .hero-with-dashboard {
+            padding: 80px 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .hero-content h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 16px;
+            line-height: 1.1;
+        }
+
+            .hero-content h1 .highlight {
+                color: #3b82f6;
+            }
+
+        .hero-content p {
+            font-size: 18px;
+            color: #6b7280;
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+        }
+
+        .hero-stat h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #111827;
+            margin: 0;
+        }
+
+        .hero-stat p {
+            font-size: 14px;
+            color: #6b7280;
+            margin: 0;
+        }
+
+        .dashboard-preview {
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 20px;
+            position: relative;
+        }
+
+        .dashboard-mockup {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .mockup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .mockup-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .mockup-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+            .dot.red {
+                background: #ef4444;
+            }
+
+            .dot.yellow {
+                background: #f59e0b;
+            }
+
+            .dot.green {
+                background: #10b981;
+            }
+
+        .mockup-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .mockup-metric {
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .metric-icon-small {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            font-size: 16px;
+            color: white;
+        }
+
+            .metric-icon-small.green {
+                background: #10b981;
+            }
+
+            .metric-icon-small.blue {
+                background: #3b82f6;
+            }
+
+        .mockup-metric h4 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 4px 0;
+        }
+
+        .mockup-metric p {
+            font-size: 12px;
+            color: #6b7280;
+            margin: 0;
+        }
+
+        .mockup-metric .change {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+            .mockup-metric .change.positive {
+                color: #10b981;
+            }
+
+            .mockup-metric .change.negative {
+                color: #ef4444;
+            }
+
+        .savings-progress {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .progress-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #8b5cf6;
+            width: 68%;
+            border-radius: 4px;
+        }
+
+        .progress-text {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .savings-badge {
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .hero-title,
+            .hero-content h1 {
+                font-size: 36px;
+            }
+
+            .transform-section,
+            .hero-with-dashboard {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .cta-buttons,
+            .hero-buttons {
+                flex-direction: column;
+            }
         }
     </style>
 
-    <script>
-        // Simple fade-in animation for hero text and image
-        window.addEventListener('DOMContentLoaded', () => {
-            const heroText = document.querySelector('.hero-text');
-            const heroImage = document.querySelector('.hero-image');
+    <div class="landing-container">
+        <!-- Hero with Dashboard Preview -->
+        <section class="hero-with-dashboard">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="bi bi-shield-check"></i>
+                    Trusted by 50,000+ users worldwide
+                </div>
+                <h1>Take Control of Your <span class="highlight">Financial Future</span></h1>
+                <p>Stop wondering where your money goes. Track expenses, set budgets, and build wealth with our intuitive financial management platform.</p>
+                <div class="hero-buttons">
+                    <a href="/Identity/Account/Register" class="cta-button">
+                        Start Free Today <i class="bi bi-arrow-right"></i>
+                    </a>
+                    <a href="#demo" class="btn-secondary-cta">Watch Demo</a>
+                </div>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <h3>50K+</h3>
+                        <p>Active Users</p>
+                    </div>
+                    <div class="hero-stat">
+                        <h3>$2M+</h3>
+                        <p>Money Tracked</p>
+                    </div>
+                    <div class="hero-stat">
+                        <h3>99.9%</h3>
+                        <p>Uptime</p>
+                    </div>
+                </div>
+            </div>
+            <div class="dashboard-preview">
+                <div class="savings-badge">+$125 saved</div>
+                <div class="dashboard-mockup">
+                    <div class="mockup-header">
+                        <h3 class="mockup-title">Financial Overview</h3>
+                        <div class="mockup-dots">
+                            <div class="dot red"></div>
+                            <div class="dot yellow"></div>
+                            <div class="dot green"></div>
+                        </div>
+                    </div>
+                    <div class="mockup-metrics">
+                        <div class="mockup-metric">
+                            <div class="metric-icon-small green">
+                                <i class="bi bi-trending-up"></i>
+                            </div>
+                            <h4>$4,250</h4>
+                            <p>Total Income</p>
+                            <span class="change positive">+12%</span>
+                        </div>
+                        <div class="mockup-metric">
+                            <div class="metric-icon-small blue">
+                                <i class="bi bi-credit-card"></i>
+                            </div>
+                            <h4>$2,890</h4>
+                            <p>Expenses</p>
+                            <span class="change negative">-8%</span>
+                        </div>
+                    </div>
+                    <div class="savings-progress">
+                        <div class="progress-title">Savings Goal</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                        <div class="progress-text">$1,360 of $2,000 saved</div>
+                        <div style="margin-top: 8px;">
+                            <span style="background: #3b82f6; color: white; padding: 4px 8px; border-radius: 12px; font-size: 10px;">Budget on track</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-            if (heroText && heroImage) {
-                heroText.style.opacity = '1';
-                heroText.style.transform = 'translateY(0)';
-                heroImage.style.opacity = '1';
-                heroImage.style.transform = 'translateY(0)';
-            }
-        });
-    </script>
+        <!-- Features Section -->
+        <section class="hero-section">
+            <h1 class="hero-title">Everything you need to <span class="highlight">master your money</span></h1>
+            <p class="hero-subtitle">Our comprehensive suite of tools makes financial management simple, intuitive, and effective for everyone.</p>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon blue">
+                        <i class="bi bi-clock"></i>
+                    </div>
+                    <h3 class="feature-title">Smart Expense Tracking</h3>
+                    <p class="feature-description">Automatically categorize and track your expenses with intelligent insights that help you understand your spending patterns.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon purple">
+                        <i class="bi bi-bullseye"></i>
+                    </div>
+                    <h3 class="feature-title">Goal-Based Budgeting</h3>
+                    <p class="feature-description">Set and achieve your financial goals with personalized budgets that adapt to your lifestyle and priorities.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon green">
+                        <i class="bi bi-graph-up"></i>
+                    </div>
+                    <h3 class="feature-title">Real-Time Analytics</h3>
+                    <p class="feature-description">Get instant insights into your financial health with beautiful charts and reports that make data easy to understand.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon orange">
+                        <i class="bi bi-phone"></i>
+                    </div>
+                    <h3 class="feature-title">Mobile-First Design</h3>
+                    <p class="feature-description">Manage your money on the go with our responsive design that works perfectly on any device, anywhere.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon purple">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <h3 class="feature-title">Bank-Level Security</h3>
+                    <p class="feature-description">Your financial data is protected with enterprise-grade encryption and security measures you can trust.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon teal">
+                        <i class="bi bi-credit-card"></i>
+                    </div>
+                    <h3 class="feature-title">Multi-Account Support</h3>
+                    <p class="feature-description">Connect all your accounts in one place - bank accounts, credit cards, investments, and crypto wallets.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Articles Section -->
+        <section class="articles-section">
+            <h2 class="section-title">Learn from our <span class="highlight">financial experts</span></h2>
+            <p class="section-subtitle">Discover smart money habits, practical tips, and strategies to make your finances work for you.</p>
+
+            <div class="articles-grid">
+                <article class="article-card">
+                    <div class="article-image">
+                        <span class="article-tag">Saving Tips</span>
+                    </div>
+                    <div class="article-content">
+                        <div class="article-meta">5 min read</div>
+                        <h3 class="article-title">5 Easy Ways to Start Saving Today</h3>
+                        <p class="article-excerpt">Simple strategies to help you save money fast — even on a tight budget.</p>
+                        <a href="#" class="read-more">Read More <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </article>
+                <article class="article-card">
+                    <div class="article-image">
+                        <span class="article-tag">Emergency Planning</span>
+                    </div>
+                    <div class="article-content">
+                        <div class="article-meta">7 min read</div>
+                        <h3 class="article-title">How to Build an Emergency Fund That Works</h3>
+                        <p class="article-excerpt">Learn how to protect yourself from financial surprises with a strong emergency fund.</p>
+                        <a href="#" class="read-more">Read More <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </article>
+                <article class="article-card">
+                    <div class="article-image">
+                        <span class="article-tag">Financial Planning</span>
+                    </div>
+                    <div class="article-content">
+                        <div class="article-meta">10 min read</div>
+                        <h3 class="article-title">Master Your Money: A Beginner's Guide</h3>
+                        <p class="article-excerpt">A beginner's guide to budgeting, saving, and taking control of your finances.</p>
+                        <a href="#" class="read-more">Read More <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </article>
+            </div>
+
+            <a href="#" class="cta-button">View All Articles <i class="bi bi-arrow-right"></i></a>
+        </section>
+
+        <!-- Transform Section -->
+        <section class="transform-section">
+            <div class="transform-content">
+                <h2>Transform your <span class="highlight">financial life</span></h2>
+                <p class="transform-description">Join thousands of people who've taken control of their finances and built the life they want. It's time to stop worrying about money and start making it work for you.</p>
+
+                <ul class="benefits-list">
+                    <li>
+                        <span class="check-icon">✓</span>
+                        Stop living paycheck to paycheck
+                    </li>
+                    <li>
+                        <span class="check-icon">✓</span>
+                        Build an emergency fund that protects you
+                    </li>
+                    <li>
+                        <span class="check-icon">✓</span>
+                        Save for your dreams - vacation, home, education
+                    </li>
+                    <li>
+                        <span class="check-icon">✓</span>
+                        Reduce financial stress and anxiety
+                    </li>
+                    <li>
+                        <span class="check-icon">✓</span>
+                        Make informed spending decisions
+                    </li>
+                    <li>
+                        <span class="check-icon">✓</span>
+                        Track progress toward your goals
+                    </li>
+                </ul>
+
+                <a href="/Identity/Account/Register" class="cta-button">
+                    Start Your Journey <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="stats-panel">
+                <h3 class="stats-title">Real Results from Real Users</h3>
+
+                <div class="stat-item">
+                    <div class="stat-value green">87%</div>
+                    <div class="stat-label">Reduced financial stress</div>
+                    <div class="stat-icon">📊</div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-value blue">$1,247</div>
+                    <div class="stat-label">Average monthly savings increase</div>
+                    <div class="stat-icon">💰</div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-value purple">3.2x</div>
+                    <div class="stat-label">Faster goal achievement</div>
+                    <div class="stat-icon">🎯</div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-value orange">92%</div>
+                    <div class="stat-label">Would recommend to friends</div>
+                    <div class="stat-icon">⭐</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section class="testimonials-section">
+            <h2 class="section-title">Loved by thousands of <span class="highlight">happy users</span></h2>
+            <p class="section-subtitle">Don't just take our word for it. Here's what real people are saying about their financial transformation.</p>
+
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="testimonial-text">"This app completely changed how I think about money. I've saved more in 6 months than I did in 2 years before. The budgeting tools are incredibly intuitive!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">SJ</div>
+                        <div class="author-info">
+                            <h4>Sarah Johnson</h4>
+                            <p>Marketing Manager</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="testimonial-text">"As someone who loves data, the analytics and insights are phenomenal. I can see exactly where my money goes and make informed decisions about my spending."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">MC</div>
+                        <div class="author-info">
+                            <h4>Michael Chen</h4>
+                            <p>Software Engineer</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="testimonial-text">"Managing both personal and business finances used to be a nightmare. Now everything is organized and I have complete visibility into my financial health."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">ER</div>
+                        <div class="author-info">
+                            <h4>Emily Rodriguez</h4>
+                            <p>Small Business Owner</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Final CTA -->
+    <section class="final-cta">
+        <div class="landing-container">
+            <div class="rating-badge">
+                ⭐ 4.9/5 from over 2,000 reviews
+            </div>
+            <h2>Ready to take control of your financial future?</h2>
+            <p>Join thousands of people who've transformed their financial lives. Start your journey to financial freedom today - it's completely free!</p>
+
+            <div class="cta-buttons">
+                <a href="/Identity/Account/Register" class="btn-primary-cta">
+                    Get Started Free <i class="bi bi-arrow-right"></i>
+                </a>
+                <a href="#demo" class="btn-secondary-cta">Watch Demo</a>
+            </div>
+
+            <div class="trust-indicators">
+                <div class="trust-item">
+                    <i class="bi bi-shield-check"></i>
+                    Bank-level security
+                </div>
+                <div class="trust-item">
+                    <i class="bi bi-credit-card"></i>
+                    No credit card required
+                </div>
+                <div class="trust-item">
+                    <i class="bi bi-phone"></i>
+                    Works on all devices
+                </div>
+            </div>
+        </div>
+    </section>
 }
-
-
-
-
-
-
 
 @section Scripts {
     @if (User.Identity.IsAuthenticated)
     {
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
+            let expenseChart, incomeChart, savingsChart;
+
+            // Submit Income Function
             async function submitIncome(event) {
                 event.preventDefault();
 
                 const amountInput = document.getElementById('incomeAmount');
-                const errorDiv = document.getElementById('incomeAmountError');  // <== Add this line
+                const errorDiv = document.getElementById('incomeAmountError');
 
-                if (!amountInput) {
-                    alert('Amount input not found');
-                    return;
-                }
-                if (!errorDiv) {
-                    alert('Error display element not found');
+                if (!amountInput || !errorDiv) {
+                    alert('Required elements not found');
                     return;
                 }
 
@@ -679,7 +1746,7 @@ else
                         const modal = bootstrap.Modal.getInstance(modalElement);
                         modal.hide();
                         document.getElementById('addIncomeForm').reset();
-                        console.log('Income saved:', result);
+                        location.reload(); // Refresh to show updated data
                     } else {
                         alert('Failed to save income.');
                     }
@@ -688,14 +1755,12 @@ else
                 }
             }
 
-
-
+            // Submit Savings Function
             async function submitSavings(event) {
                 event.preventDefault();
 
                 const targetInput = document.getElementById('targetAmount');
                 const currentInput = document.getElementById('currentAmount');
-
                 const targetErrorDiv = document.getElementById('targetAmountError');
                 const currentErrorDiv = document.getElementById('currentAmountError');
 
@@ -705,12 +1770,8 @@ else
                 currentErrorDiv.style.display = 'none';
                 currentErrorDiv.textContent = '';
 
-                if (!targetInput) {
-                    alert('Target Amount input not found');
-                    return;
-                }
-                if (!targetErrorDiv || !currentErrorDiv) {
-                    alert('Error display element(s) not found');
+                if (!targetInput || !targetErrorDiv || !currentErrorDiv) {
+                    alert('Required elements not found');
                     return;
                 }
 
@@ -749,7 +1810,7 @@ else
                 };
 
                 try {
-                    const response = await fetch('/Savings/SaveOrUpdateSavings', {  // <-- Updated URL here
+                    const response = await fetch('/Savings/SaveOrUpdateSavings', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(data),
@@ -770,25 +1831,11 @@ else
                     const result = await response.json();
 
                     if (result.success) {
-                        // Hide modal and reset form
                         const modalElement = document.getElementById('addSavingsModal');
                         const modal = bootstrap.Modal.getInstance(modalElement);
                         modal.hide();
                         document.getElementById('addSavingsForm').reset();
-
-                        // Optionally update the savings info on the page without reload
-                        if (result.savings) {
-                            // Update displayed savings values
-                            document.getElementById('currentSavingsDisplay').textContent = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(result.savings.CurrentAmount);
-                            document.getElementById('savingsGoalDisplay').textContent = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(result.savings.TargetAmount);
-
-                            // TODO: update savings chart here if you have a function to refresh it
-                            if (typeof updateSavingsChart === 'function') {
-                                updateSavingsChart(result.savings.CurrentAmount, result.savings.TargetAmount);
-                            }
-                        }
-
-                        console.log('Savings saved:', result);
+                        location.reload(); // Refresh to show updated data
                     } else {
                         alert('Failed to save savings.');
                     }
@@ -797,324 +1844,183 @@ else
                 }
             }
 
+            // Submit Expense Function
+            async function submitExpense(event) {
+                event.preventDefault();
 
+                const amount = parseFloat(document.getElementById('expenseAmount').value);
+                const category = document.getElementById('expenseCategory').value;
+                const date = document.getElementById('expenseDate').value;
+                const description = document.getElementById('expenseNote').value;
 
+                if (!amount || !category || !date) {
+                    alert('Please fill all required fields.');
+                    return;
+                }
 
-
-
-            let expenseChart;
-            // Run when DOM is fully loaded
-            document.addEventListener("DOMContentLoaded", function () {
-
-                // Fade in charts by changing opacity and translateY
-                const fadeIn = (id) => {
-                    const el = document.getElementById(id);
-                    if (el) {
-                        el.style.opacity = '1';
-                        el.style.transform = 'translateY(0)';
-                    }
+                const data = {
+                    Amount: amount,
+                    Category: category,
+                    Date: date,
+                    Description: description
                 };
-                fadeIn("expenseChart");
-                fadeIn("incomeChart");
-                fadeIn("savingsChart");
 
-                // ---------------------------
-                // Expense Chart Initialization
-                // ---------------------------
-                const expenseCtx = document.getElementById('expenseChart').getContext('2d');
-                expenseChart = new Chart(expenseCtx, {
+                try {
+                    const response = await fetch('/Expenses/AddExpense', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
 
-                    type: 'doughnut',
-                    data: {
-                        labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.Labels)),
-                        datasets: [{
-                            label: 'Expenses by Category',
-                            data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.Data)),
-                            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
-                            hoverOffset: 10
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        animation: {
-                            animateScale: true,
-                            animateRotate: true,
-                            duration: 1200,
-                            easing: 'easeOutBounce'
-                        },
-                        plugins: {
-                            legend: { position: 'bottom' }
-                        }
-                    }
-                });
-
-                // ---------------------------
-                // Handle Submit of Add Expense form via AJAX
-                // ---------------------------
-                async function submitExpense(event) {
-                    event.preventDefault();
-
-                    // Read form input values
-                    const amount = parseFloat(document.getElementById('expenseAmount').value);
-                    const category = document.getElementById('expenseCategory').value;
-                    const date = document.getElementById('expenseDate').value;
-                    const description = document.getElementById('expenseNote').value;
-
-                    // Basic validation
-                    if (!amount || !category || !date) {
-                        alert('Please fill all required fields.');
+                    if (!response.ok) {
+                        const error = await response.json();
+                        const errorText = error.details
+                            ? JSON.stringify(error.details)
+                            : (error.error || 'Unknown error');
+                        alert('Error saving expense:\n\n' + errorText);
                         return;
                     }
 
-                    // Prepare data object matching the Transaction model (server expects PascalCase)
-                    const data = {
-                        Amount: amount,
-                        Category: category,
-                        Date: date,
-                        Description: description
-                    };
+                    const result = await response.json();
 
-                    try {
-                        // Send POST request to your controller action
-                        const response = await fetch('/Expenses/AddExpense', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(data)
-                        });
-
-                        if (!response.ok) {
-                            const error = await response.json();
-                            console.error(error);
-                            const errorText = error.details
-                                ? JSON.stringify(error.details)
-                                : (error.error || 'Unknown error');
-
-                            alert('Error saving expense:\n\n' + errorText);
-
-                            return;
-                        }
-
-                        const result = await response.json();
-                        console.log(result);
-
-
-                        if (result.success) {
-                            // Close the modal after successful save
-                            const modal = bootstrap.Modal.getInstance(document.getElementById('addExpenseModal'));
-                            modal.hide();
-
-                            // Reset the form inputs
-                            document.getElementById('addExpenseForm').reset();
-
-                            // Add the new expense row dynamically to the table
-                            addExpenseRow(result);
-                            updateExpenseChart(result);
-
-                        } else {
-                            alert('Failed to save expense.');
-                        }
-                    } catch (error) {
-                        alert('Unexpected error: ' + error.message);
-                    }
-                }
-
-                function updateExpenseChart(expense) {
-                    const category = expense.Category;
-                    const amount = parseFloat(expense.Amount);
-                    const chartLabels = expenseChart.data.labels;
-                    const chartData = expenseChart.data.datasets[0].data;
-
-                    const existingIndex = chartLabels.indexOf(category);
-
-                    if (existingIndex !== -1) {
-                        chartData[existingIndex] += amount;
+                    if (result.success) {
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('addExpenseModal'));
+                        modal.hide();
+                        document.getElementById('addExpenseForm').reset();
+                        location.reload(); // Refresh to show updated data
                     } else {
-                        chartLabels.push(category);
-                        chartData.push(amount);
-                        expenseChart.data.datasets[0].backgroundColor.push(getRandomColor());
+                        alert('Failed to save expense.');
                     }
-
-                    expenseChart.update();
+                } catch (error) {
+                    alert('Unexpected error: ' + error.message);
                 }
+            }
 
-                function getRandomColor() {
-                    const hue = Math.floor(Math.random() * 360);
-                    return `hsl(${hue}, 70%, 70%)`;
-                }
-
-
-                // Attach submitExpense as the handler for form submission
-                const addExpenseForm = document.getElementById('addExpenseForm');
-                if (addExpenseForm) {
-                    addExpenseForm.addEventListener('submit', submitExpense);
-                }
-
-                // ---------------------------
-                // Dynamically add a new expense row to the expenses table
-                // ---------------------------
-                function addExpenseRow(expense) {
-                    const tbody = document.querySelector('#expensesTable tbody');
-                    if (!tbody) return;
-
-                    const tr = document.createElement('tr');
-                    tr.setAttribute('data-date', expense.Date);
-
-                    const tdAmount = document.createElement('td');
-                    tdAmount.innerHTML = `<strong>${expense.Amount}</strong>`;
-
-                    const tdCategory = document.createElement('td');
-                    tdCategory.textContent = expense.Category;
-
-                    tr.appendChild(tdAmount);
-                    tr.appendChild(tdCategory);
-
-                    tbody.appendChild(tr);
-                    
-                }
-
-
-
-               
-
-
-
-                // Attach listener on DOMContentLoaded or similar
-                document.getElementById('addIncomeForm')?.addEventListener('submit', submitIncome);
-
-                // ---------------------------
-                // Income vs Expenses Chart Initialization
-                // ---------------------------
-                const incomeCtx = document.getElementById('incomeChart').getContext('2d');
-                new Chart(incomeCtx, {
+            // Initialize Charts
+            document.addEventListener("DOMContentLoaded", function () {
+                // Expense Chart
+                const expenseCtx = document.getElementById('expenseChart').getContext('2d');
+                expenseChart = new Chart(expenseCtx, {
                     type: 'doughnut',
                     data: {
-                        labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.IncomeVsExpenseLabels)),
+                        labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.Labels ?? new string[0])),
                         datasets: [{
-                            data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.IncomeVsExpenseData)),
-                            backgroundColor: ['#e74c3c', '#2ecc71'],
-                            hoverOffset: 10
+                            data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.Data ?? new decimal[0])),
+                            backgroundColor: ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'],
+                            borderWidth: 0,
+                            hoverOffset: 8
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        cutout: '70%',
+                        cutout: '60%',
                         plugins: {
-                            legend: { position: 'bottom' },
-                            tooltip: {
-                                callbacks: {
-                                    label: function (context) {
-                                        const label = context.label || '';
-                                        const value = context.raw || 0;
-                                        return `${label}: $${value.toFixed(2)}`;
-                                    }
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    padding: 20,
+                                    usePointStyle: true,
+                                    font: { size: 12 }
                                 }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                titleColor: 'white',
+                                bodyColor: 'white',
+                                cornerRadius: 8
                             }
                         }
                     }
                 });
 
-                // ---------------------------
-                // Savings Chart Initialization
-                // ---------------------------
+                // Income vs Expenses Chart
+                const incomeCtx = document.getElementById('incomeChart').getContext('2d');
+                incomeChart = new Chart(incomeCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.IncomeVsExpenseLabels ?? new string[] { "Income", "Expenses" })),
+                        datasets: [{
+                            data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.IncomeVsExpenseData ?? new decimal[] { 0, 0 })),
+                            backgroundColor: ['#10b981', '#ef4444'],
+                            borderRadius: 8,
+                            borderSkipped: false,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                cornerRadius: 8
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { display: false },
+                                ticks: { font: { size: 12 } }
+                            },
+                            y: {
+                                grid: { color: '#f3f4f6' },
+                                ticks: { display: false }
+                            }
+                        }
+                    }
+                });
 
+                // Savings Progress Chart
                 const currentAmount = @(ViewBag.CurrentSavings ?? 0M);
                 const targetAmount = @(ViewBag.SavingsGoal ?? 0M);
                 const remainingAmount = Math.max(targetAmount - currentAmount, 0);
 
                 const savingsCtx = document.getElementById('savingsChart').getContext('2d');
-                new Chart(savingsCtx, {
+                savingsChart = new Chart(savingsCtx, {
                     type: 'doughnut',
                     data: {
                         labels: ['Current Savings', 'Remaining to Goal'],
                         datasets: [{
                             data: [currentAmount, remainingAmount],
-                            backgroundColor: ['#17a2b8', '#dee2e6'], // teal and gray
-                            hoverOffset: 10
+                            backgroundColor: ['#3b82f6', '#e5e7eb'],
+                            borderWidth: 0,
+                            cutout: '75%'
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        cutout: '70%',
                         plugins: {
-                            legend: {
-                                position: 'bottom'
-                            },
+                            legend: { display: false },
                             tooltip: {
-                                callbacks: {
-                                    label: function (context) {
-                                        const label = context.label || '';
-                                        const value = context.parsed;
-                                        return `${label}: $${value.toLocaleString()}`;
-                                    }
-                                }
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                cornerRadius: 8
                             }
                         }
-                    }
+                    },
+                    plugins: [{
+                        beforeDraw: function (chart) {
+                            const width = chart.width,
+                                height = chart.height,
+                                ctx = chart.ctx;
+
+                            ctx.restore();
+                            const fontSize = (height / 114).toFixed(2);
+                            ctx.font = "bold " + fontSize + "em sans-serif";
+                            ctx.textBaseline = "middle";
+                            ctx.fillStyle = "#111827";
+
+                            const percentage = targetAmount > 0 ? Math.round((currentAmount / targetAmount) * 100) : 0;
+                            const text = percentage + "%";
+                            const textX = Math.round((width - ctx.measureText(text).width) / 2);
+                            const textY = height / 2;
+
+                            ctx.fillText(text, textX, textY);
+                            ctx.save();
+                        }
+                    }]
                 });
             });
-
-           
-
-            // ---------------------------
-            // Filter table rows by date range based on input IDs
-            // ---------------------------
-            function filterTableByDate(tableId, startDateId, endDateId) {
-                const startDateInput = document.getElementById(startDateId);
-                const endDateInput = document.getElementById(endDateId);
-                const startDate = startDateInput.value ? new Date(startDateInput.value) : null;
-                const endDate = endDateInput.value ? new Date(endDateInput.value) : null;
-                const table = document.getElementById(tableId);
-                if (!table) return;
-
-                for (const row of table.tBodies[0].rows) {
-                    const rowDateStr = row.getAttribute('data-date');
-                    if (!rowDateStr) continue;
-
-                    const rowDate = new Date(rowDateStr);
-                    let visible = true;
-
-                    if (startDate && rowDate < startDate) visible = false;
-                    if (endDate && rowDate > endDate) visible = false;
-
-                    row.style.display = visible ? '' : 'none';
-                }
-            }
-
-            // ---------------------------
-            // Filter functions for expenses
-            // ---------------------------
-            function filterExpenses() {
-                filterTableByDate('expensesTable', 'expenseStartDate', 'expenseEndDate');
-            }
-            function resetExpensesFilter() {
-                document.getElementById('expenseStartDate').value = '';
-                document.getElementById('expenseEndDate').value = '';
-                filterExpenses();
-            }
-
-            // ---------------------------
-            // Filter functions for savings
-            // ---------------------------
-            function filterSavings() {
-                filterTableByDate('savingsTable', 'savingsStartDate', 'savingsEndDate');
-            }
-            function resetSavingsFilter() {
-                document.getElementById('savingsStartDate').value = '';
-                document.getElementById('savingsEndDate').value = '';
-                filterSavings();
-            }
-
-            // ---------------------------
-            // Toggle visibility of filters by ID
-            // ---------------------------
-            function toggleFilter(filterId) {
-                const filterDiv = document.getElementById(filterId);
-                filterDiv.style.display = (filterDiv.style.display === "none" || filterDiv.style.display === "") ? "block" : "none";
-            }
         </script>
     }
 }
-
