@@ -5,7 +5,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@ViewData["Title"] - FinanceCalc</title>
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -15,102 +15,366 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
 
     <style>
-        .notification-badge {
-            position: absolute;
-            top: 0px;
-            right: 0px;
-            background: red;
-            color: white;
-            font-size: 0.75rem;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 18px;
-            font-weight: bold;
-            box-shadow: 0 0 3px rgba(0,0,0,0.3);
-            user-select: none;
+        body, html {
+            height: 100%;
+            margin: 0;
         }
 
-        .user-profile-icon-wrapper {
-            position: relative;
-            display: inline-block;
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 220px;
+            background-color: #f8f9fa;
+            border-right: 1px solid #dee2e6;
+            padding-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            transition: transform 0.3s ease;
         }
 
-        .user-profile-link {
-            color: inherit;
+            .sidebar.collapsed {
+                transform: translateX(-220px);
+            }
+
+            .sidebar .nav-link {
+                color: #333;
+                padding: 0.75rem 1.5rem;
+                font-weight: 500;
+                font-size: 14px;
+            }
+
+                .sidebar .nav-link.active,
+                .sidebar .nav-link:hover {
+                    background-color: #e9ecef;
+                    color: #0d6efd;
+                }
+
+        .content-wrapper {
+            padding: 2rem 1.5rem;
+            min-height: 100vh;
+            background-color: #fff;
+            margin-left: 220px;
+            transition: margin-left 0.3s ease;
+        }
+
+            .content-wrapper.expanded {
+                margin-left: 0;
+            }
+
+        .sidebar .navbar-brand {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: #0d6efd;
             text-decoration: none;
-            font-size: 1.5rem;
-            position: relative;
+            margin: 0;
+        }
+
+        /* Sidebar header with toggle button */
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem 0.75rem;
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 0.75rem;
+        }
+
+        .sidebar-toggle {
+            background: none;
+            border: none;
+            color: #6c757d;
+            padding: 0.25rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            font-size: 16px;
+        }
+
+            .sidebar-toggle:hover {
+                background-color: #e9ecef;
+                color: #0d6efd;
+            }
+
+        /* Fixed toggle button when sidebar is closed */
+        .sidebar-toggle-fixed {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            color: #6c757d;
+            font-size: 16px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+            .sidebar-toggle-fixed.show {
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .sidebar-toggle-fixed:hover {
+                background-color: #f8f9fa;
+                color: #0d6efd;
+            }
+
+        /* User Profile Styles - Back to original */
+        .user-profile {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #dee2e6;
+            background-color: #fff;
+            margin: 0 -1px -1px -1px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .user-info {
+            flex: 1;
+            min-width: 0;
+            margin-left: 0.75rem;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+            margin: 0;
+            line-height: 1.2;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .user-email {
+            color: #6c757d;
+            font-size: 12px;
+            margin: 0;
+            line-height: 1.2;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: #6c757d;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            font-size: 14px;
+        }
+
+            .logout-btn:hover {
+                background-color: #f8f9fa;
+                color: #dc3545;
+            }
+
+        /* Mobile responsiveness */
+        @@media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-220px);
+            }
+
+                .sidebar.mobile-open {
+                    transform: translateX(0);
+                }
+
+            .content-wrapper {
+                margin-left: 0;
+            }
+
+            .sidebar-toggle-fixed {
+                opacity: 1;
+                visibility: visible;
+            }
         }
     </style>
 </head>
 <body>
     @{
         int unreadCount = 0;
-        if (User.Identity.IsAuthenticated)
+        bool isAuthenticated = User.Identity.IsAuthenticated;
+        string userName = "";
+        string userEmail = "";
+        string userInitials = "";
+
+        if (isAuthenticated)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             unreadCount = _context.InboxMessage.Count(m => m.UserId == userId && !m.IsRead);
+
+            userName = User.FindFirstValue(ClaimTypes.Name) ?? User.Identity.Name ?? "User";
+            userEmail = User.FindFirstValue(ClaimTypes.Email) ?? "";
+
+            // Generate initials from name
+            var nameParts = userName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            if (nameParts.Length >= 2)
+            {
+                userInitials = $"{nameParts[0][0]}{nameParts[1][0]}".ToUpper();
+            }
+            else if (nameParts.Length == 1)
+            {
+                userInitials = nameParts[0].Length >= 2 ? nameParts[0].Substring(0, 2).ToUpper() : nameParts[0][0].ToString().ToUpper();
+            }
+            else
+            {
+                userInitials = "U";
+            }
         }
         ViewBag.UnreadMessagesCount = unreadCount;
     }
 
-    <header class="sticky-top bg-white shadow-sm">
-        <nav class="navbar navbar-expand-sm navbar-light border-bottom">
-            <div class="container-fluid">
-                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">FinanceCalc</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
-                        aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+    <!-- Fixed toggle button for when sidebar is closed -->
+    <button class="sidebar-toggle-fixed" id="sidebarToggleFixed" type="button">
+        <i class="bi bi-list"></i>
+    </button>
 
-                <div class="collapse navbar-collapse justify-content-between align-items-center" id="navbarCollapse">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active fw-semibold" : "")"
-                               asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        
-                    </ul>
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">FinanceCalc</a>
+            <button class="sidebar-toggle" id="sidebarToggle" type="button">
+                <i class="bi bi-x-lg" id="toggleIcon"></i>
+            </button>
+        </div>
 
-                    <div class="d-flex align-items-center gap-2">
-                        <partial name="_LoginPartial" />
-                    </div>
+        @if (isAuthenticated)
+        {
+            <nav class="nav flex-column flex-grow-1">
+                <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")"
+                   asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-house-door-fill me-2"></i> Dashboard
+                </a>
+                <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Reports" ? "active" : "")"
+                   asp-area="" asp-controller="Home" asp-action="Reports">
+                    <i class="bi bi-bar-chart-fill me-2"></i> Reports
+                </a>
+                <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Settings" ? "active" : "")"
+                   asp-area="" asp-controller="Home" asp-action="Settings">
+                    <i class="bi bi-gear-fill me-2"></i> Settings
+                </a>
+
+                <a class="nav-link position-relative"
+                   asp-area="" asp-controller="Inbox" asp-action="Index">
+                    <i class="bi bi-envelope-fill me-2"></i> Inbox
+                    @if (ViewBag.UnreadMessagesCount > 0)
+                    {
+                        <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle">
+                            @ViewBag.UnreadMessagesCount
+                        </span>
+                    }
+                </a>
+            </nav>
+
+            <!-- User Profile Section - Back to original styling -->
+            <div class="user-profile d-flex align-items-center gap-3">
+                <div class="user-avatar">
+                    @userInitials
+                </div>
+                <div class="user-info">
+                    <p class="user-name">@userName</p>
+                    <p class="user-email">@userEmail</p>
+                </div>
+                <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" class="d-inline">
+                    <button type="submit" class="logout-btn" title="Logout">
+                        <i class="bi bi-box-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+        }
+        else
+        {
+            <div class="d-flex flex-column justify-content-between h-100 px-3 pb-3">
+                <!-- Minimal sidebar when not logged in -->
+                <div>
+                    <p class="text-muted">Please log in to access the full dashboard.</p>
+                </div>
+                <div>
+                    <partial name="_LoginPartial" />
                 </div>
             </div>
-        </nav>
-    </header>
+        }
+    </nav>
 
-    <div class="container py-4">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+    <div class="content-wrapper" id="contentWrapper">
+        @RenderBody()
     </div>
-
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const toggleBtn = document.getElementById('darkModeToggle');
-            const body = document.body;
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebarToggleFixed = document.getElementById('sidebarToggleFixed');
+            const sidebar = document.getElementById('sidebar');
+            const contentWrapper = document.getElementById('contentWrapper');
+            const toggleIcon = document.getElementById('toggleIcon');
 
-            if (localStorage.getItem('darkMode') === 'enabled') {
-                body.classList.add('dark-mode');
-                toggleBtn.innerHTML = '<i class="bi bi-sun-fill"></i> Light Mode';
+            let sidebarOpen = true;
+
+            function toggleSidebar() {
+                sidebarOpen = !sidebarOpen;
+
+                if (sidebarOpen) {
+                    // Show sidebar
+                    sidebar.classList.remove('collapsed');
+                    contentWrapper.classList.remove('expanded');
+                    sidebarToggleFixed.classList.remove('show');
+                    toggleIcon.className = 'bi bi-x-lg';
+                } else {
+                    // Hide sidebar
+                    sidebar.classList.add('collapsed');
+                    contentWrapper.classList.add('expanded');
+                    sidebarToggleFixed.classList.add('show');
+                    toggleIcon.className = 'bi bi-list';
+                }
             }
 
-            toggleBtn?.addEventListener('click', () => {
-                body.classList.toggle('dark-mode');
-                const isDark = body.classList.contains('dark-mode');
-                localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
-                toggleBtn.innerHTML = isDark
-                    ? '<i class="bi bi-sun-fill"></i> Light Mode'
-                    : '<i class="bi bi-moon-fill"></i> Dark Mode';
-            });
+            // Add event listeners to both toggle buttons
+            sidebarToggle.addEventListener('click', toggleSidebar);
+            sidebarToggleFixed.addEventListener('click', toggleSidebar);
+
+            // Handle mobile responsiveness
+            function handleResize() {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.add('collapsed');
+                    contentWrapper.classList.add('expanded');
+                    sidebarToggleFixed.classList.add('show');
+                    sidebarOpen = false;
+                    toggleIcon.className = 'bi bi-list';
+                } else {
+                    sidebar.classList.remove('collapsed');
+                    contentWrapper.classList.remove('expanded');
+                    sidebarToggleFixed.classList.remove('show');
+                    sidebarOpen = true;
+                    toggleIcon.className = 'bi bi-x-lg';
+                }
+            }
+
+            window.addEventListener('resize', handleResize);
+            handleResize(); // Call on initial load
         });
     </script>
 
