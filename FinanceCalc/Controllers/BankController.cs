@@ -1,7 +1,9 @@
 ﻿using FinanceCalc.Data;
 using FinanceCalc.Models;
+using FinanceCalc.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 public class BankController : Controller
 {
@@ -18,12 +20,12 @@ public class BankController : Controller
 
     public async Task<IActionResult> Connect()
     {
-        var user = await _userManager.GetUserAsync(User);
-        var customerId = await _saltEdge.EnsureCustomerAsync(user.Id); // create customer if needed
-
-        var connectUrl = await _saltEdge.BuildConnectUrlAsync(customerId);
+        string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        string customerId = await _saltEdge.EnsureCustomerAsync(userId);
+        string connectUrl = await _saltEdge.BuildConnectUrlAsync(customerId);
         return Redirect(connectUrl);
     }
+
 
     public async Task<IActionResult> Callback(string connection_id, string customer_id)
     {

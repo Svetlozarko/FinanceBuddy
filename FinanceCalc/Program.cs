@@ -3,6 +3,7 @@ using FinanceCalc.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using FinanceCalc.Configuration;
 
 namespace FinanceCalc
 {
@@ -20,6 +21,10 @@ namespace FinanceCalc
 
             builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            builder.Services.Configure<SaltEdgeSettings>(
+    builder.Configuration.GetSection("SaltEdge"));
+
+            builder.Services.AddScoped<ISaltEdgeService, SaltEdgeService>();
 
             builder.Services.AddControllersWithViews();
 
