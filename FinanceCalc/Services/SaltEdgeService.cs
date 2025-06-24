@@ -27,53 +27,108 @@ namespace FinanceCalc.Services
 
         public async Task<string> EnsureCustomerAsync(string userId)
         {
-            var body = new
+            try
             {
-                data = new { identifier = userId }
-            };
+                // First, try to create a new customer
+                var body = new
+                {
+                    data = new { identifier = userId }
+                };
 
-            var response = await _httpClient.PostAsJsonAsync("https://www.saltedge.com/api/v5/customers", body);
-            var json = await response.Content.ReadAsStringAsync();
+                var response = await _httpClient.PostAsJsonAsync("https://www.saltedge.com/api/v5/customers", body);
+                var json = await response.Content.ReadAsStringAsync();
 
-            if (response.IsSuccessStatusCode)
-            {
-                using var doc = JsonDocument.Parse(json);
-                return doc.RootElement.GetProperty("data").GetProperty("id").GetString();
+                if (response.IsSuccessStatusCode)
+                {
+                    using var doc = JsonDocument.Parse(json);
+                    return doc.RootElement.GetProperty("data").GetProperty("id").GetString();
+                }
+
+                // Parse the error response
+                using var errorDoc = JsonDocument.Parse(json);
+                var errorClass = errorDoc.RootElement.GetProperty("error").GetProperty("class").GetString();
+
+                if (errorClass == "DuplicatedCustomer")
+                {
+                    // Customer already exists, get the list of customers and find by identifier
+                    var getResponse = await _httpClient.GetAsync("https://www.saltedge.com/api/v5/customers");
+
+                    if (!getResponse.IsSuccessStatusCode)
+                    {
+                        throw new Exception($"Failed to retrieve customers: {await getResponse.Content.ReadAsStringAsync()}");
+                    }
+
+                    var customersJson = await getResponse.Content.ReadAsStringAsync();
+                    using var customersDoc = JsonDocument.Parse(customersJson);
+
+                    var customers = customersDoc.RootElement.GetProperty("data");
+
+                    foreach (var customer in customers.EnumerateArray())
+                    {
+                        var identifier = customer.GetProperty("identifier").GetString();
+                        if (identifier == userId)
+                        {
+                            return customer.GetProperty("id").GetString();
+                        }
+                    }
+
+                    throw new Exception($"Customer with identifier {userId} not found in customer list");
+                }
+
+                throw new Exception($"SaltEdge customer error: {json}");
             }
-
-            if (json.Contains("Customer already exists"))
+            catch (JsonException ex)
             {
-                // Get existing
-                var getResponse = await _httpClient.GetAsync($"https://www.saltedge.com/api/v5/customers/{userId}");
-                var json2 = await getResponse.Content.ReadAsStringAsync();
-                using var doc = JsonDocument.Parse(json2);
-                return doc.RootElement.GetProperty("data").GetProperty("id").GetString();
+                throw new Exception($"Failed to parse SaltEdge response: {ex.Message}");
             }
-
-            throw new Exception("SaltEdge customer error: " + json);
+            catch (HttpRequestException ex)
+            {
+                throw new Exception($"HTTP request failed: {ex.Message}");
+            }
         }
 
         public async Task<string> BuildConnectUrlAsync(string customerId)
         {
-            var body = new
+            try
             {
-                data = new
+                var body = new
                 {
-                    customer_id = customerId,
-                    consent = new
+                    data = new
                     {
-                        scopes = new[] { "account_details", "transactions_details" }
-                    },
-                    attempt = new { return_to = "https://localhost:5001/Bank/Callback" },
-                    provider_codes = new[] { "dskbank_bg" }
+                        customer_id = customerId,
+                        consent = new
+                        {
+                            scopes = new[] { "account_details", "transactions_details" }
+                        },
+                        attempt = new { return_to = "https://localhost:5001/Bank/Callback" },
+                        provider_codes = new[] { "dskbank_bg" }
+                    }
+                };
+
+                var response = await _httpClient.PostAsJsonAsync("https://www.saltedge.com/api/v5/connect_sessions/create", body);
+                var json = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Failed to create connect session: {json}");
                 }
-            };
 
-            var response = await _httpClient.PostAsJsonAsync("https://www.saltedge.com/api/v5/connect_sessions/create", body);
-            var json = await response.Content.ReadAsStringAsync();
+                using var doc = JsonDocument.Parse(json);
+                return doc.RootElement.GetProperty("data").GetProperty("connect_url").GetString();
+            }
+            catch (JsonException ex)
+            {
+                throw new Exception($"Failed to parse SaltEdge connect response: {ex.Message}");
+            }
+            catch (HttpRequestException ex)
+            {
+                throw new Exception($"HTTP request failed while creating connect session: {ex.Message}");
+            }
+        }
 
-            using var doc = JsonDocument.Parse(json);
-            return doc.RootElement.GetProperty("data").GetProperty("connect_url").GetString();
+        public void Dispose()
+        {
+            _httpClient?.Dispose();
         }
     }
 }
