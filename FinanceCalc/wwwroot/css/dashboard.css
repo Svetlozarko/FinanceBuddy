@@ -1,299 +1,462 @@
-﻿
+﻿/* ==========================================================================
+   DASHBOARD STYLES
+   ========================================================================== */
+
+/* Global Body Styling */
 body {
+    /* Beautiful gradient background from light blue to light purple to light pink */
     background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 50%, #fce7f3 100%);
 }
 
+/* ==========================================================================
+   DASHBOARD LAYOUT
+   ========================================================================== */
+
+/* Main container for the entire dashboard */
 .dashboard-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 24px;
+    max-width: 1200px; /* Limit width for better readability */
+    margin: 0 auto; /* Center the container */
+    padding: 24px; /* Add breathing room around content */
 }
 
+/* Header section containing title and action buttons */
 .dashboard-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 32px;
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-between; /* Push title left, buttons right */
+    align-items: flex-start; /* Align items to top */
+    margin-bottom: 32px; /* Space below header */
 }
 
+/* Main dashboard title */
 .dashboard-title {
-    font-size: 28px;
-    font-weight: 700;
-    color: #1f2937;
-    margin: 0;
+    font-size: 28px; /* Large, prominent text */
+    font-weight: 700; /* Bold weight */
+    color: #1f2937; /* Dark gray color */
+    margin: 0; /* Remove default margins */
 }
 
+/* Subtitle text below main title */
 .dashboard-subtitle {
-    font-size: 16px;
-    color: #6b7280;
-    margin: 4px 0 0 0;
+    font-size: 16px; /* Medium text size */
+    color: #6b7280; /* Lighter gray for hierarchy */
+    margin: 4px 0 0 0; /* Small top margin only */
 }
 
+/* Container for header action buttons */
 .header-buttons {
-    display: flex;
-    gap: 12px;
+    display: flex; /* Horizontal button layout */
+    gap: 12px; /* Space between buttons */
 }
 
+/* ==========================================================================
+   BUTTON STYLES
+   ========================================================================== */
+
+/* Base styling for modern buttons */
 .btn-modern {
-    border-radius: 12px;
-    font-weight: 500;
-    font-size: 14px;
-    padding: 8px 16px;
-    border: 1px solid #d1d5db;
-    transition: all 0.2s ease;
+    border-radius: 12px; /* Rounded corners */
+    font-weight: 500; /* Medium font weight */
+    font-size: 14px; /* Readable text size */
+    padding: 8px 16px; /* Comfortable padding */
+    border: 1px solid #d1d5db; /* Light border */
+    transition: all 0.2s ease; /* Smooth hover transitions */
 }
 
+/* Filter button styling */
 .btn-filter {
-    background: white;
-    color: #374151;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    background: white; /* Clean white background */
+    color: #374151; /* Dark text */
+    display: flex; /* Flexbox for icon alignment */
+    align-items: center; /* Center icon and text */
+    gap: 6px; /* Space between icon and text */
 }
 
+    /* Filter button hover state */
     .btn-filter:hover {
-        background: #f9fafb;
-        border-color: #9ca3af;
+        background: #f9fafb; /* Slightly darker on hover */
+        border-color: #9ca3af; /* Darker border on hover */
     }
 
+/* Export button styling */
 .btn-export {
-    background: #3b82f6;
-    color: white;
-    border-color: #3b82f6;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    background: #3b82f6; /* Blue background */
+    color: white; /* White text */
+    border-color: #3b82f6; /* Matching border */
+    display: flex; /* Flexbox for icon alignment */
+    align-items: center; /* Center icon and text */
+    gap: 6px; /* Space between icon and text */
 }
 
+    /* Export button hover state */
     .btn-export:hover {
-        background: #2563eb;
-        border-color: #2563eb;
+        background: #2563eb; /* Darker blue on hover */
+        border-color: #2563eb; /* Matching darker border */
     }
 
-/* Metric Cards */
+/* ==========================================================================
+   METRIC CARDS SECTION
+   ========================================================================== */
+
+/* Grid container for metric cards (Income, Expenses, Savings) */
 .metrics-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 24px;
-    margin-bottom: 32px;
+    display: grid; /* CSS Grid layout */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive columns */
+    gap: 24px; /* Space between cards */
+    margin-bottom: 32px; /* Space below section */
 }
 
+/* Individual metric card styling */
 .metric-card {
-    background: white;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    border: 1px solid #e5e7eb;
-    position: relative;
+    background: white; /* Default white background */
+    border-radius: 16px; /* Rounded corners */
+    padding: 24px; /* Internal spacing */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+    border: 1px solid #e5e7eb; /* Light border */
+    position: relative; /* For absolute positioning of children */
+    transition: all 0.3s ease; /* Smooth hover transitions */
 }
 
+    /* ==========================================================================
+   METRIC CARD BACKGROUND COLORS
+   ========================================================================== */
+
+    /* Income Card - Very Light Green Background */
+    .metric-card:has(.metric-icon.income) {
+        background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        border: 1px solid #bbf7d0;
+    }
+
+    /* Expense Card - Very Light Red/Pink Background */
+    .metric-card:has(.metric-icon.expense) {
+        background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+        border: 1px solid #fecaca;
+    }
+
+    /* Savings Card - Very Light Blue Background */
+    .metric-card:has(.metric-icon.savings) {
+        background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+        border: 1px solid #bfdbfe;
+    }
+
+    /* Fallback for browsers that don't support :has() selector */
+    /* Target cards by their position (first = income, second = expense, third = savings) */
+    .metric-card:nth-child(1) {
+        background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        border: 1px solid #bbf7d0;
+    }
+
+    .metric-card:nth-child(2) {
+        background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+        border: 1px solid #fecaca;
+    }
+
+    .metric-card:nth-child(3) {
+        background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+        border: 1px solid #bfdbfe;
+    }
+
+    /* Enhanced hover effect for all metric cards */
+    .metric-card:hover {
+        transform: translateY(-2px); /* Lift card on hover */
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* Darker shadow on hover */
+    }
+
+/* ==========================================================================
+   METRIC CARD HEADER AND ICONS
+   ========================================================================== */
+
+/* Header section of each metric card (contains icon and add button) */
 .metric-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 16px;
+    display: flex; /* Flexbox layout */
+    justify-content: space-between; /* Icon left, button right */
+    align-items: flex-start; /* Align to top */
+    margin-bottom: 16px; /* Space below header */
 }
 
+/* Metric icon container (trending up, down, target icons) */
 .metric-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 20px;
+    width: 48px; /* Fixed width */
+    height: 48px; /* Fixed height (square) */
+    border-radius: 12px; /* Rounded corners */
+    display: flex; /* Flexbox for centering */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    color: white; /* White icon color */
+    font-size: 20px; /* Icon size */
+    font-weight: 600; /* Semi-bold icons */
 }
 
+    /* Income metric icon - green background */
     .metric-icon.income {
-        background: #10b981;
+        background: #10b981; /* Green color for positive/income */
     }
 
+    /* Expense metric icon - red background */
     .metric-icon.expense {
-        background: #ef4444;
+        background: #ef4444; /* Red color for negative/expense */
     }
 
+    /* Savings metric icon - blue background */
     .metric-icon.savings {
-        background: #3b82f6;
+        background: #3b82f6; /* Blue color for neutral/savings */
     }
 
+/* Add button styling (+ button in top right of cards) */
 .add-btn {
-    background: none;
-    border: none;
-    color: #9ca3af;
-    padding: 4px;
-    border-radius: 6px;
-    transition: all 0.2s ease;
-    cursor: pointer;
+    background: #000000; /* Black background */
+    border: none; /* No border */
+    color: white; /* White plus icon */
+    padding: 8px; /* Comfortable padding */
+    border-radius: 50%; /* Circular shape */
+    transition: all 0.2s ease; /* Smooth transitions */
+    cursor: pointer; /* Pointer cursor on hover */
+    width: 36px; /* Fixed width */
+    height: 36px; /* Fixed height (square for circle) */
+    display: flex; /* Flexbox for centering */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    font-size: 18px; /* Plus icon size */
 }
 
+    /* Add button hover state */
     .add-btn:hover {
-        color: #6b7280;
-        background: #f3f4f6;
+        background: #374151; /* Darker gray on hover */
+        transform: scale(1.05); /* Slightly enlarge on hover */
     }
 
+/* ==========================================================================
+   METRIC CARD CONTENT
+   ========================================================================== */
+
+/* Content area of metric cards */
 .metric-content {
-    margin-top: 12px;
+    margin-top: 16px; /* Space from header */
 }
 
+/* Label text (e.g., "Total Income") */
 .metric-label {
-    font-size: 14px;
-    font-weight: 500;
-    color: #6b7280;
-    margin: 0 0 4px 0;
+    font-size: 14px; /* Small text size */
+    font-weight: 500; /* Medium weight */
+    color: #6b7280; /* Gray color */
+    margin: 0 0 8px 0; /* Bottom margin for spacing */
 }
 
+/* Main value display (e.g., "$4,250.00") */
 .metric-value {
-    font-size: 28px;
-    font-weight: 700;
-    color: #111827;
-    margin: 0 0 4px 0;
+    font-size: 32px; /* Large, prominent text */
+    font-weight: 700; /* Bold weight */
+    color: #111827; /* Dark color */
+    margin: 0 0 8px 0; /* Bottom margin for spacing */
+    line-height: 1; /* Tight line height */
 }
 
+/* Change indicator text (e.g., "+12.5% vs last month") */
 .metric-change {
-    font-size: 14px;
-    font-weight: 500;
-    margin: 0;
+    font-size: 14px; /* Small text */
+    font-weight: 500; /* Medium weight */
+    margin: 0; /* No margins */
 }
 
+    /* Positive change styling (green) */
     .metric-change.positive {
-        color: #10b981;
+        color: #22c55e; /* Green for positive changes */
     }
 
+    /* Negative change styling (red) */
     .metric-change.negative {
-        color: #ef4444;
+        color: #ef4444; /* Red for negative changes */
     }
 
+    /* Neutral change styling (blue) */
     .metric-change.neutral {
-        color: #3b82f6;
+        color: #6b7280; /* Gray for neutral changes */
     }
 
-/* Charts Grid */
+/* ==========================================================================
+   CHARTS SECTION
+   ========================================================================== */
+
+/* Grid container for chart cards */
 .charts-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 24px;
-    margin-bottom: 32px;
+    display: grid; /* CSS Grid layout */
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* Responsive columns */
+    gap: 24px; /* Space between charts */
+    margin-bottom: 32px; /* Space below section */
 }
 
+/* Individual chart card styling */
 .chart-card {
-    background: white;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    border: 1px solid #e5e7eb;
+    background: white; /* White background */
+    border-radius: 16px; /* Rounded corners */
+    padding: 24px; /* Internal spacing */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+    border: 1px solid #e5e7eb; /* Light border */
 }
 
+/* Chart title styling */
 .chart-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: #111827;
-    margin: 0 0 20px 0;
+    font-size: 18px; /* Medium-large text */
+    font-weight: 600; /* Semi-bold */
+    color: #111827; /* Dark color */
+    margin: 0 0 20px 0; /* Bottom margin only */
 }
 
+/* Container for chart canvas elements */
 .chart-container {
-    height: 280px;
-    position: relative;
-    margin-bottom: 16px;
+    height: 280px; /* Fixed height for consistency */
+    position: relative; /* For absolute positioning of charts */
+    margin-bottom: 16px; /* Space below chart */
 }
 
+/* Footer text below charts */
 .chart-footer {
-    text-align: center;
-    font-size: 14px;
-    color: #6b7280;
+    text-align: center; /* Center the text */
+    font-size: 14px; /* Small text */
+    color: #6b7280; /* Gray color */
 }
 
-/* Recent Transactions */
+/* ==========================================================================
+   TRANSACTIONS SECTION
+   ========================================================================== */
+
+/* Main container for recent transactions */
 .transactions-section {
-    background: white;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    border: 1px solid #e5e7eb;
+    background: white; /* White background */
+    border-radius: 16px; /* Rounded corners */
+    padding: 24px; /* Internal spacing */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+    border: 1px solid #e5e7eb; /* Light border */
 }
 
+/* Transactions section title */
 .transactions-title {
-    font-size: 20px;
-    font-weight: 700;
-    color: #111827;
-    margin: 0 0 20px 0;
+    font-size: 20px; /* Large text */
+    font-weight: 700; /* Bold weight */
+    color: #111827; /* Dark color */
+    margin: 0 0 20px 0; /* Bottom margin only */
 }
 
+/* Individual transaction item */
 .transaction-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px;
-    background: #f9fafb;
-    border-radius: 12px;
-    margin-bottom: 12px;
-    border: 1px solid #e5e7eb;
+    display: flex; /* Flexbox layout */
+    justify-content: space-between; /* Content left, amount right */
+    align-items: center; /* Center vertically */
+    padding: 16px; /* Internal spacing */
+    background: #f9fafb; /* Light gray background */
+    border-radius: 12px; /* Rounded corners */
+    margin-bottom: 12px; /* Space between items */
+    border: 1px solid #e5e7eb; /* Light border */
+    transition: all 0.2s ease; /* Smooth hover transitions */
 }
 
+    .transaction-item:hover {
+        background: #f3f4f6; /* Darker background on hover */
+        transform: translateX(4px); /* Slightly move right on hover */
+    }
+
+    .transaction-item:last-child {
+        margin-bottom: 0; /* Remove margin from last item */
+    }
+
+/* Left side of transaction (icon + info) */
 .transaction-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    display: flex; /* Flexbox layout */
+    align-items: center; /* Center vertically */
+    gap: 12px; /* Space between icon and text */
 }
 
+/* Transaction category icon */
 .transaction-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
+    width: 48px; /* Fixed width */
+    height: 48px; /* Fixed height (square) */
+    border-radius: 12px; /* Rounded corners */
+    display: flex; /* Flexbox for centering */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    font-size: 20px; /* Emoji size */
+    line-height: 1; /* Prevent emoji from being cut off */
+    font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; /* Ensure emoji fonts load */
 }
 
+    /* Ensure emoji spans display properly */
+    .transaction-icon span {
+        font-size: 20px; /* Emoji size */
+        line-height: 1; /* Tight line height */
+        display: block; /* Block display for proper centering */
+    }
+
+/* Transaction info text styling */
 .transaction-info h6 {
-    font-size: 16px;
-    font-weight: 600;
-    color: #111827;
-    margin: 0;
+    font-size: 16px; /* Medium text */
+    font-weight: 600; /* Semi-bold */
+    color: #111827; /* Dark color */
+    margin: 0; /* No margins */
 }
 
 .transaction-info p {
-    font-size: 14px;
-    color: #6b7280;
-    margin: 2px 0 0 0;
+    font-size: 14px; /* Small text */
+    color: #6b7280; /* Gray color */
+    margin: 2px 0 0 0; /* Small top margin only */
 }
 
+/* Right side of transaction (amount) */
 .transaction-right {
-    text-align: right;
+    text-align: right; /* Right-align text */
 }
 
+/* Transaction amount styling */
 .transaction-amount {
-    font-size: 16px;
-    font-weight: 700;
-    margin: 0;
+    font-size: 16px; /* Medium text */
+    font-weight: 700; /* Bold weight */
+    margin: 0; /* No margins */
 }
 
+/* Transaction date styling */
 .transaction-date {
-    font-size: 12px;
-    color: #9ca3af;
-    margin: 2px 0 0 0;
+    font-size: 12px; /* Small text */
+    color: #9ca3af; /* Light gray */
+    margin: 2px 0 0 0; /* Small top margin */
 }
 
-/* Responsive */
-@@media (max-width: 768px) {
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
+
+/* Tablet and mobile styles */
+@media (max-width: 768px) {
+    /* Reduce container padding on smaller screens */
     .dashboard-container {
         padding: 16px;
     }
 
+    /* Stack header elements vertically on mobile */
     .dashboard-header {
-        flex-direction: column;
-        gap: 16px;
-        align-items: stretch;
+        flex-direction: column; /* Stack vertically */
+        gap: 16px; /* Space between elements */
+        align-items: stretch; /* Full width elements */
     }
 
+    /* Single column layout for metrics on mobile */
     .metrics-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; /* Single column */
     }
 
+    /* Single column layout for charts on mobile */
     .charts-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; /* Single column */
     }
 }
 
+@media (max-width: 480px) {
+    .metric-value {
+        font-size: 28px; /* Slightly smaller on very small screens */
+    }
 
+    .dashboard-title {
+        font-size: 24px; /* Adjust title size for mobile */
+    }
+
+    .metrics-grid {
+        gap: 16px; /* Reduce gap for better mobile spacing */
+    }
+}
