@@ -22,7 +22,7 @@ namespace FinanceCalc
             builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.Configure<SaltEdgeSettings>(
-    builder.Configuration.GetSection("SaltEdge"));
+            builder.Configuration.GetSection("SaltEdge"));
 
             builder.Services.AddScoped<ISaltEdgeService, SaltEdgeService>();
 
@@ -66,5 +66,3 @@ namespace FinanceCalc
 
 
 
-//https://www.creditkarma.com/lp/mint-to-credit-karma-net-worth-signup
-//https://fastbudget.app/
