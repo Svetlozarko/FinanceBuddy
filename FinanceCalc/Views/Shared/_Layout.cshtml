@@ -329,10 +329,8 @@
                    asp-area="" asp-controller="Home" asp-action="Reports">
                     <i class="bi bi-bar-chart-fill me-2"></i> Reports
                 </a>
-                <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Settings" ? "active" : "")"
-                   asp-area="" asp-controller="Home" asp-action="Settings">
-                    <i class="bi bi-gear-fill me-2"></i> Settings
-                </a>
+            
+
 
                 <a class="nav-link position-relative"
                    asp-area="" asp-controller="Inbox" asp-action="Index">
@@ -343,6 +341,11 @@
                             @ViewBag.UnreadMessagesCount
                         </span>
                     }
+                </a>
+
+                <a class="nav-link @(ViewContext.RouteData.Values["area"]?.ToString() == "Identity" && ViewContext.RouteData.Values["page"]?.ToString()?.Contains("Manage") == true ? "active" : "")"
+                   asp-area="Identity" asp-page="/Account/Manage/Index">
+                    <i class="bi bi-gear-fill me-2"></i> Settings
                 </a>
             </nav>
 
