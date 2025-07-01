@@ -12,9 +12,9 @@ body {
 
 /* Main container for landing page content */
 .landing-container {
-  max-width: 1200px; /* Limit width for readability */
-  margin: 0 auto; /* Center the container */
-  padding: 0 20px; /* Horizontal padding */
+    max-width: 1400px; /* Limit width for readability */
+    margin: 0 auto; /* Center the container */
+    padding: 0.02rem; /* Add padding for smaller screens */
 }
 
 /* ==========================================================================

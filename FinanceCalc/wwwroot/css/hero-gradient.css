@@ -1,0 +1,358 @@
+﻿/* Hero Gradient Background */
+.hero-gradient-bg {
+    background: radial-gradient(ellipse at top left, #667eea 0%, #764ba2 25%), radial-gradient(ellipse at top right, #f093fb 0%, #f5576c 25%), radial-gradient(ellipse at bottom left, #4facfe 0%, #00f2fe 25%), radial-gradient(ellipse at bottom right, #a8edea 0%, #fed6e3 25%);
+    background-size: 50% 50%, 50% 50%, 50% 50%, 50% 50%;
+    background-position: top left, top right, bottom left, bottom right;
+    background-repeat: no-repeat;
+    animation: gradientShift 20s ease infinite;
+    position: relative;
+    overflow: hidden;
+    min-height: 100vh;
+}
+
+/* Alternative: More subtle gradient like the first image */
+.hero-gradient-bg-light {
+    background: radial-gradient(ellipse at top left, #f5f7fa 0%, #c3cfe2 40%), radial-gradient(ellipse at top right, #e0c3fc 0%, #9bb5ff 40%), radial-gradient(ellipse at bottom, #f093fb 0%, #f5f7fa 40%);
+    background-size: 100% 60%, 100% 60%, 100% 60%;
+    background-position: top left, top right, bottom;
+    animation: lightGradientMove 25s ease infinite;
+}
+
+/* Alternative: Dark blue gradient like the second image */
+.hero-gradient-bg-dark {
+    background: radial-gradient(ellipse at top left, #1e3c72 0%, #2a5298 50%), radial-gradient(ellipse at top right, #2d5aa0 0%, #1e3c72 50%), radial-gradient(ellipse at bottom, #1a237e 0%, #283593 50%);
+    background-size: 100% 70%, 100% 70%, 100% 70%;
+    background-position: top left, top right, bottom;
+    animation: darkGradientMove 30s ease infinite;
+}
+
+/* Gradient animation */
+@keyframes gradientShift {
+    0%, 100% {
+        background-position: top left, top right, bottom left, bottom right;
+    }
+
+    25% {
+        background-position: top right, bottom right, top left, bottom left;
+    }
+
+    50% {
+        background-position: bottom right, bottom left, top right, top left;
+    }
+
+    75% {
+        background-position: bottom left, top left, bottom right, top right;
+    }
+}
+
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes meshMove {
+    0%, 100% {
+        filter: hue-rotate(0deg);
+    }
+
+    50% {
+        filter: hue-rotate(45deg);
+    }
+}
+
+@keyframes lightGradientMove {
+    0%, 100% {
+        background-position: top left, top right, bottom;
+    }
+
+    50% {
+        background-position: top right, bottom left, top left;
+    }
+}
+
+@keyframes darkGradientMove {
+    0%, 100% {
+        background-position: top left, top right, bottom;
+    }
+
+    33% {
+        background-position: top right, bottom left, top left;
+    }
+
+    66% {
+        background-position: bottom right, top left, top right;
+    }
+}
+
+@keyframes sunsetMove {
+    0%, 100% {
+        background-position: top, bottom left, bottom right;
+    }
+
+    50% {
+        background-position: top right, bottom right, bottom left;
+    }
+}
+
+@keyframes oceanMove {
+    0%, 100% {
+        background-position: top left, top right, bottom;
+    }
+
+    50% {
+        background-position: top right, bottom left, top;
+    }
+}
+
+/* Alternative: Diagonal gradient with better coverage */
+.hero-gradient-bg-diagonal {
+    background: linear-gradient( 45deg, #667eea 0%, #764ba2 15%, #f093fb 30%, #f5576c 45%, #4facfe 60%, #00f2fe 75%, #a8edea 90%, #fed6e3 100% );
+    background-size: 400% 400%;
+    animation: gradientMove 25s ease infinite;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Mesh gradient for more natural look */
+.hero-gradient-bg-mesh {
+    background: radial-gradient(circle at 20% 80%, #667eea 0%, transparent 50%), radial-gradient(circle at 80% 20%, #f093fb 0%, transparent 50%), radial-gradient(circle at 40% 40%, #4facfe 0%, transparent 50%), radial-gradient(circle at 60% 60%, #a8edea 0%, transparent 50%), linear-gradient(135deg, #764ba2 0%, #f5576c 100%);
+    background-size: 100% 100%;
+    animation: meshMove 30s ease infinite;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Additional gradient variations you can choose from */
+
+/* Sunset gradient */
+.hero-gradient-sunset {
+    background: radial-gradient(ellipse at top, #ff9a9e 0%, #fecfef 50%), radial-gradient(ellipse at bottom left, #fad0c4 0%, #ff9a9e 50%), radial-gradient(ellipse at bottom right, #fecfef 0%, #fad0c4 50%);
+    background-size: 100% 60%, 80% 80%, 80% 80%;
+    animation: sunsetMove 22s ease infinite;
+}
+
+/* Ocean gradient */
+.hero-gradient-ocean {
+    background: radial-gradient(ellipse at top left, #667eea 0%, #764ba2 40%), radial-gradient(ellipse at top right, #89f7fe 0%, #66a6ff 40%), radial-gradient(ellipse at bottom, #667eea 0%, #89f7fe 40%);
+    background-size: 100% 70%, 100% 70%, 100% 50%;
+    animation: oceanMove 28s ease infinite;
+}
+
+/* Purple dream gradient */
+.hero-gradient-purple {
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 25%, #d299c2 50%, #fef9d7 75%, #a8edea 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 20s ease infinite;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Tech gradient */
+.hero-gradient-tech {
+    background: linear-gradient(135deg, #0f0c29 0%, #302b63 25%, #24243e 50%, #302b63 75%, #0f0c29 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 25s ease infinite;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Dynamic text color based on background */
+.hero-gradient-bg .hero-title,
+.hero-gradient-bg .hero-subtitle,
+.hero-gradient-bg .hero-stat h3,
+.hero-gradient-bg .hero-stat p,
+.hero-gradient-bg .hero-badge {
+    color: white !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    font-weight: 600;
+}
+
+/* Enhanced text contrast */
+.hero-gradient-bg .hero-title {
+    color: white !important;
+    text-shadow: 0 3px 12px rgba(0, 0, 0, 0.4);
+    font-weight: 700;
+}
+
+.hero-gradient-bg .hero-subtitle {
+    color: rgba(255, 255, 255, 0.95) !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    font-weight: 500;
+}
+
+/* Highlight text styling */
+.hero-gradient-bg .highlight {
+    background: linear-gradient(45deg, #ffffff, #f0f9ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+    font-weight: 800;
+}
+
+/* Button enhancements on gradient */
+.hero-gradient-bg .cta-button {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white !important;
+    font-weight: 600;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+    .hero-gradient-bg .cta-button:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+
+.hero-gradient-bg .btn-secondary-cta {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white !important;
+    font-weight: 500;
+}
+
+    .hero-gradient-bg .btn-secondary-cta:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: white !important;
+    }
+
+/* Hero badge styling */
+.hero-gradient-bg .hero-badge {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white !important;
+    padding: 8px 16px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Stats styling on gradient */
+.hero-gradient-bg .hero-stats {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 24px;
+    margin-top: 32px;
+}
+
+.hero-gradient-bg .hero-stat h3 {
+    color: white !important;
+    font-size: 2rem;
+    font-weight: 700;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.hero-gradient-bg .hero-stat p {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 500;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Dashboard preview enhancements */
+.hero-gradient-bg .dashboard-preview {
+    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3));
+}
+
+.hero-gradient-bg .savings-badge {
+    background: rgba(16, 185, 129, 0.9) !important;
+    backdrop-filter: blur(10px);
+    color: white !important;
+    font-weight: 600;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Overlay for better text readability */
+.hero-gradient-bg::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(0.5px);
+    z-index: 1;
+}
+
+/* Ensure content is above the overlay */
+.hero-gradient-bg > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* Floating elements for extra visual appeal */
+.hero-gradient-bg::after {
+    content: "";
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    top: 10%;
+    right: 15%;
+    animation: float 8s ease-in-out infinite;
+    z-index: 1;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+        opacity: 0.7;
+    }
+
+    50% {
+        transform: translateY(-30px) rotate(180deg);
+        opacity: 1;
+    }
+}
+
+/* Ensure dark gradient text is white */
+.hero-gradient-bg-dark .hero-title,
+.hero-gradient-bg-dark .hero-subtitle,
+.hero-gradient-bg-dark .hero-stat h3,
+.hero-gradient-bg-dark .hero-stat p,
+.hero-gradient-bg-dark .hero-badge {
+    color: white !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-gradient-bg,
+    .hero-gradient-bg-diagonal,
+    .hero-gradient-bg-mesh {
+        background-size: 200% 200%;
+        min-height: 80vh;
+    }
+
+        .hero-gradient-bg::after {
+            width: 150px;
+            height: 150px;
+            top: 5%;
+            right: 10%;
+        }
+
+        .hero-gradient-bg .hero-title {
+            font-size: 2rem;
+        }
+
+        .hero-gradient-bg .hero-subtitle {
+            font-size: 1rem;
+        }
+}
