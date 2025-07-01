@@ -1,0 +1,138 @@
+﻿/* Combined Data Button Styling */
+.btn-data {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    border: none;
+    color: white;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+    .btn-data:hover {
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        color: white;
+    }
+
+    .btn-data:focus {
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        color: white;
+    }
+
+/* Hover Dropdown Functionality */
+.data-dropdown {
+    position: relative;
+}
+
+.data-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 1000;
+    display: none;
+    min-width: 220px;
+    padding: 0.5rem 0;
+    margin: 0.125rem 0 0;
+    font-size: 0.875rem;
+    color: #212529;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+}
+
+/* Show dropdown on hover */
+.data-dropdown:hover .data-dropdown-menu {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Dropdown header styling */
+.data-dropdown-menu .dropdown-header {
+    display: block;
+    padding: 0.5rem 1rem;
+    margin-bottom: 0;
+    font-size: 0.75rem;
+    color: #6c757d;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background-color: #f8f9fa;
+    border: 0;
+}
+
+/* Dropdown item styling */
+.data-dropdown-menu .dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    clear: both;
+    font-weight: 400;
+    color: #212529;
+    text-align: inherit;
+    text-decoration: none;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;
+    transition: all 0.2s ease;
+}
+
+    .data-dropdown-menu .dropdown-item:hover,
+    .data-dropdown-menu .dropdown-item:focus {
+        color: #1e2125;
+        background-color: #f8f9fa;
+        transform: translateX(2px);
+    }
+
+    /* Icon spacing in dropdown items */
+    .data-dropdown-menu .dropdown-item i {
+        width: 20px;
+        margin-right: 8px;
+    }
+
+/* Divider styling */
+.data-dropdown-menu .dropdown-divider {
+    height: 0;
+    margin: 0.5rem 0;
+    overflow: hidden;
+    border-top: 1px solid #e9ecef;
+}
+
+/* Chevron rotation on hover */
+.data-dropdown:hover .btn-data .bi-chevron-down {
+    transform: rotate(180deg);
+    transition: transform 0.3s ease;
+}
+
+.btn-data .bi-chevron-down {
+    transition: transform 0.3s ease;
+}
+
+/* Import modal styling */
+#importProgressModal .modal-content,
+#importResultsModal .modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+#importProgressModal .spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .data-dropdown-menu {
+        right: auto;
+        left: 0;
+        min-width: 200px;
+    }
+}
