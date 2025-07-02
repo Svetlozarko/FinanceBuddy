@@ -25,7 +25,7 @@ namespace FinanceCalc
             builder.Configuration.GetSection("SaltEdge"));
 
             builder.Services.AddScoped<ISaltEdgeService, SaltEdgeService>();
-
+            builder.Services.AddHttpClient<OpenAIService>();
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();

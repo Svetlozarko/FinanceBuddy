@@ -421,6 +421,39 @@
             </div>
         </div>
     </div>
+
+        <div class="container mt-5">
+            <h2>AI Assistant</h2>
+            <div class="form-group">
+                <label for="prompt">Enter your question:</label>
+                <textarea class="form-control" id="prompt" rows="4"></textarea>
+            </div>
+            <button class="btn btn-primary mt-2" onclick="sendPrompt()">Submit</button>
+
+            <div class="mt-3">
+                <h5>Response:</h5>
+                <pre id="responseArea" class="bg-light p-3 border rounded"></pre>
+            </div>
+        </div>
+
+
+        <script>
+            async function sendPrompt() {
+                const prompt = document.getElementById("prompt").value;
+                const responseArea = document.getElementById("responseArea");
+
+                const response = await fetch("/api/ai/ask", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(prompt)
+                });
+
+                const data = await response.json();
+                responseArea.innerText = data.answer;
+            }
+        </script>
     </div>
 
 }
