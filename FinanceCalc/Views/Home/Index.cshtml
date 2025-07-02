@@ -277,8 +277,8 @@
                     _ => "💸"
                 };
 
-                bool isIncome = item.Amount > 0;
-                string amountColorClass = isIncome ? "text-success" : "text-danger";
+               
+                string amountColorClass = "text-danger";
 
                 <div class="transaction-item">
                     <div class="transaction-left">
@@ -1110,7 +1110,7 @@ else
                         labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.IncomeVsExpenseLabels ?? new string[] { "Income", "Expenses" })),
                         datasets: [{
                             data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.IncomeVsExpenseData ?? new decimal[] { 0, 0 })),
-                            backgroundColor: ['#10b981', '#ef4444'],
+                            backgroundColor: ['#ef4444', '#10b981'],
                             borderRadius: 8,
                             borderSkipped: false,
                         }]
