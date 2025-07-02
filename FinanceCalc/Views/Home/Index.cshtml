@@ -2,6 +2,8 @@
 @model FinanceCalc.Models.DashboardViewModel
 
 <link rel="stylesheet" href="~/css/dashboard.css" />
+<link rel="stylesheet" href="~/css/dashboard-gradient.css" />
+
 <link rel="stylesheet" href="~/css/hero-gradient.css" />
 <script src="~/js/dashboard.js"></script>
 
@@ -14,13 +16,14 @@
 
 @if (User.Identity.IsAuthenticated)
 {
-    <link rel="stylesheet" href="~/css/dashboard.css" />
-    <div class="dashboard-container">
+    <link rel="stylesheet" href="~/css/dashboard-gradient.css" />
+    <div class="dashboard-gradient-bg-mesh">
+        <div class="dashboard-container" style="position: relative; z-index: 2;">
         <!-- Header -->
         <div class="dashboard-header">
             <div>
-                <h1 class="dashboard-title">Financial Overview</h1>
-                <p class="dashboard-subtitle">Track your income, expenses, and savings</p>
+                <h1 class="dashboard-title text-white">Financial Overview</h1>
+                <p class="dashboard-subtitle text-white">Track your income, expenses, and savings</p>
             </div>
             <div class="header-buttons">
                 <button class="btn btn-modern btn-filter">
@@ -418,6 +421,8 @@
             </div>
         </div>
     </div>
+    </div>
+
 }
 else
 {

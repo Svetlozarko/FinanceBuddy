@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="wwwroot\css\dashboard-data-dropdown.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\dashboard-gradient.css" />
   </ItemGroup>
 
   <ItemGroup>

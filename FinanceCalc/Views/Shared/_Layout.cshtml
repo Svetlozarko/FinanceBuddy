@@ -252,7 +252,6 @@
 </head>
 <body>
     @{
-        int unreadCount = 0;
         bool isAuthenticated = User.Identity.IsAuthenticated;
         bool hasBankConnection = false;
         string userName = "";
@@ -262,7 +261,6 @@
         if (isAuthenticated)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            unreadCount = _context.InboxMessage.Count(m => m.UserId == userId && !m.IsRead);
             
             // Check if user has any bank connections
             hasBankConnection = _context.BankConnections.Any(bc => bc.ApplicationUserId == userId);
@@ -285,7 +283,6 @@
                 userInitials = "U";
             }
         }
-        ViewBag.UnreadMessagesCount = unreadCount;
     }
 
     <!-- Fixed toggle button for when sidebar is closed -->
