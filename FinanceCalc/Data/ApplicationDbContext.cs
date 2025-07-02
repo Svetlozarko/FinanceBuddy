@@ -15,6 +15,7 @@ namespace FinanceCalc.Data
         public DbSet<InboxMessage> InboxMessage { get; set; } = default!;
         public DbSet<FinanceCalc.Models.Income> Income { get; set; } = default!;
         public DbSet<BankConnection> BankConnections { get; set; }
+        public DbSet<Article> Articles { get; set; }
 
     }
 }
