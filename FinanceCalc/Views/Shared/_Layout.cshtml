@@ -310,7 +310,7 @@
                 </a>
 
                 <!-- Connect Bank Button - Prominent placement -->
-                <a class="nav-link bank-connect @(ViewContext.RouteData.Values["controller"]?.ToString() == "Bank" ? "active" : "")"
+                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Bank" ? "active" : "")"
                    asp-area="" asp-controller="Bank" asp-action="Connect">
                     <i class="bi bi-bank me-2"></i> 
                     @if (hasBankConnection)
