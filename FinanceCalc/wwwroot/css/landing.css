@@ -633,7 +633,7 @@ body {
 .hero-content h1 {
     font-size: 48px; /* Large text */
     font-weight: 700; /* Bold weight */
-    color: #111827; /* Dark color */
+    color: white; /* Dark color */
     margin-bottom: 16px; /* Space below heading */
     line-height: 1.1; /* Tight line spacing */
 }
@@ -649,7 +649,7 @@ body {
 /* Hero content description */
 .hero-content p {
     font-size: 18px; /* Medium text */
-    color: #6b7280; /* Gray color */
+    color: white; /* Gray color */
     margin-bottom: 32px; /* Large bottom margin */
     line-height: 1.6; /* Comfortable line spacing */
 }
@@ -678,7 +678,7 @@ body {
 
 .hero-stat p {
     font-size: 14px; /* Small text */
-    color: #6b7280; /* Gray color */
+    color: white; /* Gray color */
     margin: 0; /* No margins */
 }
 
@@ -738,7 +738,7 @@ body {
     .dot.green {
         background: #10b981;
     }
-
+   
 /* Grid for mockup metrics */
 .mockup-metrics {
     display: grid; /* CSS Grid */
