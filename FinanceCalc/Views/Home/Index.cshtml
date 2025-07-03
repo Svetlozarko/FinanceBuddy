@@ -3,7 +3,6 @@
 
 <link rel="stylesheet" href="~/css/dashboard.css" />
 <link rel="stylesheet" href="~/css/dashboard-gradient.css" />
-
 <link rel="stylesheet" href="~/css/hero-gradient.css" />
 <script src="~/js/dashboard.js"></script>
 
@@ -17,765 +16,1028 @@
 @if (User.Identity.IsAuthenticated)
 {
     <link rel="stylesheet" href="~/css/dashboard-gradient.css" />
+
     <div class="dashboard-gradient-bg-mesh">
-        <div class="dashboard-container" style="position: relative; z-index: 2;">
-        <!-- Header -->
-        <div class="dashboard-header">
-            <div>
-                <h1 class="dashboard-title text-white">Financial Overview</h1>
-                <p class="dashboard-subtitle text-white">Track your income, expenses, and savings</p>
-            </div>
-            <div class="header-buttons">
-                <button class="btn btn-modern btn-filter">
-                    <i class="bi bi-funnel"></i>
-                    Filter
-                </button>
-
-                <!-- Combined Import/Export Dropdown -->
-                <div class="dropdown">
-                    <button class="btn btn-modern btn-data dropdown-toggle" type="button" id="dataDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-arrow-down-up"></i>
-                        Data
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dataDropdown">
-                        <!-- Import Section -->
-                        <li class="dropdown-header">
-                            <i class="bi bi-upload me-2"></i>Import Data
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#" onclick="triggerFileInput('csv')">
-                                <i class="fas fa-file-csv text-primary"></i> Import from CSV
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#" onclick="triggerFileInput('excel')">
-                                <i class="fas fa-file-excel text-success"></i> Import from Excel
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#" onclick="triggerFileInput('pdf')">
-                                <i class="fas fa-file-pdf text-danger"></i> Import from PDF
-                            </a>
-                        </li>
-
-                        <!-- Divider -->
-                        <li><hr class="dropdown-divider"></li>
-
-                        <!-- Export Section -->
-                        <li class="dropdown-header">
-                            <i class="bi bi-download me-2"></i>Export Data
-                        </li>
-                        <li>
-                            <a class="dropdown-item" asp-controller="ImportExport" asp-action="ExportToPdf">
-                                <i class="fas fa-file-pdf text-danger"></i> Export to PDF
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" asp-controller="ImportExport" asp-action="ExportToExcel">
-                                <i class="fas fa-file-excel text-success"></i> Export to Excel
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" asp-controller="ImportExport" asp-action="ExportToCsv">
-                                <i class="fas fa-file-csv text-primary"></i> Export to CSV
-                            </a>
-                        </li>
-                    </ul>
+        <div class="dashboard-container" style="position: relative; z-index: 1;">
+            <!-- Header -->
+            <div class="dashboard-header">
+                <div>
+                    <h1 class="dashboard-title text-white">Financial Overview</h1>
+                    <p class="dashboard-subtitle text-white">Track your income, expenses, and savings</p>
                 </div>
+                <div class="header-buttons">
+                    <button class="btn btn-modern btn-filter">
+                        <i class="bi bi-funnel"></i>
+                        Filter
+                    </button>
+                    <!-- Combined Import/Export Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn btn-modern btn-data dropdown-toggle" type="button" id="dataDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-arrow-down-up"></i>
+                            Data
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dataDropdown">
+                            <!-- Import Section -->
+                            <li class="dropdown-header">
+                                <i class="bi bi-upload me-2"></i>Import Data
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" onclick="triggerFileInput('csv')">
+                                    <i class="fas fa-file-csv text-primary"></i> Import from CSV
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" onclick="triggerFileInput('excel')">
+                                    <i class="fas fa-file-excel text-success"></i> Import from Excel
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" onclick="triggerFileInput('pdf')">
+                                    <i class="fas fa-file-pdf text-danger"></i> Import from PDF
+                                </a>
+                            </li>
+                            <!-- Divider -->
+                            <li><hr class="dropdown-divider"></li>
+                            <!-- Export Section -->
+                            <li class="dropdown-header">
+                                <i class="bi bi-download me-2"></i>Export Data
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-controller="ImportExport" asp-action="ExportToPdf">
+                                    <i class="fas fa-file-pdf text-danger"></i> Export to PDF
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-controller="ImportExport" asp-action="ExportToExcel">
+                                    <i class="fas fa-file-excel text-success"></i> Export to Excel
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-controller="ImportExport" asp-action="ExportToCsv">
+                                    <i class="fas fa-file-csv text-primary"></i> Export to CSV
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hidden file input for import -->
+            <input type="file" id="importFileInput" style="display: none;" accept=".csv,.xlsx,.xls,.pdf" onchange="handleFileImport(this)">
+
+            <!-- Import Progress Modal -->
+            <div class="modal fade" id="importProgressModal" tabindex="-1" aria-labelledby="importProgressModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="importProgressModalLabel">Importing Transactions</h5>
+                        </div>
+                        <div class="modal-body text-center">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-3">Processing your file, please wait...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Import Results Modal -->
+            <div class="modal fade" id="importResultsModal" tabindex="-1" aria-labelledby="importResultsModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="importResultsModalLabel">Import Results</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="importResultsContent">
+                            <!-- Results will be populated here -->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="location.reload()">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metric Cards -->
+            <div class="metrics-grid">
+                <!-- Total Income Card -->
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <div class="metric-icon income">
+                            <i class="bi bi-trending-up"></i>
+                        </div>
+                        <button class="add-btn" data-bs-toggle="modal" data-bs-target="#addIncomeModal">
+                            <i class="bi bi-plus" style="font-size: 20px;"></i>
+                        </button>
+                    </div>
+                    <div class="metric-content">
+                        <p class="metric-label">Total Income</p>
+                        <p class="metric-value">@((ViewBag.MonthlyIncome as decimal?)?.ToString("C") ?? "$0")</p>
+                        <p class="metric-change positive">+12.5% vs last month</p>
+                    </div>
+                </div>
+
+                <!-- Total Expenses Card -->
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <div class="metric-icon expense">
+                            <i class="bi bi-trending-down"></i>
+                        </div>
+                        <button class="add-btn" data-bs-toggle="modal" data-bs-target="#addExpenseModal">
+                            <i class="bi bi-plus" style="font-size: 20px;"></i>
+                        </button>
+                    </div>
+                    <div class="metric-content">
+                        <p class="metric-label">Total Expenses</p>
+                        <p class="metric-value">@((ViewBag.IncomeVsExpenseData != null && ViewBag.IncomeVsExpenseData.Length > 0 ? (ViewBag.IncomeVsExpenseData[0] as decimal?)?.ToString("C") : "$0"))</p>
+                        <p class="metric-change negative">+8.2% vs last month</p>
+                    </div>
+                </div>
+
+                <!-- Savings Goal Card -->
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <div class="metric-icon savings">
+                            <i class="bi bi-bullseye"></i>
+                        </div>
+                        <button class="add-btn" data-bs-toggle="modal" data-bs-target="#addSavingsModal">
+                            <i class="bi bi-plus" style="font-size: 20px;"></i>
+                        </button>
+                    </div>
+                    <div class="metric-content">
+                        <p class="metric-label">Savings Goal</p>
+                        <p class="metric-value">@((ViewBag.CurrentSavings as decimal?)?.ToString("C") ?? "$0")</p>
+                        <p class="metric-change neutral">68% of goal vs last month</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="charts-grid">
+                <!-- Expenses by Category -->
+                <div class="chart-card">
+                    <h3 class="chart-title">Expenses by Category</h3>
+                    <div class="chart-container">
+                        <canvas id="expenseChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Income vs Expenses -->
+                <div class="chart-card">
+                    <h3 class="chart-title">Income vs Expenses</h3>
+                    <div class="chart-container">
+                        <canvas id="incomeChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Savings Progress -->
+                <div class="chart-card">
+                    <h3 class="chart-title">Savings Progress</h3>
+                    <div class="chart-container">
+                        <canvas id="savingsChart"></canvas>
+                    </div>
+                    <div class="chart-footer">
+                        @((ViewBag.CurrentSavings as decimal?)?.ToString("C") ?? "$0") of @((ViewBag.SavingsGoal as decimal?)?.ToString("C") ?? "$0")
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Transactions -->
+            <div class="transactions-section">
+                <h3 class="transactions-title">Recent Transactions</h3>
+                @foreach (var item in Model.Expenses.Take(5))
+                {
+                    var bgColor = item.Category switch
+                    {
+                        "Food" => "#fff4e0",
+                        "Transportation" => "#e8f0ff",
+                        "Utilities" => "#fff1e6",
+                        "Entertainment" => "#f4e8ff",
+                        "Health & Medical" => "#e0f7f1",
+                        "Housing" => "#ffe4e1",
+                        "Education" => "#e6f7ff",
+                        "Personal Care" => "#fdf0ff",
+                        "Clothing" => "#fffbe6",
+                        "Travel" => "#e8faff",
+                        "Gifts & Donations" => "#f5e6ff",
+                        "Insurance" => "#e6f0ff",
+                        "Subscriptions" => "#f4f4f4",
+                        "Phone & Internet" => "#edf7ff",
+                        "Home Maintenance" => "#fff8e1",
+                        "Childcare" => "#ffe6f0",
+                        "Pet Care" => "#e6fce9",
+                        "Taxes" => "#fef1e6",
+                        "Bank Fees" => "#f8e6ff",
+                        "Loan Payments" => "#e6f5ff",
+                        "Fuel" => "#fff0e6",
+                        "Parking & Tolls" => "#e6f4ff",
+                        "Office Supplies" => "#f0f4ff",
+                        "Dining Out" => "#ffe6d9",
+                        "Gym & Fitness" => "#e0fff4",
+                        "Beauty & Grooming" => "#ffe6fa",
+                        "Hobbies" => "#f0eaff",
+                        "Miscellaneous" => "#f5f5f5",
+                        "Salary" => "#e0ffe0",
+                        _ => "#f0f0f0"
+                    };
+
+                    var emoji = item.Category switch
+                    {
+                        "Food" => "🍔",
+                        "Transportation" => "🚗",
+                        "Utilities" => "💡",
+                        "Entertainment" => "🎮",
+                        "Health & Medical" => "🩺",
+                        "Housing" => "🏠",
+                        "Education" => "🎓",
+                        "Personal Care" => "🧴",
+                        "Clothing" => "👕",
+                        "Travel" => "✈️",
+                        "Gifts & Donations" => "🎁",
+                        "Insurance" => "🛡️",
+                        "Subscriptions" => "📺",
+                        "Phone & Internet" => "📱",
+                        "Home Maintenance" => "🔧",
+                        "Childcare" => "🧒",
+                        "Pet Care" => "🐾",
+                        "Taxes" => "💰",
+                        "Bank Fees" => "🏦",
+                        "Loan Payments" => "💳",
+                        "Fuel" => "⛽",
+                        "Parking & Tolls" => "🅿️",
+                        "Office Supplies" => "📎",
+                        "Dining Out" => "🍽️",
+                        "Gym & Fitness" => "🏋️",
+                        "Beauty & Grooming" => "💄",
+                        "Hobbies" => "🎨",
+                        "Miscellaneous" => "🧩",
+                        "Salary" => "💼",
+                        _ => "💸"
+                    };
+
+                    string amountColorClass = "text-danger";
+
+                    <div class="transaction-item">
+                        <div class="transaction-left">
+                            <div class="transaction-icon" style="background-color: @bgColor;">
+                                <span>@emoji</span>
+                            </div>
+                            <div class="transaction-info">
+                                <h6>@item.Category</h6>
+                                <p>@item.Date.ToString("MMM dd, yyyy")</p>
+                            </div>
+                        </div>
+                        <div class="transaction-right">
+                            <p class="transaction-amount @amountColorClass">@item.Amount.ToString("C")</p>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
 
-        <!-- Hidden file input for import -->
-        <input type="file" id="importFileInput" style="display: none;" accept=".csv,.xlsx,.xls,.pdf" onchange="handleFileImport(this)">
-
-        <!-- Import Progress Modal -->
-        <div class="modal fade" id="importProgressModal" tabindex="-1" aria-labelledby="importProgressModalLabel" aria-hidden="true">
+        <!-- Add Expense Modal -->
+        <div class="modal fade" id="addExpenseModal" tabindex="-1" aria-labelledby="addExpenseModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="importProgressModalLabel">Importing Transactions</h5>
-                    </div>
-                    <div class="modal-body text-center">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
+                    <form id="addExpenseForm" onsubmit="submitExpense(event)">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addExpenseModalLabel">Add Expense</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <p class="mt-3">Processing your file, please wait...</p>
-                    </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="expenseAmount" class="form-label">Amount</label>
+                                <input type="number" step="0.01" class="form-control" id="expenseAmount" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="expenseCategory" class="form-label">Category</label>
+                                <select class="form-select" id="expenseCategory" required>
+                                    <option value="" disabled selected>Select category</option>
+                                    <option>Food</option>
+                                    <option>Transportation</option>
+                                    <option>Utilities</option>
+                                    <option>Entertainment</option>
+                                    <option>Health & Medical</option>
+                                    <option>Housing</option>
+                                    <option>Education</option>
+                                    <option>Personal Care</option>
+                                    <option>Clothing</option>
+                                    <option>Travel</option>
+                                    <option>Gifts & Donations</option>
+                                    <option>Insurance</option>
+                                    <option>Subscriptions</option>
+                                    <option>Phone & Internet</option>
+                                    <option>Home Maintenance</option>
+                                    <option>Childcare</option>
+                                    <option>Pet Care</option>
+                                    <option>Taxes</option>
+                                    <option>Bank Fees</option>
+                                    <option>Loan Payments</option>
+                                    <option>Fuel</option>
+                                    <option>Parking & Tolls</option>
+                                    <option>Office Supplies</option>
+                                    <option>Dining Out</option>
+                                    <option>Gym & Fitness</option>
+                                    <option>Beauty & Grooming</option>
+                                    <option>Hobbies</option>
+                                    <option>Miscellaneous</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="expenseDate" class="form-label">Date</label>
+                                <input type="date" class="form-control" id="expenseDate" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="expenseNote" class="form-label">Note (optional)</label>
+                                <textarea class="form-control" id="expenseNote" rows="2"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Add Expense</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
 
-        <!-- Import Results Modal -->
-        <div class="modal fade" id="importResultsModal" tabindex="-1" aria-labelledby="importResultsModalLabel" aria-hidden="true">
+        <!-- Add Income Modal -->
+        <div class="modal fade" id="addIncomeModal" tabindex="-1" aria-labelledby="addIncomeModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="importResultsModalLabel">Import Results</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body" id="importResultsContent">
-                        <!-- Results will be populated here -->
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="location.reload()">OK</button>
-                    </div>
+                    <form id="addIncomeForm" onsubmit="submitIncome(event)">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addIncomeModalLabel">Add Income</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="incomeAmount" class="form-label">Amount</label>
+                                <input type="number" step="0.01" class="form-control" id="incomeAmount" required>
+                                <div id="incomeAmountError" class="text-danger mt-1" style="display:none;"></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Add Income</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
 
-        <!-- Metric Cards -->
-        <div class="metrics-grid">
-            <!-- Total Income Card -->
-            <div class="metric-card">
-                <div class="metric-header">
-                    <div class="metric-icon income">
-                        <i class="bi bi-trending-up"></i>
-                    </div>
-                    <button class="add-btn" data-bs-toggle="modal" data-bs-target="#addIncomeModal">
-                        <i class="bi bi-plus" style="font-size: 20px;"></i>
-                    </button>
-                </div>
-                <div class="metric-content">
-                    <p class="metric-label">Total Income</p>
-                    <p class="metric-value">@((ViewBag.MonthlyIncome as decimal?)?.ToString("C") ?? "$0")</p>
-                    <p class="metric-change positive">+12.5% vs last month</p>
-                </div>
-            </div>
-
-            <!-- Total Expenses Card -->
-            <div class="metric-card">
-                <div class="metric-header">
-                    <div class="metric-icon expense">
-                        <i class="bi bi-trending-down"></i>
-                    </div>
-                    <button class="add-btn" data-bs-toggle="modal" data-bs-target="#addExpenseModal">
-                        <i class="bi bi-plus" style="font-size: 20px;"></i>
-                    </button>
-                </div>
-                <div class="metric-content">
-                    <p class="metric-label">Total Expenses</p>
-                    <p class="metric-value">@((ViewBag.IncomeVsExpenseData != null && ViewBag.IncomeVsExpenseData.Length > 0 ? (ViewBag.IncomeVsExpenseData[0] as decimal?)?.ToString("C") : "$0"))</p>
-                    <p class="metric-change negative">+8.2% vs last month</p>
-                </div>
-            </div>
-
-            <!-- Savings Goal Card -->
-            <div class="metric-card">
-                <div class="metric-header">
-                    <div class="metric-icon savings">
-                        <i class="bi bi-bullseye"></i>
-                    </div>
-                    <button class="add-btn" data-bs-toggle="modal" data-bs-target="#addSavingsModal">
-                        <i class="bi bi-plus" style="font-size: 20px;"></i>
-                    </button>
-                </div>
-                <div class="metric-content">
-                    <p class="metric-label">Savings Goal</p>
-                    <p class="metric-value">@((ViewBag.CurrentSavings as decimal?)?.ToString("C") ?? "$0")</p>
-                    <p class="metric-change neutral">68% of goal vs last month</p>
+        <!-- Add Savings Modal -->
+        <div class="modal fade" id="addSavingsModal" tabindex="-1" aria-labelledby="addSavingsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form id="addSavingsForm" onsubmit="submitSavings(event)">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addSavingsModalLabel">Add Savings</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="targetAmount" class="form-label">Target Amount <span class="text-danger">*</span></label>
+                                <input type="number" step="0.01" class="form-control" id="targetAmount" required placeholder="Enter target savings amount">
+                                <div id="targetAmountError" class="text-danger mt-1" style="display:none;"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="currentAmount" class="form-label">Current Amount</label>
+                                <input type="number" step="0.01" class="form-control" id="currentAmount" placeholder="Enter current savings amount (optional)">
+                                <div id="currentAmountError" class="text-danger mt-1" style="display:none;"></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Save Savings</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
 
-        <!-- Charts -->
-        <div class="charts-grid">
-            <!-- Expenses by Category -->
-            <div class="chart-card">
-                <h3 class="chart-title">Expenses by Category</h3>
-                <div class="chart-container">
-                    <canvas id="expenseChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Income vs Expenses -->
-            <div class="chart-card">
-                <h3 class="chart-title">Income vs Expenses</h3>
-                <div class="chart-container">
-                    <canvas id="incomeChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Savings Progress -->
-            <div class="chart-card">
-                <h3 class="chart-title">Savings Progress</h3>
-                <div class="chart-container">
-                    <canvas id="savingsChart"></canvas>
-                </div>
-                <div class="chart-footer">
-                    @((ViewBag.CurrentSavings as decimal?)?.ToString("C") ?? "$0") of @((ViewBag.SavingsGoal as decimal?)?.ToString("C") ?? "$0")
-                </div>
-            </div>
-        </div>
-
-        <!-- Recent Transactions -->
-        <div class="transactions-section">
-            <h3 class="transactions-title">Recent Transactions</h3>
-            @foreach (var item in Model.Expenses.Take(5))
-            {
-                var bgColor = item.Category switch
-                {
-                    "Food" => "#fff4e0",
-                    "Transportation" => "#e8f0ff",
-                    "Utilities" => "#fff1e6",
-                    "Entertainment" => "#f4e8ff",
-                    "Health & Medical" => "#e0f7f1",
-                    "Housing" => "#ffe4e1",
-                    "Education" => "#e6f7ff",
-                    "Personal Care" => "#fdf0ff",
-                    "Clothing" => "#fffbe6",
-                    "Travel" => "#e8faff",
-                    "Gifts & Donations" => "#f5e6ff",
-                    "Insurance" => "#e6f0ff",
-                    "Subscriptions" => "#f4f4f4",
-                    "Phone & Internet" => "#edf7ff",
-                    "Home Maintenance" => "#fff8e1",
-                    "Childcare" => "#ffe6f0",
-                    "Pet Care" => "#e6fce9",
-                    "Taxes" => "#fef1e6",
-                    "Bank Fees" => "#f8e6ff",
-                    "Loan Payments" => "#e6f5ff",
-                    "Fuel" => "#fff0e6",
-                    "Parking & Tolls" => "#e6f4ff",
-                    "Office Supplies" => "#f0f4ff",
-                    "Dining Out" => "#ffe6d9",
-                    "Gym & Fitness" => "#e0fff4",
-                    "Beauty & Grooming" => "#ffe6fa",
-                    "Hobbies" => "#f0eaff",
-                    "Miscellaneous" => "#f5f5f5",
-                    "Salary" => "#e0ffe0",
-                    _ => "#f0f0f0"
-                };
-
-                var emoji = item.Category switch
-                {
-                    "Food" => "🍔",
-                    "Transportation" => "🚗",
-                    "Utilities" => "💡",
-                    "Entertainment" => "🎮",
-                    "Health & Medical" => "🩺",
-                    "Housing" => "🏠",
-                    "Education" => "🎓",
-                    "Personal Care" => "🧴",
-                    "Clothing" => "👕",
-                    "Travel" => "✈️",
-                    "Gifts & Donations" => "🎁",
-                    "Insurance" => "🛡️",
-                    "Subscriptions" => "📺",
-                    "Phone & Internet" => "📱",
-                    "Home Maintenance" => "🔧",
-                    "Childcare" => "🧒",
-                    "Pet Care" => "🐾",
-                    "Taxes" => "💰",
-                    "Bank Fees" => "🏦",
-                    "Loan Payments" => "💳",
-                    "Fuel" => "⛽",
-                    "Parking & Tolls" => "🅿️",
-                    "Office Supplies" => "📎",
-                    "Dining Out" => "🍽️",
-                    "Gym & Fitness" => "🏋️",
-                    "Beauty & Grooming" => "💄",
-                    "Hobbies" => "🎨",
-                    "Miscellaneous" => "🧩",
-                    "Salary" => "💼",
-                    _ => "💸"
-                };
-
-               
-                string amountColorClass = "text-danger";
-
-                <div class="transaction-item">
-                    <div class="transaction-left">
-                        <div class="transaction-icon" style="background-color: @bgColor;">
-                            <span>@emoji</span>
-                        </div>
-                        <div class="transaction-info">
-                            <h6>@item.Category</h6>
-                            <p>@item.Date.ToString("MMM dd, yyyy")</p>
-                        </div>
-                    </div>
-                    <div class="transaction-right">
-                        <p class="transaction-amount @amountColorClass">@item.Amount.ToString("C")</p>
-                    </div>
-                </div>
-            }
-        </div>
     </div>
 
-    <!-- Add Expense Modal -->
-    <div class="modal fade" id="addExpenseModal" tabindex="-1" aria-labelledby="addExpenseModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <form id="addExpenseForm" onsubmit="submitExpense(event)">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addExpenseModalLabel">Add Expense</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="expenseAmount" class="form-label">Amount</label>
-                            <input type="number" step="0.01" class="form-control" id="expenseAmount" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="expenseCategory" class="form-label">Category</label>
-                            <select class="form-select" id="expenseCategory" required>
-                                <option value="" disabled selected>Select category</option>
-                                <option>Food</option>
-                                <option>Transportation</option>
-                                <option>Utilities</option>
-                                <option>Entertainment</option>
-                                <option>Health & Medical</option>
-                                <option>Housing</option>
-                                <option>Education</option>
-                                <option>Personal Care</option>
-                                <option>Clothing</option>
-                                <option>Travel</option>
-                                <option>Gifts & Donations</option>
-                                <option>Insurance</option>
-                                <option>Subscriptions</option>
-                                <option>Phone & Internet</option>
-                                <option>Home Maintenance</option>
-                                <option>Childcare</option>
-                                <option>Pet Care</option>
-                                <option>Taxes</option>
-                                <option>Bank Fees</option>
-                                <option>Loan Payments</option>
-                                <option>Fuel</option>
-                                <option>Parking & Tolls</option>
-                                <option>Office Supplies</option>
-                                <option>Dining Out</option>
-                                <option>Gym & Fitness</option>
-                                <option>Beauty & Grooming</option>
-                                <option>Hobbies</option>
-                                <option>Miscellaneous</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="expenseDate" class="form-label">Date</label>
-                            <input type="date" class="form-control" id="expenseDate" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="expenseNote" class="form-label">Note (optional)</label>
-                            <textarea class="form-control" id="expenseNote" rows="2"></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Add Expense</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Add Income Modal -->
-    <div class="modal fade" id="addIncomeModal" tabindex="-1" aria-labelledby="addIncomeModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <form id="addIncomeForm" onsubmit="submitIncome(event)">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addIncomeModalLabel">Add Income</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="incomeAmount" class="form-label">Amount</label>
-                            <input type="number" step="0.01" class="form-control" id="incomeAmount" required>
-                            <div id="incomeAmountError" class="text-danger mt-1" style="display:none;"></div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Add Income</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Add Savings Modal -->
-    <div class="modal fade" id="addSavingsModal" tabindex="-1" aria-labelledby="addSavingsModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <form id="addSavingsForm" onsubmit="submitSavings(event)">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addSavingsModalLabel">Add Savings</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="targetAmount" class="form-label">Target Amount <span class="text-danger">*</span></label>
-                            <input type="number" step="0.01" class="form-control" id="targetAmount" required placeholder="Enter target savings amount">
-                            <div id="targetAmountError" class="text-danger mt-1" style="display:none;"></div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="currentAmount" class="form-label">Current Amount</label>
-                            <input type="number" step="0.01" class="form-control" id="currentAmount" placeholder="Enter current savings amount (optional)">
-                            <div id="currentAmountError" class="text-danger mt-1" style="display:none;"></div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Save Savings</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-
-
-    </div>
-
-  <!-- Large Floating Chat Button -->
-<button id="ai-fab" title="Ask AI Assistant" type="button">
-  <svg width="96" height="96" viewBox="0 0 96 96">
-    <defs>
-      <linearGradient id="fab-gradient" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#e0e7ff"/>
-        <stop offset="50%" stop-color="#f3e8ff"/>
-        <stop offset="100%" stop-color="#fce7f3"/>
-      </linearGradient>
-    </defs>
-    <circle cx="48" cy="48" r="48" fill="url(#fab-gradient)"/>
-    <text x="48" y="62" font-size="46" text-anchor="middle" fill="#3b82f6" font-family="Segoe UI Emoji">💬</text>
-  </svg>
-</button>
-
-<!-- Chat Modal (custom, not Bootstrap) -->
-<div class="ai-chat-modal" id="aiChatModal">
-  <div class="ai-chat-header">
-    <div class="ai-chat-avatar">
-      <svg width="56" height="56" viewBox="0 0 56 56">
-        <defs>
-          <linearGradient id="avatar-gradient" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#e0e7ff"/>
-              <stop offset="50%" stop-color="#f3e8ff"/>
-              <stop offset="100%" stop-color="#fce7f3"/>
-          </linearGradient>
-        </defs>
-        <circle cx="28" cy="28" r="28" fill="url(#avatar-gradient)"/>
-        <text x="28" y="38" font-size="28" text-anchor="middle" fill="#3b82f6" font-family="Segoe UI Emoji">💬</text>
-      </svg>
-    </div>
-    <div class="ai-chat-heading">
-      <div class="ai-chat-title">AI Assistant</div>
-      <div class="ai-chat-desc">Always here to help</div>
-    </div>
-    <button class="ai-chat-close" id="aiChatClose">&times;</button>
-  </div>
-  <div class="ai-chat-body" id="aiChatMessages">
-    <div class="ai-chat-message ai-chat-message-bot">
-      <div class="ai-chat-message-content">
-        Hello! I'm your AI assistant. How can I help you today?
-      </div>
-      <div class="ai-chat-message-time">01:26 PM</div>
-    </div>
-  </div>
-  <form id="aiChatForm" autocomplete="off" class="ai-chat-form">
-    <input type="text" id="aiChatInput" class="ai-chat-input" placeholder="Ask something..." autocomplete="off" required />
-    <button class="ai-chat-send" type="submit">
-      <svg width="36" height="36" viewBox="0 0 24 24">
-        <defs>
-          <linearGradient id="send-gradient" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#e0e7ff"/>
-            <stop offset="50%" stop-color="#f3e8ff"/>
-            <stop offset="100%" stop-color="#fce7f3"/>
-          </linearGradient>
-        </defs>
-        <path fill="url(#send-gradient)" d="M2 21l21-9-21-9v7l15 2-15 2z"/>
-      </svg>
+    <!-- Large Floating Chat Button -->
+    <button id="ai-fab" title="Ask AI Assistant" type="button">
+        <svg width="96" height="96" viewBox="0 0 96 96">
+            <defs>
+                <linearGradient id="fab-gradient" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#e0e7ff" />
+                    <stop offset="50%" stop-color="#f3e8ff" />
+                    <stop offset="100%" stop-color="#fce7f3" />
+                </linearGradient>
+            </defs>
+            <circle cx="48" cy="48" r="48" fill="url(#fab-gradient)" />
+            <text x="48" y="62" font-size="46" text-anchor="middle" fill="#3b82f6" font-family="Segoe UI Emoji">💬</text>
+        </svg>
     </button>
-  </form>
-</div>
 
-<style>
-/* Bigger Floating Button */
-#ai-fab {
-  position: fixed;
-  bottom: 42px;
-  right: 42px;
-  width: 66px;
-  height: 66px;
-  border: none;
-  outline: none;
-  border-radius: 50%;
-  background: none;
-  cursor: pointer;
-  z-index: 1200;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  box-shadow: none;
-  transition: none;
-}
-#ai-fab:active {
-  box-shadow: none;
-}
+    <!-- Chat Modal (custom, not Bootstrap) -->
+    <div class="ai-chat-modal" id="aiChatModal">
+        <div class="ai-chat-header">
+            <div class="ai-chat-avatar">
+                <svg width="56" height="56" viewBox="0 0 56 56">
+                    <defs>
+                        <linearGradient id="avatar-gradient" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#e0e7ff" />
+                            <stop offset="50%" stop-color="#f3e8ff" />
+                            <stop offset="100%" stop-color="#fce7f3" />
+                        </linearGradient>
+                    </defs>
+                    <circle cx="28" cy="28" r="28" fill="url(#avatar-gradient)" />
+                    <text x="28" y="38" font-size="28" text-anchor="middle" fill="#3b82f6" font-family="Segoe UI Emoji">💬</text>
+                </svg>
+            </div>
+            <div class="ai-chat-heading">
+                <div class="ai-chat-title">AI Assistant</div>
+                <div class="ai-chat-desc">Always here to help</div>
+            </div>
+            <button class="ai-chat-close" id="aiChatClose">&times;</button>
+        </div>
+        <div class="ai-chat-body" id="aiChatMessages">
+            <div class="ai-chat-message ai-chat-message-bot">
+                <div class="ai-chat-message-content">
+                    Hello! I'm your AI assistant. How can I help you today?
+                </div>
+                <div class="ai-chat-message-time">01:26 PM</div>
+            </div>
+        </div>
+        <form id="aiChatForm" autocomplete="off" class="ai-chat-form">
+            <input type="text" id="aiChatInput" class="ai-chat-input" placeholder="Ask something..." autocomplete="off" required />
+            <button class="ai-chat-send" type="submit">
+                <svg width="36" height="36" viewBox="0 0 24 24">
+                    <defs>
+                        <linearGradient id="send-gradient" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#e0e7ff" />
+                            <stop offset="50%" stop-color="#f3e8ff" />
+                            <stop offset="100%" stop-color="#fce7f3" />
+                        </linearGradient>
+                    </defs>
+                    <path fill="url(#send-gradient)" d="M2 21l21-9-21-9v7l15 2-15 2z" />
+                </svg>
+            </button>
+        </form>
+    </div>
 
-/* Chat Modal Styles */
-.ai-chat-modal {
-  display: none;
-  position: fixed;
-  bottom: 130px;
-  right: 42px;
-  width: 420px;
-  max-width: calc(100vw - 40px);
-  height: 580px;
-  background: #fff;
-  border-radius: 32px;
-  box-shadow: none;
-  z-index: 1300;
-  overflow: hidden;
-  flex-direction: column;
-  transition: none;
-}
-.ai-chat-modal.active {
-  display: flex;
-}
+    <style>
+        /* ==========================================================================
+           BOOTSTRAP MODAL Z-INDEX FIXES - CRITICAL
+           ========================================================================== */
 
-/* Header with site color gradient */
-.ai-chat-header {
-  background: linear-gradient(90deg, #e0e7ff 0%, #f3e8ff 50%, #fce7f3 100%);
-  display: flex;
-  align-items: center;
-  padding: 22px 22px 20px 22px;
-  border-top-left-radius: 32px;
-  border-top-right-radius: 32px;
-  position: relative;
-  box-shadow: none;
-}
-.ai-chat-avatar {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 18px;
-  box-shadow: none;
-}
-.ai-chat-heading {
-  flex: 1;
-}
-.ai-chat-title {
-  color: #3b82f6;
-  font-weight: 700;
-  font-size: 1.4rem;
-  margin-bottom: 2px;
-}
-.ai-chat-desc {
-  color: #6b7280;
-  font-size: 1.07rem;
-  font-weight: 400;
-}
-.ai-chat-close {
-  color: #3b82f6;
-  background: none;
-  border: none;
-  font-size: 2rem;
-  margin-left: 10px;
-  cursor: pointer;
-  padding: 2px 14px;
-  border-radius: 50%;
-  transition: background 0.15s;
-}
-.ai-chat-close:hover {
-  background: rgba(60,72,104,0.10);
-}
+        /* Force Bootstrap modal backdrop to correct z-index */
+        .modal-backdrop {
+            z-index: 1040 !important;
+            background-color: rgba(0, 0, 0, 0.5) !important;
+        }
 
-/* Chat body */
-.ai-chat-body {
-  flex: 1 1 0%;
-  padding: 24px 24px 0 24px;
-  background: #fff;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-}
-.ai-chat-message {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-bottom: 22px;
-}
-.ai-chat-message-bot .ai-chat-message-content {
-  background: #f3e8ff;
-  color: #3b82f6;
-  border-radius: 18px;
-  padding: 16px 24px;
-  max-width: 85%;
-  box-shadow: none;
-}
-.ai-chat-message-user {
-  align-items: flex-end;
-}
-.ai-chat-message-user .ai-chat-message-content {
-  background: linear-gradient(90deg, #fce7f3 0%, #e0e7ff 100%);
-  color: #a21caf;
-  border-radius: 18px;
-  padding: 16px 24px;
-  max-width: 85%;
-  align-self: flex-end;
-  box-shadow: none;
-}
-.ai-chat-message-time {
-  font-size: 0.95rem;
-  color: #a3a3a3;
-  margin-top: 4px;
-  margin-left: 4px;
-}
+        /* Bootstrap modal container */
+        .modal {
+            z-index: 1050 !important;
+        }
 
-/* Input form */
-.ai-chat-form {
-  display: flex;
-  align-items: center;
-  padding: 24px;
-  background: #fafbfc;
-  border-bottom-left-radius: 32px;
-  border-bottom-right-radius: 32px;
-  box-shadow: none;
-  gap: 12px;
-}
-.ai-chat-input {
-  flex: 1;
-  border: none;
-  border-radius: 32px;
-  background: #f5f7fa;
-  padding: 16px 24px;
-  font-size: 1.15rem;
-  outline: none;
-  color: #3b82f6;
-  box-shadow: none;
-  transition: none;
-}
-.ai-chat-input:focus {
-  box-shadow: none;
-}
-.ai-chat-send {
-  width: 56px;
-  height: 56px;
-  border: none;
-  border-radius: 50%;
-  background: linear-gradient(90deg, #e0e7ff 0%, #f3e8ff 50%, #fce7f3 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #3b82f6;
-  cursor: pointer;
-  margin-left: 7px;
-  box-shadow: none;
-  transition: none;
-}
-.ai-chat-send:hover {
-  box-shadow: none;
-  background: linear-gradient(90deg, #f3e8ff 0%, #e0e7ff 100%);
-}
+        /* Bootstrap modal dialog */
+        .modal-dialog {
+            z-index: 1055 !important;
+        }
 
-/* Responsive */
-@@media (max-width: 600px) {
-  #ai-fab {
-    right: 10px;
-    bottom: 18px;
-    width: 70px;
-    height: 70px;
-  }
-  .ai-chat-modal {
-    right: 4px;
-    width: calc(100vw - 8px);
-    min-width: 0;
-    max-width: 100vw;
-    height: 95vh;
-    bottom: 90px;
-    border-radius: 20px;
-  }
-  .ai-chat-header, .ai-chat-form {
-    padding: 12px;
-    border-radius: 18px;
-  }
-  .ai-chat-avatar {
-    width: 40px; height: 40px;
-    margin-right: 10px;
-  }
-}
-</style>
+        /* Bootstrap modal content */
+        .modal-content {
+            z-index: 1060 !important;
+            position: relative;
+        }
 
-<script>
-const fab = document.getElementById('ai-fab');
-const modal = document.getElementById('aiChatModal');
-const closeBtn = document.getElementById('aiChatClose');
-const chatForm = document.getElementById('aiChatForm');
-const chatInput = document.getElementById('aiChatInput');
-const chatMessages = document.getElementById('aiChatMessages');
+        /* Ensure dashboard container is below modals */
+        .dashboard-container {
+            position: relative;
+            z-index: 1 !important;
+        }
 
-fab.addEventListener('click', () => {
-  modal.classList.add('active');
-  setTimeout(() => chatInput.focus(), 250);
-});
-closeBtn.addEventListener('click', () => {
-  modal.classList.remove('active');
-});
+        /* Hide AI modal when Bootstrap modal is open */
+        body.modal-open .ai-chat-modal {
+            display: none !important;
+        }
 
-// Simple local message logic (demo)
-chatForm.addEventListener('submit', function(e) {
-  e.preventDefault();
-  const msg = chatInput.value.trim();
-  if (!msg) return;
-  appendUserMessage(msg);
-  chatInput.value = '';
-  chatMessages.scrollTop = chatMessages.scrollHeight;
-  // Simulate bot reply
-  setTimeout(() => {
-    appendBotMessage("I'm still learning! (Demo)");
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-  }, 800);
-});
+        /* ==========================================================================
+           AI CHAT MODAL - COMPLETE CSS WITH FIXES
+           ========================================================================== */
 
-function appendUserMessage(text) {
-  const msg = document.createElement('div');
-  msg.className = 'ai-chat-message ai-chat-message-user';
-  msg.innerHTML = `
-    <div class="ai-chat-message-content">${escapeHtml(text)}</div>
-    <div class="ai-chat-message-time">${formatTime()}</div>
-  `;
-  chatMessages.appendChild(msg);
-}
+        /* AI Floating Action Button */
+        #ai-fab {
+            position: fixed;
+            bottom: 42px;
+            right: 42px;
+            width: 66px;
+            height: 66px;
+            border: none;
+            outline: none;
+            border-radius: 50%;
+            background: none;
+            cursor: pointer;
+            z-index: 999 !important; /* Below Bootstrap modals */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            box-shadow: none;
+            transition: none;
+        }
 
-function appendBotMessage(text) {
-  const msg = document.createElement('div');
-  msg.className = 'ai-chat-message ai-chat-message-bot';
-  msg.innerHTML = `
-    <div class="ai-chat-message-content">${escapeHtml(text)}</div>
-    <div class="ai-chat-message-time">${formatTime()}</div>
-  `;
-  chatMessages.appendChild(msg);
-}
+            #ai-fab:active {
+                box-shadow: none;
+            }
 
-function escapeHtml(unsafe) {
-  return unsafe.replace(/[&<"'>]/g, function(m) {
-      return ({
-          '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
-      })[m];
-  });
-}
-function formatTime() {
-  const d = new Date();
-  let h = d.getHours(), m = d.getMinutes();
-  let ampm = h >= 12 ? 'PM' : 'AM';
-  h = h % 12; if (h === 0) h = 12;
-  return `${h}:${m.toString().padStart(2,'0')} ${ampm}`;
-}
-</script>
+            #ai-fab:hover {
+                transform: scale(1.05);
+                transition: transform 0.2s ease;
+            }
+
+        /* AI Chat Modal Container */
+        .ai-chat-modal {
+            display: none;
+            position: fixed;
+            bottom: 130px;
+            right: 42px;
+            width: 420px;
+            max-width: calc(100vw - 40px);
+            height: 580px;
+            background: #fff;
+            border-radius: 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            z-index: 999 !important; /* Below Bootstrap modals */
+            overflow: hidden;
+            flex-direction: column;
+            transition: none;
+            pointer-events: none; /* Prevent interference when hidden */
+            visibility: hidden; /* Additional isolation */
+            opacity: 0;
+        }
+
+            .ai-chat-modal.active {
+                display: flex;
+                pointer-events: auto; /* Enable interaction when active */
+                visibility: visible; /* Make visible when active */
+                opacity: 1;
+                animation: slideInUp 0.3s ease-out;
+            }
+
+        /* Slide in animation */
+        @@keyframes slideInUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* ==========================================================================
+           AI CHAT MODAL HEADER
+           ========================================================================== */
+
+        /* Header with gradient background */
+        .ai-chat-header {
+            background: linear-gradient(90deg, #e0e7ff 0%, #f3e8ff 50%, #fce7f3 100%);
+            display: flex;
+            align-items: center;
+            padding: 22px 22px 20px 22px;
+            border-top-left-radius: 32px;
+            border-top-right-radius: 32px;
+            position: relative;
+            box-shadow: none;
+        }
+
+        /* Avatar container */
+        .ai-chat-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 18px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header text container */
+        .ai-chat-heading {
+            flex: 1;
+        }
+
+        /* AI Assistant title */
+        .ai-chat-title {
+            color: #3b82f6;
+            font-weight: 700;
+            font-size: 1.4rem;
+            margin-bottom: 2px;
+            line-height: 1.2;
+        }
+
+        /* Subtitle text */
+        .ai-chat-desc {
+            color: #6b7280;
+            font-size: 1.07rem;
+            font-weight: 400;
+            line-height: 1.3;
+        }
+
+        /* Close button */
+        .ai-chat-close {
+            color: #3b82f6;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            margin-left: 10px;
+            cursor: pointer;
+            padding: 2px 14px;
+            border-radius: 50%;
+            transition: background 0.15s ease;
+            line-height: 1;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .ai-chat-close:hover {
+                background: rgba(60, 72, 104, 0.10);
+            }
+
+        /* ==========================================================================
+           AI CHAT MODAL BODY
+           ========================================================================== */
+
+        /* Chat messages container */
+        .ai-chat-body {
+            flex: 1 1 0%;
+            padding: 24px 24px 0 24px;
+            background: #fff;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+            /* Custom scrollbar for chat body */
+            .ai-chat-body::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .ai-chat-body::-webkit-scrollbar-track {
+                background: #f1f5f9;
+                border-radius: 3px;
+            }
+
+            .ai-chat-body::-webkit-scrollbar-thumb {
+                background: #cbd5e1;
+                border-radius: 3px;
+            }
+
+                .ai-chat-body::-webkit-scrollbar-thumb:hover {
+                    background: #94a3b8;
+                }
+
+        /* Individual message container */
+        .ai-chat-message {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-bottom: 22px;
+        }
+
+        /* Bot message styling */
+        .ai-chat-message-bot .ai-chat-message-content {
+            background: #f3e8ff;
+            color: #3b82f6;
+            border-radius: 18px;
+            padding: 16px 24px;
+            max-width: 85%;
+            box-shadow: none;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* User message container */
+        .ai-chat-message-user {
+            align-items: flex-end;
+        }
+
+            /* User message styling */
+            .ai-chat-message-user .ai-chat-message-content {
+                background: linear-gradient(90deg, #fce7f3 0%, #e0e7ff 100%);
+                color: #a21caf;
+                border-radius: 18px;
+                padding: 16px 24px;
+                max-width: 85%;
+                align-self: flex-end;
+                box-shadow: none;
+                font-size: 14px;
+                line-height: 1.5;
+            }
+
+        /* Message timestamp */
+        .ai-chat-message-time {
+            font-size: 0.95rem;
+            color: #a3a3a3;
+            margin-top: 4px;
+            margin-left: 4px;
+            font-weight: 400;
+        }
+
+        /* ==========================================================================
+           AI CHAT MODAL FORM
+           ========================================================================== */
+
+        /* Input form container */
+        .ai-chat-form {
+            display: flex;
+            align-items: center;
+            padding: 24px;
+            background: #fafbfc;
+            border-bottom-left-radius: 32px;
+            border-bottom-right-radius: 32px;
+            box-shadow: none;
+            gap: 12px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        /* Text input field */
+        .ai-chat-input {
+            flex: 1;
+            border: none;
+            border-radius: 32px;
+            background: #f5f7fa;
+            padding: 16px 24px;
+            font-size: 1.15rem;
+            outline: none;
+            color: #3b82f6;
+            box-shadow: none;
+            transition: background 0.2s ease;
+            font-family: inherit;
+        }
+
+            .ai-chat-input:focus {
+                box-shadow: none;
+                background: #e2e8f0;
+            }
+
+            .ai-chat-input::placeholder {
+                color: #94a3b8;
+            }
+
+        /* Send button */
+        .ai-chat-send {
+            width: 56px;
+            height: 56px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(90deg, #e0e7ff 0%, #f3e8ff 50%, #fce7f3 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3b82f6;
+            cursor: pointer;
+            margin-left: 7px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+        }
+
+            .ai-chat-send:hover {
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                background: linear-gradient(90deg, #f3e8ff 0%, #e0e7ff 100%);
+                transform: scale(1.05);
+            }
+
+            .ai-chat-send:active {
+                transform: scale(0.95);
+            }
+
+        /* ==========================================================================
+           RESPONSIVE DESIGN
+           ========================================================================== */
+
+        /* Mobile and tablet adjustments */
+        @@media (max-width: 600px) {
+            #ai-fab {
+                right: 10px;
+                bottom: 18px;
+                width: 70px;
+                height: 70px;
+            }
+
+            .ai-chat-modal {
+                right: 4px;
+                width: calc(100vw - 8px);
+                min-width: 0;
+                max-width: 100vw;
+                height: 95vh;
+                bottom: 90px;
+                border-radius: 20px;
+            }
+
+            .ai-chat-header, .ai-chat-form {
+                padding: 12px;
+            }
+
+            .ai-chat-header {
+                border-radius: 18px 18px 0 0;
+            }
+
+            .ai-chat-form {
+                border-radius: 0 0 18px 18px;
+            }
+
+            .ai-chat-avatar {
+                width: 40px;
+                height: 40px;
+                margin-right: 10px;
+            }
+
+            .ai-chat-title {
+                font-size: 1.2rem;
+            }
+
+            .ai-chat-desc {
+                font-size: 0.95rem;
+            }
+
+            .ai-chat-input {
+                font-size: 1rem;
+                padding: 12px 18px;
+            }
+
+            .ai-chat-send {
+                width: 48px;
+                height: 48px;
+            }
+        }
+
+        /* Very small screens */
+        @@media (max-width: 480px) {
+            .ai-chat-modal {
+                height: 90vh;
+                bottom: 80px;
+            }
+
+            .ai-chat-body {
+                padding: 16px 16px 0 16px;
+            }
+
+            .ai-chat-message-bot .ai-chat-message-content,
+            .ai-chat-message-user .ai-chat-message-content {
+                padding: 12px 18px;
+                font-size: 13px;
+            }
+        }
+
+        /* ==========================================================================
+           ACCESSIBILITY IMPROVEMENTS
+           ========================================================================== */
+
+        /* Focus states for keyboard navigation */
+        #ai-fab:focus {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+        }
+
+        .ai-chat-close:focus {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+        }
+
+        .ai-chat-input:focus {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+        }
+
+        .ai-chat-send:focus {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+        }
+
+        /* High contrast mode support */
+        @@media (prefers-contrast: high) {
+            .ai-chat-modal {
+                border: 2px solid #000;
+            }
+
+            .ai-chat-message-bot .ai-chat-message-content {
+                border: 1px solid #3b82f6;
+            }
+
+            .ai-chat-message-user .ai-chat-message-content {
+                border: 1px solid #a21caf;
+            }
+        }
+
+        /* Reduced motion support */
+        @@media (prefers-reduced-motion: reduce) {
+            .ai-chat-modal.active {
+                animation: none;
+            }
+
+            #ai-fab:hover,
+            .ai-chat-send:hover,
+            .ai-chat-send:active {
+                transform: none;
+            }
+
+            * {
+                transition: none !important;
+            }
+        }
+    </style>
+
+    <script>
+        const fab = document.getElementById('ai-fab');
+        const modal = document.getElementById('aiChatModal');
+        const closeBtn = document.getElementById('aiChatClose');
+        const chatForm = document.getElementById('aiChatForm');
+        const chatInput = document.getElementById('aiChatInput');
+        const chatMessages = document.getElementById('aiChatMessages');
+
+        fab.addEventListener('click', () => {
+            modal.classList.add('active');
+            setTimeout(() => chatInput.focus(), 250);
+        });
+
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        // Simple local message logic (demo)
+        chatForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const msg = chatInput.value.trim();
+            if (!msg) return;
+
+            appendUserMessage(msg);
+            chatInput.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Simulate bot reply
+            setTimeout(() => {
+                appendBotMessage("I'm still learning! (Demo)");
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 800);
+        });
+
+        function appendUserMessage(text) {
+            const msg = document.createElement('div');
+            msg.className = 'ai-chat-message ai-chat-message-user';
+            msg.innerHTML = `
+            <div class="ai-chat-message-content">${escapeHtml(text)}</div>
+            <div class="ai-chat-message-time">${formatTime()}</div>
+          `;
+            chatMessages.appendChild(msg);
+        }
+
+        function appendBotMessage(text) {
+            const msg = document.createElement('div');
+            msg.className = 'ai-chat-message ai-chat-message-bot';
+            msg.innerHTML = `
+            <div class="ai-chat-message-content">${escapeHtml(text)}</div>
+            <div class="ai-chat-message-time">${formatTime()}</div>
+          `;
+            chatMessages.appendChild(msg);
+        }
+
+        function escapeHtml(unsafe) {
+            return unsafe.replace(/[&<"'>]/g, function (m) {
+                return ({
+                    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+                })[m];
+            });
+        }
+
+        function formatTime() {
+            const d = new Date();
+            let h = d.getHours(), m = d.getMinutes();
+            let ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12; if (h === 0) h = 12;
+            return `${h}:${m.toString().padStart(2, '0')} ${ampm}`;
+        }
+    </script>
+
 }
 else
 {
-    <link rel="stylesheet" href="~/css/landing.css" />
-    <div class="landing-container">
-        <!-- Hero with Dashboard Preview -->
-        <section class="hero-with-dashboard hero-gradient-bg-mesh">
-            <div class="hero-content">
-                <div class="hero-badge">
+ <link rel="stylesheet" href="~/css/landing.css" />  
+    
+    <!-- Full-page background wrapper -->
+    <div class="landing-page-wrapper hero-gradient-bg-mesh">
+        <div class="landing-container">
+            <!-- Hero with Dashboard Preview -->
+            <section class="hero-with-dashboard ">
+                <!-- All your existing hero content -->
+                <div class="hero-content">
+                    <div class="hero-badge">
                     <i class="bi bi-shield-check"></i>
                     Trusted by 50,000+ users worldwide
                 </div>
@@ -1054,7 +1316,7 @@ else
             </div>
         </section>
     </div>
-
+    </div>
     <!-- Final CTA -->
     <section class="final-cta">
         <div class="landing-container">
@@ -1097,7 +1359,6 @@ else
             // IMPORT FUNCTIONS
             function triggerFileInput(type) {
                 const fileInput = document.getElementById('importFileInput');
-
                 // Set accept attribute based on type
                 switch (type) {
                     case 'csv':
@@ -1112,7 +1373,6 @@ else
                     default:
                         fileInput.accept = '.csv,.xlsx,.xls,.pdf';
                 }
-
                 fileInput.click();
             }
 
@@ -1161,48 +1421,48 @@ else
 
                 if (result.success) {
                     content = `
-                                    <div class="alert alert-success">
-                                        <i class="fas fa-check-circle me-2"></i>
-                                        <strong>Import Successful!</strong>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="card bg-light">
-                                                <div class="card-body text-center">
-                                                    <h5 class="text-success">${result.imported || 0}</h5>
-                                                    <small>Transactions Imported</small>
+                                                <div class="alert alert-success">
+                                                    <i class="fas fa-check-circle me-2"></i>
+                                                    <strong>Import Successful!</strong>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="card bg-light">
-                                                <div class="card-body text-center">
-                                                    <h5 class="text-warning">${result.duplicates || 0}</h5>
-                                                    <small>Duplicates Skipped</small>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="card bg-light">
+                                                            <div class="card-body text-center">
+                                                                <h5 class="text-success">${result.imported || 0}</h5>
+                                                                <small>Transactions Imported</small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="card bg-light">
+                                                            <div class="card-body text-center">
+                                                                <h5 class="text-warning">${result.duplicates || 0}</h5>
+                                                                <small>Duplicates Skipped</small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `;
+                                            `;
                 } else {
                     content = `
-                                    <div class="alert alert-danger">
-                                        <i class="fas fa-exclamation-circle me-2"></i>
-                                        <strong>Import Failed</strong>
-                                    </div>
-                                    <p>${result.message}</p>
-                                `;
+                                                <div class="alert alert-danger">
+                                                    <i class="fas fa-exclamation-circle me-2"></i>
+                                                    <strong>Import Failed</strong>
+                                                </div>
+                                                <p>${result.message}</p>
+                                            `;
                 }
 
                 if (result.errors && result.errors.length > 0) {
                     content += `
-                                    <div class="alert alert-warning mt-3">
-                                        <h6><i class="fas fa-exclamation-triangle me-2"></i>Warnings:</h6>
-                                        <ul class="mb-0">
-                                            ${result.errors.map(error => `<li>${error}</li>`).join('')}
-                                        </ul>
-                                    </div>
-                                `;
+                                                <div class="alert alert-warning mt-3">
+                                                    <h6><i class="fas fa-exclamation-triangle me-2"></i>Warnings:</h6>
+                                                    <ul class="mb-0">
+                                                        ${result.errors.map(error => `<li>${error}</li>`).join('')}
+                                                    </ul>
+                                                </div>
+                                            `;
                 }
 
                 contentDiv.innerHTML = content;
@@ -1212,6 +1472,7 @@ else
             // Submit Income Function
             async function submitIncome(event) {
                 event.preventDefault();
+
                 const amountInput = document.getElementById('incomeAmount');
                 const errorDiv = document.getElementById('incomeAmountError');
 
@@ -1221,6 +1482,7 @@ else
                 }
 
                 const amountValue = amountInput.value.trim();
+
                 // Clear previous error
                 errorDiv.style.display = 'none';
                 errorDiv.textContent = '';
@@ -1279,6 +1541,7 @@ else
             // Submit Savings Function
             async function submitSavings(event) {
                 event.preventDefault();
+
                 const targetInput = document.getElementById('targetAmount');
                 const currentInput = document.getElementById('currentAmount');
                 const targetErrorDiv = document.getElementById('targetAmountError');
@@ -1366,6 +1629,7 @@ else
             // Submit Expense Function
             async function submitExpense(event) {
                 event.preventDefault();
+
                 const amount = parseFloat(document.getElementById('expenseAmount').value);
                 const category = document.getElementById('expenseCategory').value;
                 const date = document.getElementById('expenseDate').value;
@@ -1520,15 +1784,18 @@ else
                             const width = chart.width,
                                 height = chart.height,
                                 ctx = chart.ctx;
+
                             ctx.restore();
                             const fontSize = (height / 114).toFixed(2);
                             ctx.font = "bold " + fontSize + "em sans-serif";
                             ctx.textBaseline = "middle";
                             ctx.fillStyle = "#111827";
+
                             const percentage = targetAmount > 0 ? Math.round((currentAmount / targetAmount) * 100) : 0;
                             const text = percentage + "%";
                             const textX = Math.round((width - ctx.measureText(text).width) / 2);
                             const textY = height / 2;
+
                             ctx.fillText(text, textX, textY);
                             ctx.save();
                         }
