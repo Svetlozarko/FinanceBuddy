@@ -17,6 +17,14 @@ body {
     min-height: 100vh;
 }
 
+h3{
+    color:white!important;
+}
+
+.hero-title {
+    color: white;
+}
+
 /* Main container for landing page content */
 .landing-container {
     max-width: 1200px;
@@ -36,6 +44,8 @@ body {
     background: transparent;
 }
 
+
+
 /* Badge/pill above hero title */
 .hero-badge {
     display: inline-flex; /* Inline flexbox */
@@ -54,7 +64,6 @@ body {
 .hero-title {
     font-size: 48px; /* Large, attention-grabbing text */
     font-weight: 700; /* Bold weight */
-    color: #111827; /* Dark color */
     margin-bottom: 16px; /* Space below title */
     line-height: 1.1; /* Tight line spacing */
 }
@@ -156,7 +165,7 @@ body {
 .section-title {
     font-size: 36px; /* Large title text */
     font-weight: 700; /* Bold weight */
-    color: #111827; /* Dark color */
+    color: white; /* Dark color */
     margin-bottom: 16px; /* Space below title */
 }
 
@@ -168,7 +177,7 @@ body {
 /* Section subtitle */
 .section-subtitle {
     font-size: 18px; /* Medium text */
-    color: #6b7280; /* Gray color */
+    color: white; /* Gray color */
     margin-bottom: 48px; /* Large bottom margin */
     max-width: 600px; /* Limit width */
     margin-left: auto; /* Center horizontally */
@@ -237,7 +246,7 @@ body {
 .article-title {
     font-size: 18px; /* Medium-large text */
     font-weight: 600; /* Semi-bold */
-    color: #111827; /* Dark color */
+    color: #111827!important; /* Dark color */
     margin-bottom: 12px; /* Space below title */
     line-height: 1.4; /* Comfortable line spacing */
 }
@@ -283,7 +292,7 @@ body {
 .transform-content h2 {
     font-size: 36px; /* Large text */
     font-weight: 700; /* Bold weight */
-    color: #111827; /* Dark color */
+    color: white; /* Dark color */
     margin-bottom: 24px; /* Space below heading */
 }
 
@@ -295,7 +304,7 @@ body {
 /* Transform description text */
 .transform-description {
     font-size: 18px; /* Medium text */
-    color: #6b7280; /* Gray color */
+    color: white; /* Gray color */
     margin-bottom: 32px; /* Large bottom margin */
     line-height: 1.6; /* Comfortable line spacing */
 }
@@ -314,7 +323,7 @@ body {
         gap: 12px; /* Space between icon and text */
         margin-bottom: 16px; /* Space between items */
         font-size: 16px; /* Readable text size */
-        color: #374151; /* Dark gray color */
+        color: white; /* Dark gray color */
     }
 
 /* Checkmark icon for benefits */
@@ -682,6 +691,14 @@ body {
     margin: 0; /* No margins */
 }
 
+.hero-subtitle{
+    color:white !important;
+}
+
+.feature-title{
+    color: black !important;
+
+}
 /* Dashboard preview container */
 .dashboard-preview {
     background: #f8fafc; /* Light gray background */
