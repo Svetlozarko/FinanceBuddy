@@ -8,8 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\js\dashboard.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <_ContentIncludedByDefault Remove="wwwroot\css\dashboard-data-dropdown.css" />
     <_ContentIncludedByDefault Remove="wwwroot\css\dashboard-gradient.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\js\dashboard.js" />
   </ItemGroup>
 
   <ItemGroup>

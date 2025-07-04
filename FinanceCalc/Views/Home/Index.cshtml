@@ -4,7 +4,6 @@
 <link rel="stylesheet" href="~/css/dashboard.css" />
 <link rel="stylesheet" href="~/css/dashboard-gradient.css" />
 <link rel="stylesheet" href="~/css/hero-gradient.css" />
-<script src="~/js/dashboard.js"></script>
 
 @{
     ViewData["Title"] = "Home";
@@ -15,7 +14,11 @@
 
 @if (User.Identity.IsAuthenticated)
 {
+    <script src="js/dashboard.js"></script>
     <link rel="stylesheet" href="~/css/dashboard-gradient.css" />
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+
+
 
     <div class="dashboard-gradient-bg-mesh">
         <div class="dashboard-container" style="position: relative; z-index: 1;">
@@ -482,477 +485,7 @@
         </form>
     </div>
 
-    <style>
-        /* ==========================================================================
-           BOOTSTRAP MODAL Z-INDEX FIXES - CRITICAL
-           ========================================================================== */
-
-        /* Force Bootstrap modal backdrop to correct z-index */
-        .modal-backdrop {
-            z-index: 1040 !important;
-            background-color: rgba(0, 0, 0, 0.5) !important;
-        }
-
-        /* Bootstrap modal container */
-        .modal {
-            z-index: 1050 !important;
-        }
-
-        /* Bootstrap modal dialog */
-        .modal-dialog {
-            z-index: 1055 !important;
-        }
-
-        /* Bootstrap modal content */
-        .modal-content {
-            z-index: 1060 !important;
-            position: relative;
-        }
-
-        /* Ensure dashboard container is below modals */
-        .dashboard-container {
-            position: relative;
-            z-index: 1 !important;
-        }
-
-        /* Hide AI modal when Bootstrap modal is open */
-        body.modal-open .ai-chat-modal {
-            display: none !important;
-        }
-
-        /* ==========================================================================
-           AI CHAT MODAL - COMPLETE CSS WITH FIXES
-           ========================================================================== */
-
-        /* AI Floating Action Button */
-        #ai-fab {
-            position: fixed;
-            bottom: 42px;
-            right: 42px;
-            width: 66px;
-            height: 66px;
-            border: none;
-            outline: none;
-            border-radius: 50%;
-            background: none;
-            cursor: pointer;
-            z-index: 999 !important; /* Below Bootstrap modals */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            box-shadow: none;
-            transition: none;
-        }
-
-            #ai-fab:active {
-                box-shadow: none;
-            }
-
-            #ai-fab:hover {
-                transform: scale(1.05);
-                transition: transform 0.2s ease;
-            }
-
-        /* AI Chat Modal Container */
-        .ai-chat-modal {
-            display: none;
-            position: fixed;
-            bottom: 130px;
-            right: 42px;
-            width: 420px;
-            max-width: calc(100vw - 40px);
-            height: 580px;
-            background: #fff;
-            border-radius: 32px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-            z-index: 999 !important; /* Below Bootstrap modals */
-            overflow: hidden;
-            flex-direction: column;
-            transition: none;
-            pointer-events: none; /* Prevent interference when hidden */
-            visibility: hidden; /* Additional isolation */
-            opacity: 0;
-        }
-
-            .ai-chat-modal.active {
-                display: flex;
-                pointer-events: auto; /* Enable interaction when active */
-                visibility: visible; /* Make visible when active */
-                opacity: 1;
-                animation: slideInUp 0.3s ease-out;
-            }
-
-        /* Slide in animation */
-        @@keyframes slideInUp {
-            from {
-                transform: translateY(20px);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        /* ==========================================================================
-           AI CHAT MODAL HEADER
-           ========================================================================== */
-
-        /* Header with gradient background */
-        .ai-chat-header {
-            background: linear-gradient(90deg, #e0e7ff 0%, #f3e8ff 50%, #fce7f3 100%);
-            display: flex;
-            align-items: center;
-            padding: 22px 22px 20px 22px;
-            border-top-left-radius: 32px;
-            border-top-right-radius: 32px;
-            position: relative;
-            box-shadow: none;
-        }
-
-        /* Avatar container */
-        .ai-chat-avatar {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 18px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Header text container */
-        .ai-chat-heading {
-            flex: 1;
-        }
-
-        /* AI Assistant title */
-        .ai-chat-title {
-            color: #3b82f6;
-            font-weight: 700;
-            font-size: 1.4rem;
-            margin-bottom: 2px;
-            line-height: 1.2;
-        }
-
-        /* Subtitle text */
-        .ai-chat-desc {
-            color: #6b7280;
-            font-size: 1.07rem;
-            font-weight: 400;
-            line-height: 1.3;
-        }
-
-        /* Close button */
-        .ai-chat-close {
-            color: #3b82f6;
-            background: none;
-            border: none;
-            font-size: 2rem;
-            margin-left: 10px;
-            cursor: pointer;
-            padding: 2px 14px;
-            border-radius: 50%;
-            transition: background 0.15s ease;
-            line-height: 1;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-            .ai-chat-close:hover {
-                background: rgba(60, 72, 104, 0.10);
-            }
-
-        /* ==========================================================================
-           AI CHAT MODAL BODY
-           ========================================================================== */
-
-        /* Chat messages container */
-        .ai-chat-body {
-            flex: 1 1 0%;
-            padding: 24px 24px 0 24px;
-            background: #fff;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-        }
-
-            /* Custom scrollbar for chat body */
-            .ai-chat-body::-webkit-scrollbar {
-                width: 6px;
-            }
-
-            .ai-chat-body::-webkit-scrollbar-track {
-                background: #f1f5f9;
-                border-radius: 3px;
-            }
-
-            .ai-chat-body::-webkit-scrollbar-thumb {
-                background: #cbd5e1;
-                border-radius: 3px;
-            }
-
-                .ai-chat-body::-webkit-scrollbar-thumb:hover {
-                    background: #94a3b8;
-                }
-
-        /* Individual message container */
-        .ai-chat-message {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            margin-bottom: 22px;
-        }
-
-        /* Bot message styling */
-        .ai-chat-message-bot .ai-chat-message-content {
-            background: #f3e8ff;
-            color: #3b82f6;
-            border-radius: 18px;
-            padding: 16px 24px;
-            max-width: 85%;
-            box-shadow: none;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        /* User message container */
-        .ai-chat-message-user {
-            align-items: flex-end;
-        }
-
-            /* User message styling */
-            .ai-chat-message-user .ai-chat-message-content {
-                background: linear-gradient(90deg, #fce7f3 0%, #e0e7ff 100%);
-                color: #a21caf;
-                border-radius: 18px;
-                padding: 16px 24px;
-                max-width: 85%;
-                align-self: flex-end;
-                box-shadow: none;
-                font-size: 14px;
-                line-height: 1.5;
-            }
-
-        /* Message timestamp */
-        .ai-chat-message-time {
-            font-size: 0.95rem;
-            color: #a3a3a3;
-            margin-top: 4px;
-            margin-left: 4px;
-            font-weight: 400;
-        }
-
-        /* ==========================================================================
-           AI CHAT MODAL FORM
-           ========================================================================== */
-
-        /* Input form container */
-        .ai-chat-form {
-            display: flex;
-            align-items: center;
-            padding: 24px;
-            background: #fafbfc;
-            border-bottom-left-radius: 32px;
-            border-bottom-right-radius: 32px;
-            box-shadow: none;
-            gap: 12px;
-            border-top: 1px solid #f1f5f9;
-        }
-
-        /* Text input field */
-        .ai-chat-input {
-            flex: 1;
-            border: none;
-            border-radius: 32px;
-            background: #f5f7fa;
-            padding: 16px 24px;
-            font-size: 1.15rem;
-            outline: none;
-            color: #3b82f6;
-            box-shadow: none;
-            transition: background 0.2s ease;
-            font-family: inherit;
-        }
-
-            .ai-chat-input:focus {
-                box-shadow: none;
-                background: #e2e8f0;
-            }
-
-            .ai-chat-input::placeholder {
-                color: #94a3b8;
-            }
-
-        /* Send button */
-        .ai-chat-send {
-            width: 56px;
-            height: 56px;
-            border: none;
-            border-radius: 50%;
-            background: linear-gradient(90deg, #e0e7ff 0%, #f3e8ff 50%, #fce7f3 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #3b82f6;
-            cursor: pointer;
-            margin-left: 7px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            transition: all 0.2s ease;
-        }
-
-            .ai-chat-send:hover {
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-                background: linear-gradient(90deg, #f3e8ff 0%, #e0e7ff 100%);
-                transform: scale(1.05);
-            }
-
-            .ai-chat-send:active {
-                transform: scale(0.95);
-            }
-
-        /* ==========================================================================
-           RESPONSIVE DESIGN
-           ========================================================================== */
-
-        /* Mobile and tablet adjustments */
-        @@media (max-width: 600px) {
-            #ai-fab {
-                right: 10px;
-                bottom: 18px;
-                width: 70px;
-                height: 70px;
-            }
-
-            .ai-chat-modal {
-                right: 4px;
-                width: calc(100vw - 8px);
-                min-width: 0;
-                max-width: 100vw;
-                height: 95vh;
-                bottom: 90px;
-                border-radius: 20px;
-            }
-
-            .ai-chat-header, .ai-chat-form {
-                padding: 12px;
-            }
-
-            .ai-chat-header {
-                border-radius: 18px 18px 0 0;
-            }
-
-            .ai-chat-form {
-                border-radius: 0 0 18px 18px;
-            }
-
-            .ai-chat-avatar {
-                width: 40px;
-                height: 40px;
-                margin-right: 10px;
-            }
-
-            .ai-chat-title {
-                font-size: 1.2rem;
-            }
-
-            .ai-chat-desc {
-                font-size: 0.95rem;
-            }
-
-            .ai-chat-input {
-                font-size: 1rem;
-                padding: 12px 18px;
-            }
-
-            .ai-chat-send {
-                width: 48px;
-                height: 48px;
-            }
-        }
-
-        /* Very small screens */
-        @@media (max-width: 480px) {
-            .ai-chat-modal {
-                height: 90vh;
-                bottom: 80px;
-            }
-
-            .ai-chat-body {
-                padding: 16px 16px 0 16px;
-            }
-
-            .ai-chat-message-bot .ai-chat-message-content,
-            .ai-chat-message-user .ai-chat-message-content {
-                padding: 12px 18px;
-                font-size: 13px;
-            }
-        }
-
-        /* ==========================================================================
-           ACCESSIBILITY IMPROVEMENTS
-           ========================================================================== */
-
-        /* Focus states for keyboard navigation */
-        #ai-fab:focus {
-            outline: 2px solid #3b82f6;
-            outline-offset: 2px;
-        }
-
-        .ai-chat-close:focus {
-            outline: 2px solid #3b82f6;
-            outline-offset: 2px;
-        }
-
-        .ai-chat-input:focus {
-            outline: 2px solid #3b82f6;
-            outline-offset: 2px;
-        }
-
-        .ai-chat-send:focus {
-            outline: 2px solid #3b82f6;
-            outline-offset: 2px;
-        }
-
-        /* High contrast mode support */
-        @@media (prefers-contrast: high) {
-            .ai-chat-modal {
-                border: 2px solid #000;
-            }
-
-            .ai-chat-message-bot .ai-chat-message-content {
-                border: 1px solid #3b82f6;
-            }
-
-            .ai-chat-message-user .ai-chat-message-content {
-                border: 1px solid #a21caf;
-            }
-        }
-
-        /* Reduced motion support */
-        @@media (prefers-reduced-motion: reduce) {
-            .ai-chat-modal.active {
-                animation: none;
-            }
-
-            #ai-fab:hover,
-            .ai-chat-send:hover,
-            .ai-chat-send:active {
-                transform: none;
-            }
-
-            * {
-                transition: none !important;
-            }
-        }
-    </style>
+    
 
     <script>
         const fab = document.getElementById('ai-fab');
@@ -1424,325 +957,6 @@ else
     </div>
 </section>
 
-<style>
-/* ==========================================================================
-   PRICING SECTION STYLES
-   ========================================================================== */
-
-.pricing-section {
-    padding: 80px 0;
-    background: transparent; /* Will inherit the gradient from parent */
-}
-
-.pricing-header {
-    text-align: center;
-    margin-bottom: 60px;
-}
-
-.pricing-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 32px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-/* ==========================================================================
-   PRICING CARDS
-   ========================================================================== */
-
-.pricing-card {
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 24px;
-    padding: 40px 32px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    position: relative;
-    transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-
-.pricing-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-}
-
-/* Popular Plan Styling */
-.pricing-card-popular {
-    border: 2px solid #3b82f6;
-    transform: scale(1.05);
-    z-index: 2;
-}
-
-.pricing-card-popular:hover {
-    transform: scale(1.05) translateY(-8px);
-}
-
-.popular-badge {
-    position: absolute;
-    top: -12px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-    color: white;
-    padding: 8px 24px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 600;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-}
-
-/* ==========================================================================
-   PRICING CARD SECTIONS
-   ========================================================================== */
-
-.pricing-card-header {
-    text-align: center;
-    margin-bottom: 32px;
-}
-
-.plan-name {
-    font-size: 24px;
-    font-weight: 700;
-    color: #111827;
-    margin-bottom: 16px;
-}
-
-.plan-price {
-    margin-bottom: 12px;
-}
-
-.price-amount {
-    font-size: 48px;
-    font-weight: 800;
-    color: #111827;
-    line-height: 1;
-}
-
-.price-period {
-    font-size: 18px;
-    color: #6b7280;
-    font-weight: 500;
-}
-
-.plan-description {
-    color: #6b7280;
-    font-size: 16px;
-    margin: 0;
-}
-
-.pricing-card-body {
-    flex: 1;
-    margin-bottom: 32px;
-}
-
-.features-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.feature-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 16px;
-    color: #374151;
-    font-size: 15px;
-    line-height: 1.5;
-}
-
-.check-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: white;
-    border-radius: 50%;
-    font-size: 12px;
-    font-weight: 700;
-    margin-right: 12px;
-    flex-shrink: 0;
-}
-
-.pricing-card-footer {
-    margin-top: auto;
-}
-
-/* ==========================================================================
-   PRICING BUTTONS
-   ========================================================================== */
-
-.btn-pricing {
-    display: block;
-    width: 100%;
-    padding: 16px 24px;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 600;
-    text-align: center;
-    text-decoration: none;
-    transition: all 0.2s ease;
-    border: 2px solid transparent;
-}
-
-.btn-pricing-primary {
-    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-    color: white;
-    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3);
-}
-
-.btn-pricing-primary:hover {
-    background: linear-gradient(135deg, #1d4ed8, #1e40af);
-    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
-    transform: translateY(-2px);
-    color: white;
-    text-decoration: none;
-}
-
-.btn-pricing-outline {
-    background: transparent;
-    color: #374151;
-    border: 2px solid #d1d5db;
-}
-
-.btn-pricing-outline:hover {
-    background: #f9fafb;
-    border-color: #9ca3af;
-    color: #111827;
-    text-decoration: none;
-    transform: translateY(-2px);
-}
-
-/* ==========================================================================
-   PRICING FOOTER
-   ========================================================================== */
-
-.pricing-footer {
-    text-align: center;
-    margin-top: 48px;
-}
-
-.pricing-note {
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 16px;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-/* ==========================================================================
-   RESPONSIVE DESIGN
-   ========================================================================== */
-
-@@media (max-width: 768px) {
-    .pricing-section {
-        padding: 60px 0;
-    }
-    
-    .pricing-header {
-        margin-bottom: 40px;
-    }
-    
-    .pricing-grid {
-        grid-template-columns: 1fr;
-        gap: 24px;
-        padding: 0 16px;
-    }
-    
-    .pricing-card {
-        padding: 32px 24px;
-    }
-    
-    .pricing-card-popular {
-        transform: none;
-        margin: 0;
-    }
-    
-    .pricing-card-popular:hover {
-        transform: translateY(-8px);
-    }
-    
-    .plan-name {
-        font-size: 20px;
-    }
-    
-    .price-amount {
-        font-size: 40px;
-    }
-    
-    .feature-item {
-        font-size: 14px;
-        margin-bottom: 12px;
-    }
-    
-    .btn-pricing {
-        padding: 14px 20px;
-        font-size: 15px;
-    }
-}
-
-@@media (max-width: 480px) {
-    .pricing-card {
-        padding: 24px 20px;
-    }
-    
-    .popular-badge {
-        font-size: 12px;
-        padding: 6px 16px;
-    }
-    
-    .price-amount {
-        font-size: 36px;
-    }
-    
-    .pricing-note {
-        font-size: 14px;
-        flex-direction: column;
-        gap: 4px;
-    }
-}
-
-/* ==========================================================================
-   ACCESSIBILITY IMPROVEMENTS
-   ========================================================================== */
-
-@@media (prefers-reduced-motion: reduce) {
-    .pricing-card,
-    .btn-pricing {
-        transition: none;
-    }
-    
-    .pricing-card:hover,
-    .btn-pricing:hover {
-        transform: none;
-    }
-}
-
-/* High contrast mode support */
-@@media (prefers-contrast: high) {
-    .pricing-card {
-        border: 2px solid #000;
-    }
-    
-    .check-icon {
-        background: #000;
-        color: #fff;
-    }
-}
-
-/* Focus states for keyboard navigation */
-.btn-pricing:focus {
-    outline: 2px solid #3b82f6;
-    outline-offset: 2px;
-}
-</style>
 
 
         <!-- Testimonials Section -->
@@ -1823,6 +1037,7 @@ else
     @if (User.Identity.IsAuthenticated)
     {
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
         <script>
             let expenseChart, incomeChart, savingsChart;
 
@@ -1891,48 +1106,48 @@ else
 
                 if (result.success) {
                     content = `
-                                                <div class="alert alert-success">
-                                                    <i class="fas fa-check-circle me-2"></i>
-                                                    <strong>Import Successful!</strong>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="card bg-light">
-                                                            <div class="card-body text-center">
-                                                                <h5 class="text-success">${result.imported || 0}</h5>
-                                                                <small>Transactions Imported</small>
+                                                            <div class="alert alert-success">
+                                                                <i class="fas fa-check-circle me-2"></i>
+                                                                <strong>Import Successful!</strong>
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="card bg-light">
-                                                            <div class="card-body text-center">
-                                                                <h5 class="text-warning">${result.duplicates || 0}</h5>
-                                                                <small>Duplicates Skipped</small>
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="card bg-light">
+                                                                        <div class="card-body text-center">
+                                                                            <h5 class="text-success">${result.imported || 0}</h5>
+                                                                            <small>Transactions Imported</small>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="card bg-light">
+                                                                        <div class="card-body text-center">
+                                                                            <h5 class="text-warning">${result.duplicates || 0}</h5>
+                                                                            <small>Duplicates Skipped</small>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            `;
+                                                        `;
                 } else {
                     content = `
-                                                <div class="alert alert-danger">
-                                                    <i class="fas fa-exclamation-circle me-2"></i>
-                                                    <strong>Import Failed</strong>
-                                                </div>
-                                                <p>${result.message}</p>
-                                            `;
+                                                            <div class="alert alert-danger">
+                                                                <i class="fas fa-exclamation-circle me-2"></i>
+                                                                <strong>Import Failed</strong>
+                                                            </div>
+                                                            <p>${result.message}</p>
+                                                        `;
                 }
 
                 if (result.errors && result.errors.length > 0) {
                     content += `
-                                                <div class="alert alert-warning mt-3">
-                                                    <h6><i class="fas fa-exclamation-triangle me-2"></i>Warnings:</h6>
-                                                    <ul class="mb-0">
-                                                        ${result.errors.map(error => `<li>${error}</li>`).join('')}
-                                                    </ul>
-                                                </div>
-                                            `;
+                                                            <div class="alert alert-warning mt-3">
+                                                                <h6><i class="fas fa-exclamation-triangle me-2"></i>Warnings:</h6>
+                                                                <ul class="mb-0">
+                                                                    ${result.errors.map(error => `<li>${error}</li>`).join('')}
+                                                                </ul>
+                                                            </div>
+                                                        `;
                 }
 
                 contentDiv.innerHTML = content;
@@ -2273,5 +1488,6 @@ else
                 });
             });
         </script>
+
     }
 }
