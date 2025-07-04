@@ -17,9 +17,7 @@ body {
     min-height: 100vh;
 }
 
-h3{
-    color:white!important;
-}
+
 
 .hero-title {
     color: white;
@@ -675,13 +673,14 @@ h3{
     display: flex; /* Flexbox layout */
     gap: 40px; /* Space between stats */
     background-color: transparent;
+    color:white;
 }
 
 /* Individual hero stat */
 .hero-stat h3 {
     font-size: 24px; /* Large text */
     font-weight: 700; /* Bold weight */
-    color: #111827; /* Dark color */
+    color: white; /* Dark color */
     margin: 0; /* No margins */
 }
 

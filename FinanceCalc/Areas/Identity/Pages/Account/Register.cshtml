@@ -1,139 +1,136 @@
 ﻿@page
 @model RegisterModel
-
 @{
     ViewData["Title"] = "Register";
 }
 
-<div class="register-wrapper">
-    <div class="card shadow-lg p-5 rounded-4 register-card">
-        <div class="text-center mb-4">
-            <h2 class="fw-bold">Create a new account</h2>
-            <p class="text-muted">Sign up to get started</p>
-        </div>  
+<link rel="stylesheet" href="~/css/dashboard-gradient.css" />
 
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" novalidate>
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
-
-            <!-- Progress Indicator -->
-            <div class="progress-indicator mb-4" aria-label="Registration steps" role="list">
-                <span role="listitem" class="step active" aria-current="step">1</span>
-                <span role="listitem" class="step">2</span>
-                <span role="listitem" class="step">3</span>
-                <span role="listitem" class="step">4</span>
+<div class="dashboard-gradient-bg-mesh">
+    <div class="register-wrapper">
+        <!-- App Branding -->
+        <div class="app-branding">
+            <div class="app-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"></polyline>
+                </svg>
             </div>
-
-            <!-- Step groups -->
-            <div class="input-group active" data-step="1" aria-live="polite">
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.FirstName" class="form-control" aria-required="true" placeholder="First Name" />
-                    <label asp-for="Input.FirstName">First Name</label>
-                    <span asp-validation-for="Input.FirstName" class="text-danger small"></span>
-                </div>
-
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.LastName" class="form-control" aria-required="true" placeholder="Last Name" />
-                    <label asp-for="Input.LastName">Last Name</label>
-                    <span asp-validation-for="Input.LastName" class="text-danger small"></span>
-                </div>
-
-                <div class="d-flex justify-content-between mt-3">
-                    <button type="button" class="btn btn-primary next-btn">Next &raquo;</button>
-                </div>
+            <h1 class="app-title">FinanceTracker</h1>
+            <p class="app-subtitle">Join thousands managing their finances</p>
+        </div>
+        
+        <div class="card shadow-lg p-5 rounded-4 register-card">
+            <div class="text-center mb-4">
+                <h2 class="fw-bold">Create a new account</h2>
+                <p class="text-muted">Sign up to get started</p>
             </div>
-
-            <div class="input-group" data-step="2" aria-live="polite">
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.NickName" class="form-control" aria-required="true" placeholder="Nickname" />
-                    <label asp-for="Input.NickName">Nickname</label>
-                    <span asp-validation-for="Input.NickName" class="text-danger small"></span>
+              
+            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" novalidate>
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+                <!-- Progress Indicator -->
+                <div class="progress-indicator mb-4" aria-label="Registration steps" role="list">
+                    <span role="listitem" class="step active" aria-current="step">1</span>
+                    <span role="listitem" class="step">2</span>
+                    <span role="listitem" class="step">3</span>
+                    <span role="listitem" class="step">4</span>
                 </div>
-
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Age" type="number" class="form-control" aria-required="true" placeholder="Age" />
-                    <label asp-for="Input.Age">Age</label>
-                    <span asp-validation-for="Input.Age" class="text-danger small"></span>
-                </div>
-
-                <div class="d-flex justify-content-between mt-3">
-                    <button type="button" class="btn btn-secondary prev-btn">&laquo; Previous</button>
-                    <button type="button" class="btn btn-primary next-btn">Next &raquo;</button>
-                </div>
-            </div>
-
-            <div class="input-group" data-step="3" aria-live="polite">
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Country" class="form-control" aria-required="true" placeholder="Country" />
-                    <label asp-for="Input.Country">Country</label>
-                    <span asp-validation-for="Input.Country" class="text-danger small"></span>
-                </div>
-
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                    <label asp-for="Input.Email">Email</label>
-                    <span asp-validation-for="Input.Email" class="text-danger small"></span>
-                </div>
-
-                <div class="d-flex justify-content-between mt-3">
-                    <button type="button" class="btn btn-secondary prev-btn">&laquo; Previous</button>
-                    <button type="button" class="btn btn-primary next-btn">Next &raquo;</button>
-                </div>
-            </div>
-
-            <div class="input-group" data-step="4" aria-live="polite">
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Password" />
-                    <label asp-for="Input.Password">Password</label>
-                    <span asp-validation-for="Input.Password" class="text-danger small"></span>
-                </div>
-
-                <div id="password-strength-container" class="my-3 d-none">
-                    <small id="strength-text" class="form-text d-block mb-1 text-muted">Password strength: N/A</small>
-                    <div class="progress" style="height: 6px;">
-                        <div id="strength-bar" class="progress-bar" role="progressbar" style="width: 0%; background-color: #dc3545;"></div>
+                <!-- Step groups -->
+                <div class="input-group active" data-step="1" aria-live="polite">
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.FirstName" class="form-control" aria-required="true" placeholder="First Name" />
+                        <label asp-for="Input.FirstName">First Name</label>
+                        <span asp-validation-for="Input.FirstName" class="text-danger small"></span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.LastName" class="form-control" aria-required="true" placeholder="Last Name" />
+                        <label asp-for="Input.LastName">Last Name</label>
+                        <span asp-validation-for="Input.LastName" class="text-danger small"></span>
+                    </div>
+                    <div class="d-flex justify-content-end mt-3">
+                        <button type="button" class="btn btn-primary next-btn">Next &raquo;</button>
                     </div>
                 </div>
-
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Confirm Password" />
-                    <label asp-for="Input.ConfirmPassword">Confirm Password</label>
-                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger small"></span>
-                </div>
-
-                <div class="d-flex justify-content-between mt-3">
-                    <button type="button" class="btn btn-secondary prev-btn">&laquo; Previous</button>
-                    <button id="registerSubmit" type="submit" class="btn btn-success">Register</button>
-                </div>
-            </div>
-        </form>
-
-        @if ((Model.ExternalLogins?.Count ?? 0) > 0)
-        {
-            <div class="text-center mt-3">
-                <p class="text-muted mb-2">Or register with</p>
-                <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                    <div class="d-flex justify-content-center flex-wrap gap-2">
-                        @foreach (var provider in Model.ExternalLogins!)
-                        {
-                            <button type="submit" class="btn btn-outline-secondary" name="provider" value="@provider.Name">
-                                @provider.DisplayName
-                            </button>
-                        }
+                <div class="input-group" data-step="2" aria-live="polite">
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.NickName" class="form-control" aria-required="true" placeholder="Nickname" />
+                        <label asp-for="Input.NickName">Nickname</label>
+                        <span asp-validation-for="Input.NickName" class="text-danger small"></span>
                     </div>
-                </form>
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Age" type="number" class="form-control" aria-required="true" placeholder="Age" />
+                        <label asp-for="Input.Age">Age</label>
+                        <span asp-validation-for="Input.Age" class="text-danger small"></span>
+                    </div>
+                    <div class="d-flex justify-content-between mt-3">
+                        <button type="button" class="btn btn-secondary prev-btn">&laquo; Previous</button>
+                        <button type="button" class="btn btn-primary next-btn">Next &raquo;</button>
+                    </div>
+                </div>
+                <div class="input-group" data-step="3" aria-live="polite">
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Country" class="form-control" aria-required="true" placeholder="Country" />
+                        <label asp-for="Input.Country">Country</label>
+                        <span asp-validation-for="Input.Country" class="text-danger small"></span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                        <label asp-for="Input.Email">Email</label>
+                        <span asp-validation-for="Input.Email" class="text-danger small"></span>
+                    </div>
+                    <div class="d-flex justify-content-between mt-3">
+                        <button type="button" class="btn btn-secondary prev-btn">&laquo; Previous</button>
+                        <button type="button" class="btn btn-primary next-btn">Next &raquo;</button>
+                    </div>
+                </div>
+                <div class="input-group" data-step="4" aria-live="polite">
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Password" />
+                        <label asp-for="Input.Password">Password</label>
+                        <span asp-validation-for="Input.Password" class="text-danger small"></span>
+                    </div>
+                    <div id="password-strength-container" class="my-3 d-none">
+                        <small id="strength-text" class="form-text d-block mb-1 text-muted">Password strength: N/A</small>
+                        <div class="progress" style="height: 6px;">
+                            <div id="strength-bar" class="progress-bar" role="progressbar" style="width: 0%; background-color: #dc3545;"></div>
+                        </div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Confirm Password" />
+                        <label asp-for="Input.ConfirmPassword">Confirm Password</label>
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger small"></span>
+                    </div>
+                    <div class="d-flex justify-content-between mt-3">
+                        <button type="button" class="btn btn-secondary prev-btn">&laquo; Previous</button>
+                        <button id="registerSubmit" type="submit" class="btn btn-success">Register</button>
+                    </div>
+                </div>
+            </form>
+            @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+            {
+                <div class="text-center mt-3">
+                    <p class="text-muted mb-2">Or register with</p>
+                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                        <div class="d-flex justify-content-center flex-wrap gap-2">
+                            @foreach (var provider in Model.ExternalLogins!)
+                            {
+                                <button type="submit" class="btn btn-outline-secondary" name="provider" value="@provider.Name">
+                                    @provider.DisplayName
+                                </button>
+                            }
+                        </div>
+                    </form>
+                </div>
+            }
+            <div class="text-center mt-4">
+                <span class="text-muted">Already have an account?</span><br />
+                <a asp-page="/Account/Login" asp-route-returnUrl="@Model.ReturnUrl" class="btn btn-outline-primary mt-2">Log in</a>
             </div>
-        }
-
-        <div class="text-center mt-4">
-            <span class="text-muted">Already have an account?</span><br />
-            <a asp-page="/Account/Login" asp-route-returnUrl="@Model.ReturnUrl" class="btn btn-outline-primary mt-2">Log in</a>
         </div>
     </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const passwordInput = document.querySelector('input[name="Input.Password"]');
@@ -145,7 +142,7 @@
             const steps = document.querySelectorAll('.progress-indicator .step');
             let currentStep = 0;
 
-            // Функция за оценка на паролата
+            // Password strength check function
             const checkPasswordStrength = (password) => {
                 let score = 0;
                 if (password.length >= 8) score++;
@@ -156,24 +153,20 @@
                 return score;
             };
 
-            // Обновяване на индикатора за сила
+            // Update strength meter
             const updateStrengthMeter = () => {
                 const password = passwordInput.value;
-
                 if (password.length === 0) {
                     container.classList.add('d-none');
                     strengthBar.style.width = '0%';
                     strengthText.textContent = '';
                     return;
                 }
-
                 container.classList.remove('d-none');
-
                 const strength = checkPasswordStrength(password);
                 const strengthLevels = ["Very Weak", "Weak", "Moderate", "Strong", "Very Strong"];
                 const colors = ["#dc3545", "#fd7e14", "#ffc107", "#28a745", "#007bff"];
                 const widths = ["20%", "40%", "60%", "80%", "100%"];
-
                 strengthText.textContent = strengthLevels[strength - 1] || "Very Weak";
                 strengthBar.style.width = widths[strength - 1] || "20%";
                 strengthBar.style.backgroundColor = colors[strength - 1] || "#dc3545";
@@ -183,7 +176,7 @@
                 passwordInput.addEventListener('input', updateStrengthMeter);
             }
 
-            // Покажи съответната стъпка
+            // Show appropriate step
             function showStep(step) {
                 groups.forEach((group, i) => {
                     if (i === step) {
@@ -203,7 +196,6 @@
                         }, 300);
                     }
                 });
-
                 steps.forEach((stepEl, i) => {
                     if (i === step) {
                         stepEl.classList.add('active');
@@ -222,7 +214,6 @@
                     const currentGroup = btn.closest('.input-group');
                     const inputs = currentGroup.querySelectorAll('input');
                     let valid = true;
-
                     inputs.forEach(input => {
                         if (!input.value.trim()) {
                             valid = false;
@@ -233,7 +224,6 @@
                         }
                     });
 
-                    // Намери или създай елемент за съобщение за грешка
                     let errorMessageEl = currentGroup.querySelector('.error-message');
                     if (!errorMessageEl) {
                         errorMessageEl = document.createElement('div');
@@ -244,12 +234,11 @@
                     }
 
                     if (!valid) {
-                        errorMessageEl.textContent = 'Please fill all the nessecary fields!';
+                        errorMessageEl.textContent = 'Please fill all the necessary fields!';
                         errorMessageEl.style.display = 'block';
                     } else {
                         errorMessageEl.textContent = '';
                         errorMessageEl.style.display = 'none';
-
                         const currentStepIndex = Array.from(groups).indexOf(currentGroup);
                         if (currentStepIndex < groups.length - 1) {
                             currentStep = currentStepIndex + 1;
@@ -283,20 +272,11 @@
             });
         });
     </script>
-
-
-
-
-
     <style>
         html, body {
             height: 100%;
             margin: 0;
-        }
-
-        body {
-            background: linear-gradient(135deg, #e0f7fa, #f1f8ff);
-            font-family: 'Segoe UI', sans-serif;
+            background: none !important; /* Remove default body background */
         }
 
         .register-wrapper {
@@ -307,10 +287,45 @@
             width: 100%;
             max-width: 480px;
             padding: 20px;
+            z-index: 1;
+        }
+
+        /* App Branding - same as login */
+        .app-branding {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .app-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .app-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white !important; /* White text on gradient background */
+            margin-bottom: 0.5rem;
+        }
+
+        .app-subtitle {
+            color: rgba(255, 255, 255, 0.8) !important; /* Semi-transparent white */
+            margin-bottom: 0;
         }
 
         .register-card {
-            /* No animation on container, we animate inside */
+            background: rgba(255, 255, 255, 0.95) !important; /* Semi-transparent white */
+            border: none !important;
+            border-radius: 24px !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+            backdrop-filter: blur(10px); /* Glass effect */
         }
 
         /* Step groups */
@@ -335,78 +350,108 @@
         .progress-indicator .step {
             width: 32px;
             height: 32px;
-            background-color: #cfd8dc;
+            background-color: #e5e7eb;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 600;
-            color: #455a64;
+            color: #6b7280;
             user-select: none;
             transition: background-color 0.3s, color 0.3s;
         }
 
         .progress-indicator .step.active {
-            background-color: #007bff;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
             color: white;
         }
 
-    .progress {
-        background-color: #e9ecef;
-        border-radius: 0.375rem;
-        overflow: hidden;
-    }
-
-        /* Button style */
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
-            font-weight: 600;
-            padding: 0.5rem 1.25rem;
+        .progress {
+            background-color: #e9ecef;
             border-radius: 0.375rem;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+            overflow: hidden;
+        }
+
+        /* Enhanced form controls */
+        .form-control {
+            height: 48px;
+            border-radius: 12px;
+            border: 1px solid #d1d5db;
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-control:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            background: white;
+        }
+
+        /* Button styles */
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border: none;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.3);
         }
 
         .btn-primary:hover,
         .btn-primary:focus {
-            background-color: #0056b3;
-            border-color: #004085;
-            outline: none;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            box-shadow: 0 6px 20px 0 rgba(99, 102, 241, 0.4);
+            transform: translateY(-1px);
         }
 
         .btn-secondary {
-            background-color: #6c757d;
-            border-color: #6c757d;
+            background-color: #6b7280;
+            border-color: #6b7280;
             font-weight: 600;
-            padding: 0.5rem 1.25rem;
-            border-radius: 0.375rem;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            transition: all 0.2s ease;
         }
 
         .btn-secondary:hover,
         .btn-secondary:focus {
-            background-color: #5a6268;
-            border-color: #4e555b;
-            outline: none;
+            background-color: #4b5563;
+            border-color: #374151;
+            transform: translateY(-1px);
         }
 
         .btn-success {
-            background-color: #28a745;
-            border-color: #28a745;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border: none;
             font-weight: 600;
-            padding: 0.5rem 1.25rem;
-            border-radius: 0.375rem;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.3);
         }
 
         .btn-success:hover,
         .btn-success:focus {
-            background-color: #1e7e34;
-            border-color: #1c7430;
-            outline: none;
+            background: linear-gradient(135deg, #059669, #047857);
+            box-shadow: 0 6px 20px 0 rgba(16, 185, 129, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-primary {
+            border: 2px solid #6366f1;
+            color: #6366f1;
+            background: transparent;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-outline-primary:hover {
+            background: #6366f1;
+            color: white;
+            transform: translateY(-1px);
         }
 
         /* Input floating label fix for background */
@@ -416,12 +461,20 @@
         }
 
         /* Responsive tweaks */
-     
-        
+        @@media (max-width: 576px) {
+            .register-wrapper {
+                padding: 16px;
+            }
+            
+            .register-card {
+                padding: 1.5rem !important;
+            }
+            
             .d-flex.justify-content-between {
                 flex-direction: column;
                 gap: 10px;
             }
+            
             .d-flex.justify-content-between button {
                 width: 100%;
             }
