@@ -1282,6 +1282,469 @@ else
             </div>
         </section>
 
+        <!-- Pricing Section -->
+<section class="pricing-section">
+    <div class="landing-container">
+        <div class="pricing-header">
+                        <h2 class="section-title">
+                            Pick Your Path to Financial 
+                            <span class="highlight">Success</span>
+                        </h2>
+            <p class="section-subtitle">Choose the plan that works best for you. All plans include our core features and 24/7 support.</p>
+        </div>
+        
+        <div class="pricing-grid">
+            <!-- Starter Plan -->
+            <div class="pricing-card">
+                <div class="pricing-card-header">
+                    <h3 class="plan-name">Starter</h3>
+                    <div class="plan-price">
+                        <span class="price-amount">Free</span>
+                    </div>
+                    <p class="plan-description">Perfect for getting started</p>
+                </div>
+                
+                <div class="pricing-card-body">
+                    <ul class="features-list">
+                        <li class="feature-item">
+                            <span class="check-icon">✓</span>
+                            Track up to 3 accounts
+                        </li>
+                        <li class="feature-item">
+                            <span class="check-icon">✓</span>
+                            Basic expense categorization
+                        </li>
+                        <li class="feature-item">
+                            <span class="check-icon">✓</span>
+                            Monthly reports
+                        </li>
+                        <li class="feature-item">
+                            <span class="check-icon">✓</span>
+                            Mobile app access
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="pricing-card-footer">
+                    <a href="/Identity/Account/Register" class="btn-pricing btn-pricing-outline">Get Started</a>
+                </div>
+            </div>
+            
+            <!-- Pro Plan -->
+            <div class="pricing-card pricing-card-popular">
+                <div class="popular-badge">Most Popular</div>
+                <div class="pricing-card-header">
+                    <h3 class="plan-name">Pro</h3>
+                    <div class="plan-price">
+                        <span class="price-amount">$9</span>
+                        <span class="price-period">/mo</span>
+                    </div>
+                    <p class="plan-description">For serious money managers</p>
+                </div>
+                
+                <div class="pricing-card-body">
+                    <ul class="features-list">
+                        <li class="feature-item">
+                            <span class="check-icon">✓</span>
+                            Unlimited accounts
+                        </li>
+                        <li class="feature-item">
+                            <span class="check-icon">✓</span>
+                            Advanced analytics
+                        </li>
+                        <li class="feature-item">
+                            <span class="check-icon">✓</span>
+                            Goal tracking
+                        </li>
+                        <li class="feature-item">
+                            <span class="check-icon">✓</span>
+                            Investment tracking
+                        </li>
+                        <li class="feature-item">
+                            <span class="check-icon">✓</span>
+                            Custom categories
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="pricing-card-footer">
+                    <a href="/Identity/Account/Register?plan=pro" class="btn-pricing btn-pricing-primary">Start Pro Trial</a>
+                </div>
+            </div>
+            
+            <!-- Business Plan -->
+            <div class="pricing-card">
+                <div class="pricing-card-header">
+                    <h3 class="plan-name">Business</h3>
+                    <div class="plan-price">
+                        <span class="price-amount">$29</span>
+                        <span class="price-period">/mo</span>
+                    </div>
+                    <p class="plan-description">For teams and businesses</p>
+                </div>
+                
+                <div class="pricing-card-body">
+                    <ul class="features-list">
+                        <li class="feature-item">
+                            <span class="check-icon">✓</span>
+                            Everything in Pro
+                        </li>
+                        <li class="feature-item">
+                            <span class="check-icon">✓</span>
+                            Team collaboration
+                        </li>
+                        <li class="feature-item">
+                            <span class="check-icon">✓</span>
+                            Advanced reporting
+                        </li>
+                        <li class="feature-item">
+                            <span class="check-icon">✓</span>
+                            API access
+                        </li>
+                        <li class="feature-item">
+                            <span class="check-icon">✓</span>
+                            Priority support
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="pricing-card-footer">
+                    <a href="/Contact?plan=business" class="btn-pricing btn-pricing-outline">Contact Sales</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Additional Info -->
+        <div class="pricing-footer">
+            <p class="pricing-note">
+                <i class="bi bi-shield-check me-2"></i>
+                All plans include bank-level security and can be cancelled anytime
+            </p>
+        </div>
+    </div>
+</section>
+
+<style>
+/* ==========================================================================
+   PRICING SECTION STYLES
+   ========================================================================== */
+
+.pricing-section {
+    padding: 80px 0;
+    background: transparent; /* Will inherit the gradient from parent */
+}
+
+.pricing-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ==========================================================================
+   PRICING CARDS
+   ========================================================================== */
+
+.pricing-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 24px;
+    padding: 40px 32px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.pricing-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+/* Popular Plan Styling */
+.pricing-card-popular {
+    border: 2px solid #3b82f6;
+    transform: scale(1.05);
+    z-index: 2;
+}
+
+.pricing-card-popular:hover {
+    transform: scale(1.05) translateY(-8px);
+}
+
+.popular-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+    padding: 8px 24px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+/* ==========================================================================
+   PRICING CARD SECTIONS
+   ========================================================================== */
+
+.pricing-card-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.plan-name {
+    font-size: 24px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 16px;
+}
+
+.plan-price {
+    margin-bottom: 12px;
+}
+
+.price-amount {
+    font-size: 48px;
+    font-weight: 800;
+    color: #111827;
+    line-height: 1;
+}
+
+.price-period {
+    font-size: 18px;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.plan-description {
+    color: #6b7280;
+    font-size: 16px;
+    margin: 0;
+}
+
+.pricing-card-body {
+    flex: 1;
+    margin-bottom: 32px;
+}
+
+.features-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    color: #374151;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.check-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 700;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.pricing-card-footer {
+    margin-top: auto;
+}
+
+/* ==========================================================================
+   PRICING BUTTONS
+   ========================================================================== */
+
+.btn-pricing {
+    display: block;
+    width: 100%;
+    padding: 16px 24px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.btn-pricing-primary {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3);
+}
+
+.btn-pricing-primary:hover {
+    background: linear-gradient(135deg, #1d4ed8, #1e40af);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    transform: translateY(-2px);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-pricing-outline {
+    background: transparent;
+    color: #374151;
+    border: 2px solid #d1d5db;
+}
+
+.btn-pricing-outline:hover {
+    background: #f9fafb;
+    border-color: #9ca3af;
+    color: #111827;
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   PRICING FOOTER
+   ========================================================================== */
+
+.pricing-footer {
+    text-align: center;
+    margin-top: 48px;
+}
+
+.pricing-note {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 16px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
+
+@@media (max-width: 768px) {
+    .pricing-section {
+        padding: 60px 0;
+    }
+    
+    .pricing-header {
+        margin-bottom: 40px;
+    }
+    
+    .pricing-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 0 16px;
+    }
+    
+    .pricing-card {
+        padding: 32px 24px;
+    }
+    
+    .pricing-card-popular {
+        transform: none;
+        margin: 0;
+    }
+    
+    .pricing-card-popular:hover {
+        transform: translateY(-8px);
+    }
+    
+    .plan-name {
+        font-size: 20px;
+    }
+    
+    .price-amount {
+        font-size: 40px;
+    }
+    
+    .feature-item {
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+    
+    .btn-pricing {
+        padding: 14px 20px;
+        font-size: 15px;
+    }
+}
+
+@@media (max-width: 480px) {
+    .pricing-card {
+        padding: 24px 20px;
+    }
+    
+    .popular-badge {
+        font-size: 12px;
+        padding: 6px 16px;
+    }
+    
+    .price-amount {
+        font-size: 36px;
+    }
+    
+    .pricing-note {
+        font-size: 14px;
+        flex-direction: column;
+        gap: 4px;
+    }
+}
+
+/* ==========================================================================
+   ACCESSIBILITY IMPROVEMENTS
+   ========================================================================== */
+
+@@media (prefers-reduced-motion: reduce) {
+    .pricing-card,
+    .btn-pricing {
+        transition: none;
+    }
+    
+    .pricing-card:hover,
+    .btn-pricing:hover {
+        transform: none;
+    }
+}
+
+/* High contrast mode support */
+@@media (prefers-contrast: high) {
+    .pricing-card {
+        border: 2px solid #000;
+    }
+    
+    .check-icon {
+        background: #000;
+        color: #fff;
+    }
+}
+
+/* Focus states for keyboard navigation */
+.btn-pricing:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+</style>
+
+
         <!-- Testimonials Section -->
         <section class="testimonials-section">
             <h2 class="section-title">Loved by thousands of <span class="highlight">happy users</span></h2>
